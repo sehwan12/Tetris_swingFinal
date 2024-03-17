@@ -26,22 +26,22 @@ public class SidePanel extends JPanel {
     static int y1= 0;
     static JTextPane nextPiece = new JTextPane();
     static JPanel scorePanel= new JPanel();
-    private JLabel score=new JLabel();
+    static JLabel score=new JLabel();
 
-    public void setNextPanel(){
+    public static void setNextPanel(){
         nextPiece.setEditable(false);
         nextPiece.setBackground(Color.BLACK);
         CompoundBorder border = BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.CYAN, 10),
                 BorderFactory.createLineBorder(Color.DARK_GRAY, 5));
         nextPiece.setBorder(border);
-
         styleSet1 = new SimpleAttributeSet();
         StyleConstants.setFontSize(styleSet1, 18);
         StyleConstants.setFontFamily(styleSet1, "Courier New");
         StyleConstants.setBold(styleSet1, true);
-        StyleConstants.setForeground(styleSet1, Color.WHITE);
+
         StyleConstants.setAlignment(styleSet1, StyleConstants.ALIGN_CENTER);
+
 
     }
     static Block getRandomBlock() {
@@ -65,6 +65,7 @@ public class SidePanel extends JPanel {
         }
         return new LBlock();
     }
+    //현재 문제: 띄워지는 블록의 색깔이 처음 nextblock의 색깔로 계속 유지됨
     public static void paintNextPiece(){
         nextPiece.removeAll();
         Block s=getRandomBlock();
@@ -117,12 +118,17 @@ public class SidePanel extends JPanel {
         doc.setParagraphAttributes(0, doc.getLength(), styleSet1, false);
         nextPiece.setStyledDocument(doc);
     }
+    //점수 업데이트
+    public static void setScore(){
+        score.setText("score: "+totalscore);
+    }
     public SidePanel(){
         //sidepanel에 다음블록패널 추가
         this.setLayout(new BorderLayout());
         nextPiece.setLayout(new BorderLayout());
         nextPiece.setBorder(new LineBorder(Color.BLACK));
         this.add(nextPiece, BorderLayout.NORTH);
+
         //
         scorePanel.setLayout(new BorderLayout());
         scorePanel.setBackground(Color.BLACK);
@@ -146,9 +152,11 @@ public class SidePanel extends JPanel {
         nextPiece.setBorder(new EmptyBorder(5, 5, 5, 5));
         //nextpiece 초기상태 설정
         board2= new int[2][6];
-        setNextPanel();
+
         BlockQueue=new ArrayList<Block>();
         cur=getRandomBlock();
+        StyleConstants.setForeground(styleSet1, cur.getColor());
+        setNextPanel();
         BlockQueue.add(cur);
         placeblock(BlockQueue.get(0));
         drawBoard();
