@@ -1,17 +1,24 @@
 package component;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ImageObserver;
+import java.awt.image.RenderedImage;
+import java.awt.image.renderable.RenderableImage;
+import java.text.AttributedCharacterIterator;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JTextPane;
-import javax.swing.Timer;
+import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -29,12 +36,14 @@ import blocks.ZBlock;
 public class Board extends JFrame {
 
 	private static final long serialVersionUID = 2434035659171694595L;
-	
+
 	public static final int HEIGHT = 20;
 	public static final int WIDTH = 10;
 	public static final char BORDER_CHAR = 'X';
-	
+	public static ArrayList<Block> BlockQueue;
+
 	private JTextPane pane;
+
 	private int[][] board;
 	private KeyListener playerKeyListener;
 	private SimpleAttributeSet styleSet;
@@ -42,13 +51,13 @@ public class Board extends JFrame {
 	private Block curr;
 	int x = 3; //Default Position.
 	int y = 0;
-	
+
 	private static final int initInterval = 1000;
-	
+
 	public Board() {
 		super("SeoulTech SE Tetris");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		this.getContentPane().setBackground(Color.BLACK);
 		//Board display setting.
 		pane = new JTextPane();
 		pane.setEditable(false);
@@ -58,31 +67,35 @@ public class Board extends JFrame {
 				BorderFactory.createLineBorder(Color.DARK_GRAY, 5));
 		pane.setBorder(border);
 		this.getContentPane().add(pane, BorderLayout.CENTER);
-		
+
+		SidePanel sidePanel=new SidePanel();
+		this.getContentPane().add(sidePanel,BorderLayout.EAST);
+
+
 		//Document default style.
 		styleSet = new SimpleAttributeSet();
 		StyleConstants.setFontSize(styleSet, 18);
-		StyleConstants.setFontFamily(styleSet, "Courier");
+		StyleConstants.setFontFamily(styleSet, "Courier New");
 		StyleConstants.setBold(styleSet, true);
 		StyleConstants.setForeground(styleSet, Color.WHITE);
 		StyleConstants.setAlignment(styleSet, StyleConstants.ALIGN_CENTER);
-		
+
 		//Set timer for block drops.
-		timer = new Timer(initInterval, new ActionListener() {			
+		timer = new Timer(initInterval, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				moveDown();
 				drawBoard();
 			}
 		});
-		
+
 		//Initialize board for the game.
 		board = new int[HEIGHT][WIDTH];
 		playerKeyListener = new PlayerKeyListener();
 		addKeyListener(playerKeyListener);
 		setFocusable(true);
 		requestFocus();
-		
+
 		//Create the first block and draw.
 		curr = getRandomBlock();
 		placeBlock();
@@ -94,24 +107,24 @@ public class Board extends JFrame {
 		Random rnd = new Random(System.currentTimeMillis());
 		int block = rnd.nextInt(6);
 		switch(block) {
-		case 0:
-			return new IBlock();
-		case 1:
-			return new JBlock();
-		case 2:
-			return new LBlock();
-		case 3:
-			return new ZBlock();
-		case 4:
-			return new SBlock();
-		case 5:
-			return new TBlock();
-		case 6:
-			return new OBlock();			
+			case 0:
+				return new IBlock();
+			case 1:
+				return new JBlock();
+			case 2:
+				return new LBlock();
+			case 3:
+				return new ZBlock();
+			case 4:
+				return new SBlock();
+			case 5:
+				return new TBlock();
+			case 6:
+				return new OBlock();
 		}
 		return new LBlock();
 	}
-	
+
 	private void placeBlock() {
 		StyledDocument doc = pane.getStyledDocument();
 		SimpleAttributeSet styles = new SimpleAttributeSet();
@@ -125,7 +138,7 @@ public class Board extends JFrame {
 			}
 		}
 	}
-	
+
 	private void eraseCurr() {
 		for(int i=x; i<x+curr.width(); i++) {
 			for(int j=y; j<y+curr.height(); j++) {
@@ -139,13 +152,14 @@ public class Board extends JFrame {
 		if(y < HEIGHT - curr.height()) y++;
 		else {
 			placeBlock();
-			curr = getRandomBlock();
+			curr = SidePanel.getNextBlock();
+			SidePanel.paintNextPiece();
 			x = 3;
 			y = 0;
 		}
 		placeBlock();
 	}
-	
+
 	protected void moveRight() {
 		eraseCurr();
 		if(x < WIDTH - curr.width()) x++;
@@ -182,7 +196,9 @@ public class Board extends JFrame {
 		doc.setParagraphAttributes(0, doc.getLength(), styleSet, false);
 		pane.setStyledDocument(doc);
 	}
-	
+
+
+
 	public void reset() {
 		this.board = new int[20][10];
 	}
@@ -190,36 +206,36 @@ public class Board extends JFrame {
 	public class PlayerKeyListener implements KeyListener {
 		@Override
 		public void keyTyped(KeyEvent e) {
-				
+
 		}
 
 		@Override
 		public void keyPressed(KeyEvent e) {
 			switch(e.getKeyCode()) {
-			case KeyEvent.VK_DOWN:
-				moveDown();
-				drawBoard();
-				break;
-			case KeyEvent.VK_RIGHT:
-				moveRight();
-				drawBoard();
-				break;
-			case KeyEvent.VK_LEFT:
-				moveLeft();
-				drawBoard();
-				break;
-			case KeyEvent.VK_UP:
-				eraseCurr();
-				curr.rotate();
-				drawBoard();
-				break;
+				case KeyEvent.VK_DOWN:
+					moveDown();
+					drawBoard();
+					break;
+				case KeyEvent.VK_RIGHT:
+					moveRight();
+					drawBoard();
+					break;
+				case KeyEvent.VK_LEFT:
+					moveLeft();
+					drawBoard();
+					break;
+				case KeyEvent.VK_UP:
+					eraseCurr();
+					curr.rotate();
+					drawBoard();
+					break;
 			}
 		}
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			
+
 		}
 	}
-	
+
 }
