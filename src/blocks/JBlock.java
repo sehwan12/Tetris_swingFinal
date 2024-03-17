@@ -13,6 +13,7 @@ public class JBlock extends Block {
 		rotate_status=1;
 	}
 
+	//JBlock 회전 시 변경되어야 할 x, y 위치
 	@Override
 	public int rotate_x(){
 		int rotate_x=0;

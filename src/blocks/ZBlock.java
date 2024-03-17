@@ -13,6 +13,7 @@ public class ZBlock extends Block {
 		rotate_status=1;
 	}
 
+	//ZBlock 회전 시 변경되어야 할 x, y 위치
 	@Override
 	public int rotate_x(){
 		int rotate_x=0;

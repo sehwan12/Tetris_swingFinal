@@ -11,7 +11,9 @@ public class IBlock extends Block {
 		color = Color.CYAN;
 		rotate_status=1;
 	}
-
+	
+	
+	//IBlock 회전 시 변경되어야 할 x, y 위치
 	@Override
 	public int rotate_x(){
 		int rotate_x=0;

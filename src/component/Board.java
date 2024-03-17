@@ -80,6 +80,10 @@ public class Board extends JFrame {
 		//Initialize board for the game.
 		board = new int[HEIGHT][WIDTH];
 		//보드 색깔 저장 배열
+		//setCharacterAttributes이 offset 기준으로 글자의 색을 정하므로
+		//board의 offset 크기를 배열 크기로 정의
+		//WIDTH에 좌우경계와 '\n'을 더한 WIDTH+2+1
+		//HEIGHT에 상하경계를 더한 HEIGHT+2
 		board_color = new Color[(HEIGHT+2)*(WIDTH+2+1)];
 
 		playerKeyListener = new PlayerKeyListener();
@@ -97,7 +101,6 @@ public class Board extends JFrame {
 	private Block getRandomBlock() {
 		Random rnd = new Random(System.currentTimeMillis());
 		int block = rnd.nextInt(7);
-		//int block = 0;
 		switch(block) {
 		case 0:
 			return new IBlock();
@@ -125,6 +128,7 @@ public class Board extends JFrame {
 				if (curr.getShape(i, j) == 1) {
 					board[y + j][x + i] = curr.getShape(i, j);
 					board_color[offset + i] = curr.getColor();
+					//블럭이 있는 위치에 블럭 색깔 지정
 				}
 			}
 		}
@@ -178,11 +182,14 @@ public class Board extends JFrame {
 
 		eraseCurr();
 
+		//회전 시 x, y위치 변경
 		x=x+curr.rotate_x();
 		y=y+curr.rotate_y();
 		curr.rotate();
 
 		if(x > WIDTH - curr.width() || x<0 || y > HEIGHT - curr.height()|| y<0){
+			//회전한 블럭이 벽에 충돌하면
+			//3번 더 회전 시켜서 원상태로 복귀
 			x=x+curr.rotate_x();
 			y=y+curr.rotate_y();
 			curr.rotate();
@@ -210,7 +217,7 @@ public class Board extends JFrame {
 				if(board[i][j] == 1) {
 					sb.append("O");
 				} else {
-					sb.append("M");
+					sb.append(" ");
 				}
 			}
 			sb.append(BORDER_CHAR);
@@ -222,6 +229,7 @@ public class Board extends JFrame {
 
 		doc.setParagraphAttributes(0, doc.getLength(), styleSet, false);
 
+		//board_color에 저장된 값을 바탕으로 글자 색 칠하기
 		for(int i=0; i<board_color.length; i++) {
 			if (board_color[i] != null) {
 				SimpleAttributeSet styles = new SimpleAttributeSet();
@@ -229,7 +237,6 @@ public class Board extends JFrame {
 				doc.setCharacterAttributes(i, 1, styles, false);
 			}
 		}
-		//System.out.println(x+" "+y);
 		pane.setStyledDocument(doc);
 	}
 	
