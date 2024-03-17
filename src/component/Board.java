@@ -36,6 +36,7 @@ public class Board extends JFrame {
 	
 	private JTextPane pane;
 	private int[][] board;
+	private Color[] board_color; //보드 색깔 저장 배열
 	private KeyListener playerKeyListener;
 	private SimpleAttributeSet styleSet;
 	private Timer timer;
@@ -78,6 +79,9 @@ public class Board extends JFrame {
 		
 		//Initialize board for the game.
 		board = new int[HEIGHT][WIDTH];
+		//보드 색깔 저장 배열
+		board_color = new Color[(HEIGHT+2)*(WIDTH+2+1)];
+
 		playerKeyListener = new PlayerKeyListener();
 		addKeyListener(playerKeyListener);
 		setFocusable(true);
@@ -92,7 +96,8 @@ public class Board extends JFrame {
 
 	private Block getRandomBlock() {
 		Random rnd = new Random(System.currentTimeMillis());
-		int block = rnd.nextInt(6);
+		int block = rnd.nextInt(7);
+		//int block = 0;
 		switch(block) {
 		case 0:
 			return new IBlock();
@@ -113,30 +118,39 @@ public class Board extends JFrame {
 	}
 	
 	private void placeBlock() {
-		StyledDocument doc = pane.getStyledDocument();
-		SimpleAttributeSet styles = new SimpleAttributeSet();
-		StyleConstants.setForeground(styles, curr.getColor());
 		for(int j=0; j<curr.height(); j++) {
-			int rows = y+j == 0 ? 0 : y+j-1;
-			int offset = rows * (WIDTH+3) + x + 1;
-			doc.setCharacterAttributes(offset, curr.width(), styles, true);
+			int rows = y+j+1;
+			int offset = (rows) * (WIDTH+3) + x + 1;
 			for(int i=0; i<curr.width(); i++) {
-				board[y+j][x+i] = curr.getShape(i, j);
+				if (curr.getShape(i, j) == 1) {
+					board[y + j][x + i] = curr.getShape(i, j);
+					board_color[offset + i] = curr.getColor();
+				}
 			}
 		}
+
 	}
 	
 	private void eraseCurr() {
-		for(int i=x; i<x+curr.width(); i++) {
-			for(int j=y; j<y+curr.height(); j++) {
-				board[j][i] = 0;
+		for(int j=y; j<y+curr.height(); j++) {
+			int rows = j + 1;
+			int offset = rows * (WIDTH + 3) + x + 1;
+			for(int i=x; i<x+curr.width(); i++) {
+				if (board[j][i] == 1){
+					board[j][i] = 0;
+					board_color[offset + (i - x)] = null; // 이전 블록의 색상 초기화
+				}
 			}
 		}
 	}
 
 	protected void moveDown() {
-		eraseCurr();
-		if(y < HEIGHT - curr.height()) y++;
+
+		if(y < HEIGHT - curr.height())
+		{
+			eraseCurr();
+			y++;
+		}
 		else {
 			placeBlock();
 			curr = getRandomBlock();
@@ -160,6 +174,32 @@ public class Board extends JFrame {
 		placeBlock();
 	}
 
+	protected void moveRotate() {
+
+		eraseCurr();
+
+		x=x+curr.rotate_x();
+		y=y+curr.rotate_y();
+		curr.rotate();
+
+		if(x > WIDTH - curr.width() || x<0 || y > HEIGHT - curr.height()|| y<0){
+			x=x+curr.rotate_x();
+			y=y+curr.rotate_y();
+			curr.rotate();
+
+			x=x+curr.rotate_x();
+			y=y+curr.rotate_y();
+			curr.rotate();
+
+			x=x+curr.rotate_x();
+			y=y+curr.rotate_y();
+			curr.rotate();
+
+		}
+
+		placeBlock();
+	}
+
 	public void drawBoard() {
 		StringBuffer sb = new StringBuffer();
 		for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
@@ -170,7 +210,7 @@ public class Board extends JFrame {
 				if(board[i][j] == 1) {
 					sb.append("O");
 				} else {
-					sb.append(" ");
+					sb.append("M");
 				}
 			}
 			sb.append(BORDER_CHAR);
@@ -179,7 +219,17 @@ public class Board extends JFrame {
 		for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
 		pane.setText(sb.toString());
 		StyledDocument doc = pane.getStyledDocument();
+
 		doc.setParagraphAttributes(0, doc.getLength(), styleSet, false);
+
+		for(int i=0; i<board_color.length; i++) {
+			if (board_color[i] != null) {
+				SimpleAttributeSet styles = new SimpleAttributeSet();
+				StyleConstants.setForeground(styles, board_color[i]);
+				doc.setCharacterAttributes(i, 1, styles, false);
+			}
+		}
+		//System.out.println(x+" "+y);
 		pane.setStyledDocument(doc);
 	}
 	
@@ -209,8 +259,7 @@ public class Board extends JFrame {
 				drawBoard();
 				break;
 			case KeyEvent.VK_UP:
-				eraseCurr();
-				curr.rotate();
+				moveRotate();
 				drawBoard();
 				break;
 			}
