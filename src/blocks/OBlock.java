@@ -10,5 +10,6 @@ public class OBlock extends Block {
 			{1, 1}
 		};
 		color = Color.YELLOW;
+		rotate_status=1;
 	}
 }
