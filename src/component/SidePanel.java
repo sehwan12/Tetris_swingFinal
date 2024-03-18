@@ -26,13 +26,13 @@ public class SidePanel extends JPanel {
     static int y1= 0;
     static JTextPane nextPiece = new JTextPane();
     static JPanel scorePanel= new JPanel();
-    static JLabel score=new JLabel();
+    static JTextPane score=new JTextPane();
 
     public static void setNextPanel(){
         nextPiece.setEditable(false);
         nextPiece.setBackground(Color.BLACK);
         CompoundBorder border = BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.CYAN, 10),
+                BorderFactory.createLineBorder(Color.CYAN, 5),
                 BorderFactory.createLineBorder(Color.DARK_GRAY, 5));
         nextPiece.setBorder(border);
         styleSet1 = new SimpleAttributeSet();
@@ -46,7 +46,7 @@ public class SidePanel extends JPanel {
     }
     static Block getRandomBlock() {
         Random rnd = new Random(System.currentTimeMillis());
-        int block = rnd.nextInt(6);
+        int block = rnd.nextInt(7);
         switch(block) {
             case 0:
                 return new IBlock();
@@ -66,16 +66,17 @@ public class SidePanel extends JPanel {
         return new LBlock();
     }
     //현재 문제: 띄워지는 블록의 색깔이 처음 nextblock의 색깔로 계속 유지됨
+    //문제의심점들을 하나하나 gpt에게 제시한 후, 문제점을 찾아 해결
     public static void paintNextPiece(){
         nextPiece.removeAll();
         Block s=getRandomBlock();
         BlockQueue.add(s);
         board2=new int[2][6];
-        placeblock(BlockQueue.get(1));
+        placeblock(s);
         BlockQueue.remove(0);
         JLabel nexttext=new JLabel("Next");
         nexttext.setForeground(Color.WHITE);
-        nexttext.setFont(new Font("Arial", Font.PLAIN,20));
+        nexttext.setFont(new Font("Courier New", Font.PLAIN,20));
         nexttext.setBorder(new EmptyBorder(0,0,10,0));
         nextPiece.add(nexttext, BorderLayout.NORTH);
         drawBoard();
@@ -95,6 +96,7 @@ public class SidePanel extends JPanel {
                 board2[y1+j][x1+i] = cur.getShape(i, j);
             }
         }
+        nextPiece.setStyledDocument(doc);
     }
     public static void drawBoard() {
         StringBuffer sb = new StringBuffer();
@@ -112,42 +114,53 @@ public class SidePanel extends JPanel {
             sb.append(BORDER_CHAR1);
             sb.append("\n");
         }
+
         for(int t=0; t<WIDTH2+2; t++) sb.append(BORDER_CHAR1);
         nextPiece.setText(sb.toString());
+
         StyledDocument doc = nextPiece.getStyledDocument();
-        doc.setParagraphAttributes(0, doc.getLength(), styleSet1, false);
+        SimpleAttributeSet styles = new SimpleAttributeSet();
+        Block curBlock = getNextBlock(); // 다음 블록 가져오기
+        StyleConstants.setForeground(styles, curBlock.getColor()); // 다음 블록 색상 설정
+        doc.setCharacterAttributes(0, doc.getLength(), styles, false); // 모든 문자의 속성을 새로 설정
         nextPiece.setStyledDocument(doc);
+
     }
+
     //점수 업데이트
     public static void setScore(){
         score.setText("score: "+totalscore);
     }
     public SidePanel(){
+        //
+
         //sidepanel에 다음블록패널 추가
         this.setLayout(new BorderLayout());
         nextPiece.setLayout(new BorderLayout());
         nextPiece.setBorder(new LineBorder(Color.BLACK));
+        nextPiece.setPreferredSize(new Dimension(80,110));
         this.add(nextPiece, BorderLayout.NORTH);
 
         //
         scorePanel.setLayout(new BorderLayout());
         scorePanel.setBackground(Color.BLACK);
-        scorePanel.setPreferredSize(new Dimension(20,50));
+        scorePanel.setPreferredSize(new Dimension(20,80));
         this.add(scorePanel,BorderLayout.CENTER);
         //점수패널
         totalscore=0;
         score.setLayout(new BorderLayout());
         score.setBorder(new LineBorder(Color.CYAN));
+        score.setBackground(Color.BLACK);
         score.setForeground(Color.YELLOW);
-        score.setFont(new Font("Arial", Font.PLAIN,25));
+        score.setFont(new Font("Courier New", Font.PLAIN,20));
         score.setText("score: "+totalscore);
         score.setPreferredSize(new Dimension(10,50));
         scorePanel.add(score,BorderLayout.NORTH);
         //next텍스트 표시
         JLabel nexttext=new JLabel("Next");
         nexttext.setForeground(Color.WHITE);
-        nexttext.setFont(new Font("Arial", Font.PLAIN,25));
-        nexttext.setBorder(new EmptyBorder(0,0,10,0));
+        nexttext.setFont(new Font("Courier New", Font.PLAIN,20));
+        nexttext.setBorder(new EmptyBorder(0,0,15,0));
         nextPiece.add(nexttext, BorderLayout.NORTH);
         nextPiece.setBorder(new EmptyBorder(5, 5, 5, 5));
         //nextpiece 초기상태 설정
@@ -155,8 +168,8 @@ public class SidePanel extends JPanel {
 
         BlockQueue=new ArrayList<Block>();
         cur=getRandomBlock();
-        StyleConstants.setForeground(styleSet1, cur.getColor());
         setNextPanel();
+        StyleConstants.setForeground(styleSet1, cur.getColor());
         BlockQueue.add(cur);
         placeblock(BlockQueue.get(0));
         drawBoard();
