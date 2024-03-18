@@ -75,6 +75,7 @@ public class Board extends JFrame {
 		//Document default style.
 		styleSet = new SimpleAttributeSet();
 		StyleConstants.setFontSize(styleSet, 18);
+
 		StyleConstants.setFontFamily(styleSet, "Courier New");
 		StyleConstants.setBold(styleSet, true);
 		StyleConstants.setForeground(styleSet, Color.WHITE);
