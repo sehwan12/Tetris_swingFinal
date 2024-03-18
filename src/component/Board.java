@@ -62,7 +62,6 @@ public class Board extends JFrame {
 		//Document default style.
 		styleSet = new SimpleAttributeSet();
 		StyleConstants.setFontSize(styleSet, 18);
-		//StyleConstants.setFontFamily(styleSet, "Courier");
 		StyleConstants.setFontFamily(styleSet, "Courier New");
 		StyleConstants.setBold(styleSet, true);
 		StyleConstants.setForeground(styleSet, Color.WHITE);
@@ -112,7 +111,7 @@ public class Board extends JFrame {
 		}
 		return new LBlock();
 	}
-	
+
 	private void placeBlock() {
 		StyledDocument doc = pane.getStyledDocument();
 		SimpleAttributeSet styles = new SimpleAttributeSet();
@@ -122,40 +121,110 @@ public class Board extends JFrame {
 			int offset = rows * (WIDTH+3) + x + 1;
 			doc.setCharacterAttributes(offset, curr.width(), styles, true);
 			for(int i=0; i<curr.width(); i++) {
-				board[y+j][x+i] = curr.getShape(i, j);
-			}
-		}
-	}
-	
-	private void eraseCurr() {
-		for(int i=x; i<x+curr.width(); i++) {
-			for(int j=y; j<y+curr.height(); j++) {
-				board[j][i] = 0;
+				// curr.getShape(i, j)가 1일 때만 board 값을 업데이트
+				if (curr.getShape(i, j) == 1) {
+					board[y+j][x+i] = 1; // 현재 블록의 부분이 1일 경우에만 board를 업데이트
+				}
 			}
 		}
 	}
 
+	private boolean collisionCheck(int horizon, int vertical) { // 블록, 벽 충돌을 체크하는 메서드
+		int nextX = x + horizon;
+		int nextY = y + vertical;
+
+		// 경계 및 블록과의 충돌 체크
+		for (int j = 0; j < curr.height(); j++) {
+			for (int i = 0; i < curr.width(); i++) {
+				if (curr.getShape(i, j) != 0) { // 현재 블록의 해당 부분이 실제로 블록을 구성하는지 확인 (1인지 0인지)
+					int boardX = nextX + i;
+					int boardY = nextY + j;
+
+					// 벽 충돌 체크
+					if (boardX < 0 || boardX >= WIDTH || boardY < 0 || boardY >= HEIGHT) {
+						return true;
+					}
+
+					// 다른 블록과 충돌하는지 검사
+					if (board[boardY][boardX] != 0) {
+						return true;
+					}
+				}
+			}
+		}
+		return false; // 충돌 없음
+	}
+
+	private void eraseCurr() {
+		for(int j=0; j<curr.height(); j++) {
+			for(int i=0; i<curr.width(); i++) {
+				// 현재 블록의 shape가 1인 부분만 0으로 지워야함 이걸 못찾았다니..
+				if (curr.getShape(i, j) == 1) {
+					board[y+j][x+i] = 0;
+				}
+			}
+		}
+	}
+
+	private void lineClear() {
+		for (int row = HEIGHT - 1; row >= 0; row--) {
+			boolean fullLine = true;
+
+			for (int col = 0; col < WIDTH; col++) {
+				if (board[row][col] == 0) {
+					fullLine = false;
+					break;
+				}
+			}
+
+			if (fullLine) {
+				for (int moveRow = row; moveRow > 0; moveRow--) {
+					for (int col = 0; col < WIDTH; col++) {
+						board[moveRow][col] = board[moveRow - 1][col];
+					}
+				}
+
+				for (int col = 0; col < WIDTH; col++) {
+					board[0][col] = 0;
+				}
+
+				row++;
+			}
+		}
+	}
+
+
+
 	protected void moveDown() {
 		eraseCurr();
-		if(y < HEIGHT - curr.height()) y++;
+		if(!collisionCheck(0, 1)) y++;
 		else {
 			placeBlock();
+			// LineClear 과정
+			lineClear();
+			// 아래 section은 새로운 블럭 생성 과정
 			curr = getRandomBlock();
 			x = 3;
 			y = 0;
 		}
 		placeBlock();
 	}
-	
+
+	protected void moveBottom() {
+		eraseCurr();
+		while (!collisionCheck(0, 1)) { y++; }
+		placeBlock();
+	}
+
 	protected void moveRight() {
 		eraseCurr();
-		if(x < WIDTH - curr.width()) x++;
+		if(!collisionCheck(1, 0)) x++;
 		placeBlock();
 	}
 
 	protected void moveLeft() {
 		eraseCurr();
-		if(x > 0) {
+		if(!collisionCheck(-1, 0)) {
 			x--;
 		}
 		placeBlock();
@@ -212,6 +281,12 @@ public class Board extends JFrame {
 			case KeyEvent.VK_UP:
 				eraseCurr();
 				curr.rotate();
+				drawBoard();
+				break;
+			case KeyEvent.VK_ENTER:
+				eraseCurr();
+				// 위치 이동 메서드
+				moveBottom();
 				drawBoard();
 				break;
 			}
