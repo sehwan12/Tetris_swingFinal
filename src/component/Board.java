@@ -193,7 +193,7 @@ public class Board extends JFrame {
 	private void eraseCurr() {
 		for(int j=0; j<curr.height(); j++) {
       // int rows = j + 1;
-      int rows = j - y + 1;
+      int rows = j + y + 1;
       int offset = rows * (WIDTH + 3) + x + 1;
 			for(int i=0; i<curr.width(); i++) {
 				// 현재 블록의 shape가 1인 부분만 0으로 지워야함 이걸 못찾았다니..
