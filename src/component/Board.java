@@ -63,7 +63,7 @@ public class Board extends JFrame {
 		styleSet = new SimpleAttributeSet();
 		StyleConstants.setFontSize(styleSet, 18);
 		//StyleConstants.setFontFamily(styleSet, "Courier");
-		StyleConstants.setFontFamily(styleSet, "Consolas");
+		StyleConstants.setFontFamily(styleSet, "Courier New");
 		StyleConstants.setBold(styleSet, true);
 		StyleConstants.setForeground(styleSet, Color.WHITE);
 		StyleConstants.setAlignment(styleSet, StyleConstants.ALIGN_CENTER);
