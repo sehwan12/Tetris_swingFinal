@@ -1,17 +1,24 @@
 package component;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ImageObserver;
+import java.awt.image.RenderedImage;
+import java.awt.image.renderable.RenderableImage;
+import java.text.AttributedCharacterIterator;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JTextPane;
-import javax.swing.Timer;
+import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -29,12 +36,14 @@ import blocks.ZBlock;
 public class Board extends JFrame {
 
 	private static final long serialVersionUID = 2434035659171694595L;
-	
+
 	public static final int HEIGHT = 20;
 	public static final int WIDTH = 10;
 	public static final char BORDER_CHAR = 'X';
-	
+	public static ArrayList<Block> BlockQueue;
+
 	private JTextPane pane;
+
 	private int[][] board;
 	private Color[] board_color; //보드 색깔 저장 배열
 	private KeyListener playerKeyListener;
@@ -43,13 +52,13 @@ public class Board extends JFrame {
 	private Block curr;
 	int x = 3; //Default Position.
 	int y = 0;
-	
+
 	private static final int initInterval = 1000;
-	
+
 	public Board() {
 		super("SeoulTech SE Tetris");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		this.getContentPane().setBackground(Color.BLACK);
 		//Board display setting.
 		pane = new JTextPane();
 		pane.setEditable(false);
@@ -59,7 +68,11 @@ public class Board extends JFrame {
 				BorderFactory.createLineBorder(Color.DARK_GRAY, 5));
 		pane.setBorder(border);
 		this.getContentPane().add(pane, BorderLayout.CENTER);
-		
+
+		SidePanel sidePanel=new SidePanel();
+		this.getContentPane().add(sidePanel,BorderLayout.EAST);
+
+
 		//Document default style.
 		styleSet = new SimpleAttributeSet();
 		StyleConstants.setFontSize(styleSet, 18);
@@ -67,16 +80,16 @@ public class Board extends JFrame {
 		StyleConstants.setBold(styleSet, true);
 		StyleConstants.setForeground(styleSet, Color.WHITE);
 		StyleConstants.setAlignment(styleSet, StyleConstants.ALIGN_CENTER);
-		
+
 		//Set timer for block drops.
-		timer = new Timer(initInterval, new ActionListener() {			
+		timer = new Timer(initInterval, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				moveDown();
 				drawBoard();
 			}
 		});
-		
+
 		//Initialize board for the game.
 		board = new int[HEIGHT][WIDTH];
 		//보드 색깔 저장 배열
@@ -90,7 +103,7 @@ public class Board extends JFrame {
 		addKeyListener(playerKeyListener);
 		setFocusable(true);
 		requestFocus();
-		
+
 		//Create the first block and draw.
 		curr = getRandomBlock();
 		placeBlock();
@@ -102,40 +115,68 @@ public class Board extends JFrame {
 		Random rnd = new Random(System.currentTimeMillis());
 		int block = rnd.nextInt(7);
 		switch(block) {
-		case 0:
-			return new IBlock();
-		case 1:
-			return new JBlock();
-		case 2:
-			return new LBlock();
-		case 3:
-			return new ZBlock();
-		case 4:
-			return new SBlock();
-		case 5:
-			return new TBlock();
-		case 6:
-			return new OBlock();			
+			case 0:
+				return new IBlock();
+			case 1:
+				return new JBlock();
+			case 2:
+				return new LBlock();
+			case 3:
+				return new ZBlock();
+			case 4:
+				return new SBlock();
+			case 5:
+				return new TBlock();
+			case 6:
+				return new OBlock();
 		}
 		return new LBlock();
 	}
-	
+
 	private void placeBlock() {
 		for(int j=0; j<curr.height(); j++) {
 			int rows = y+j+1;
 			int offset = (rows) * (WIDTH+3) + x + 1;
 			for(int i=0; i<curr.width(); i++) {
+				// curr.getShape(i, j)가 1일 때만 board 값을 업데이트
 				if (curr.getShape(i, j) == 1) {
-					board[y + j][x + i] = curr.getShape(i, j);
-					board_color[offset + i] = curr.getColor();
+					board[y+j][x+i] = 1; // 현재 블록의 부분이 1일 경우에만 board를 업데이트
+          board_color[offset + i] = curr.getColor();
 					//블럭이 있는 위치에 블럭 색깔 지정
 				}
 			}
 		}
 
 	}
-	
-	private void eraseCurr() {
+	private boolean collisionCheck(int horizon, int vertical) { // 블록, 벽 충돌을 체크하는 메서드
+		int nextX = x + horizon;
+		int nextY = y + vertical;
+
+		// 경계 및 블록과의 충돌 체크
+		for (int j = 0; j < curr.height(); j++) {
+			for (int i = 0; i < curr.width(); i++) {
+				if (curr.getShape(i, j) != 0) { // 현재 블록의 해당 부분이 실제로 블록을 구성하는지 확인 (1인지 0인지)
+					int boardX = nextX + i;
+					int boardY = nextY + j;
+
+					// 벽 충돌 체크
+					if (boardX < 0 || boardX >= WIDTH || boardY < 0 || boardY >= HEIGHT) {
+						return true;
+					}
+
+					// 다른 블록과 충돌하는지 검사
+					if (board[boardY][boardX] != 0) {
+						return true;
+					}
+				}
+			}
+		}
+		return false; // 충돌 없음
+	}
+
+
+  /* PR17
+  private void eraseCurr() {
 		for(int j=y; j<y+curr.height(); j++) {
 			int rows = j + 1;
 			int offset = rows * (WIDTH + 3) + x + 1;
@@ -147,32 +188,88 @@ public class Board extends JFrame {
 			}
 		}
 	}
+*/
+  
+	private void eraseCurr() {
+		for(int j=0; j<curr.height(); j++) {
+      // int rows = j + 1;
+      int rows = j - y + 1;
+      int offset = rows * (WIDTH + 3) + x + 1;
+			for(int i=0; i<curr.width(); i++) {
+				// 현재 블록의 shape가 1인 부분만 0으로 지워야함 이걸 못찾았다니..
+        // if (board[j][i] == 1)
+				if (curr.getShape(i, j) == 1) {
+					board[y+j][x+i] = 0;
+          // board_color[offset + (i - x)] = null; // 이전 블록의 색상 초기화
+          board_color[offset + i] = null; // 이전 블록의 색상 초기화
+				}
+			}
+		}
+	}
+
+	private void lineClear() {
+		for (int row = HEIGHT - 1; row >= 0; row--) {
+			boolean fullLine = true;
+
+			for (int col = 0; col < WIDTH; col++) {
+				if (board[row][col] == 0) {
+					fullLine = false;
+					break;
+				}
+			}
+
+			if (fullLine) {
+				for (int moveRow = row; moveRow > 0; moveRow--) {
+					for (int col = 0; col < WIDTH; col++) {
+						board[moveRow][col] = board[moveRow - 1][col];
+					}
+				}
+
+				for (int col = 0; col < WIDTH; col++) {
+					board[0][col] = 0;
+				}
+
+				row++;
+        
+			}
+		}
+	}
+
+
 
 	protected void moveDown() {
-
-		if(y < HEIGHT - curr.height())
-		{
-			eraseCurr();
-			y++;
-		}
+    // eraseCurr()을 if 안에 넣을지 
+		eraseCurr();
+		if(!collisionCheck(0, 1)) y++;
 		else {
 			placeBlock();
-			curr = getRandomBlock();
+      // LineClear 과정
+			lineClear();
+			curr = SidePanel.getNextBlock();
+			SidePanel.paintNextPiece();
+			// curr = getRandomBlock();
 			x = 3;
 			y = 0;
 		}
 		placeBlock();
 	}
-	
+
+
+	protected void moveBottom() {
+		eraseCurr();
+		while (!collisionCheck(0, 1)) { y++; }
+		placeBlock();
+	}
+
 	protected void moveRight() {
 		eraseCurr();
-		if(x < WIDTH - curr.width()) x++;
+		if(!collisionCheck(1, 0)) x++;
 		placeBlock();
 	}
 
 	protected void moveLeft() {
 		eraseCurr();
-		if(x > 0) {
+		if(!collisionCheck(-1, 0)) {
 			x--;
 		}
 		placeBlock();
@@ -239,7 +336,9 @@ public class Board extends JFrame {
 		}
 		pane.setStyledDocument(doc);
 	}
-	
+
+
+
 	public void reset() {
 		this.board = new int[20][10];
 	}
@@ -247,7 +346,7 @@ public class Board extends JFrame {
 	public class PlayerKeyListener implements KeyListener {
 		@Override
 		public void keyTyped(KeyEvent e) {
-				
+
 		}
 
 		@Override
@@ -269,13 +368,19 @@ public class Board extends JFrame {
 				moveRotate();
 				drawBoard();
 				break;
+			case KeyEvent.VK_ENTER:
+				eraseCurr();
+				// 위치 이동 메서드
+				moveBottom();
+				drawBoard();
+				break;
 			}
 		}
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			
+
 		}
 	}
-	
+
 }
