@@ -140,12 +140,13 @@ public class Board extends JFrame {
 			int rows = j + 1;
 			int offset = rows * (WIDTH + 3) + x + 1;
 			for(int i=x; i<x+curr.width(); i++) {
-				if (board[j][i] == 1){
+				if (curr.getShape(i-x, j-y) == 1){ // DawnGlow님의 eraseCurr() 적용
 					board[j][i] = 0;
 					board_color[offset + (i - x)] = null; // 이전 블록의 색상 초기화
 				}
 			}
 		}
+		System.out.println();
 	}
 
 	protected void moveDown() {
