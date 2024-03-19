@@ -238,12 +238,12 @@ public class Board extends JFrame {
 
 
 	protected void moveDown() {
-    // eraseCurr()을 if 안에 넣을지 
+		// eraseCurr()을 if 안에 넣을지
 		eraseCurr();
 		if(!collisionCheck(0, 1)) y++;
 		else {
 			placeBlock();
-      // LineClear 과정
+			// LineClear 과정
 			lineClear();
 			curr = SidePanel.getNextBlock();
 			SidePanel.paintNextPiece();
@@ -257,9 +257,20 @@ public class Board extends JFrame {
 
 	protected void moveBottom() {
 		eraseCurr();
+		// 바닥에 이동
 		while (!collisionCheck(0, 1)) { y++; }
 		placeBlock();
+		// LineClear 과정
+		lineClear();
+		// 새로운 블럭 생성
+		curr = SidePanel.getNextBlock();
+		SidePanel.paintNextPiece();
+		// curr = getRandomBlock();
+		x = 3;
+		y = 0;
+		placeBlock();
 	}
+
 
 	protected void moveRight() {
 		eraseCurr();
