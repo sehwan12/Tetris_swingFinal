@@ -173,22 +173,6 @@ public class Board extends JFrame {
 		}
 		return false; // 충돌 없음
 	}
-
-
-  /* PR17
-  private void eraseCurr() {
-		for(int j=y; j<y+curr.height(); j++) {
-			int rows = j + 1;
-			int offset = rows * (WIDTH + 3) + x + 1;
-			for(int i=x; i<x+curr.width(); i++) {
-				if (board[j][i] == 1){
-					board[j][i] = 0;
-					board_color[offset + (i - x)] = null; // 이전 블록의 색상 초기화
-				}
-			}
-		}
-	}
-*/
   
 	private void eraseCurr() {
 		for(int j=0; j<curr.height(); j++) {
@@ -235,7 +219,25 @@ public class Board extends JFrame {
 		}
 	}
 
+	private void gameOver() { // 종료 / 새로운 게임 시작 여부 확인
+		timer.stop(); // 게임 타이머를 정지
+		// Option 패널 이용하여 Question
+		int response = JOptionPane.showConfirmDialog(this, "Game Over. 시작 메뉴로 돌아가시겠습니까?\n (No : 게임 종료)", "Game Over", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if (response == JOptionPane.YES_OPTION) {
+			// 추후 메인 메뉴로 돌아갈 수 있도록 코드를 작성해야함
 
+
+			/* 아래 코드는 새로운 게임을 진행하도록 만든 코드
+			reset(); // 보드 및 색 배열 초기화
+			curr = getRandomBlock(); // 새로운 블록 생성
+			placeBlock();
+			drawBoard(); // 보드 다시 그리기
+			timer.start();
+			*/
+		} else {
+			System.exit(0); // 아니오를 선택한 경우 게임 종료
+		}
+	}
 
 	protected void moveDown() {
 		// eraseCurr()을 if 안에 넣을지
@@ -245,6 +247,10 @@ public class Board extends JFrame {
 			placeBlock();
 			// LineClear 과정
 			lineClear();
+			if (y == 0) { // 블록이 맨 위에 도달했을 때
+				gameOver(); // 게임 종료 메서드 호출
+				return; // 추가적인 동작을 방지
+			}
 			curr = SidePanel.getNextBlock();
 			SidePanel.paintNextPiece();
 			// curr = getRandomBlock();
@@ -252,6 +258,7 @@ public class Board extends JFrame {
 			y = 0;
 		}
 		placeBlock();
+		drawBoard();
 	}
 
 
@@ -262,6 +269,10 @@ public class Board extends JFrame {
 		placeBlock();
 		// LineClear 과정
 		lineClear();
+		if (y == 0) { // 블록이 맨 위에 도달했을 때
+			gameOver(); // 게임 종료 메서드 호출
+			return; // 추가적인 동작을 방지
+		}
 		// 새로운 블럭 생성
 		curr = SidePanel.getNextBlock();
 		SidePanel.paintNextPiece();
@@ -269,6 +280,7 @@ public class Board extends JFrame {
 		x = 3;
 		y = 0;
 		placeBlock();
+		drawBoard();
 	}
 
 
@@ -351,7 +363,10 @@ public class Board extends JFrame {
 
 
 	public void reset() {
-		this.board = new int[20][10];
+		this.board = new int[HEIGHT][WIDTH]; // 리터럴 사용은 자제해주세요
+		this.board_color = new Color[(HEIGHT+2)*(WIDTH+2+1)]; // 보드 색상 배열도 리셋
+		x = 3;
+		y = 0;
 	}
 
 	public class PlayerKeyListener implements KeyListener {
