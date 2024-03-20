@@ -55,10 +55,60 @@ public class Board extends JFrame {
 
 	private static final int initInterval = 1000;
 
+	private JPanel glassPane; //게임 정지화면을 나타낼 glassPane
+	private int selectedOption = 1;
+	//게임 정지화면에서 재시작, 메인메뉴, 게임종료를 선택하는 selectedOption
+
 	public Board() {
 		super("SeoulTech SE Tetris");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setBackground(Color.BLACK);
+
+		// GlassPane 초기화 by chatGPT
+		glassPane = new JPanel() {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				Graphics2D g2d = (Graphics2D) g.create();
+
+				// Set the transparency (alpha) value
+				float alpha = 0.5f;
+				g2d.setColor(new Color(0, 0, 0, (int) (255 * alpha))); // Black color with transparency
+				g2d.fillRect(0, 0, getWidth(), getHeight());
+
+				g2d.setFont(new Font("SansSerif", Font.BOLD, 40));
+
+				String[] menuItems = {"일시정지", "메인메뉴", " 재시작 ", "게임종료"};
+				Color[] menuColors = {new Color(200,200,200), Color.WHITE, Color.WHITE, Color.WHITE};
+
+				for (int i = 0; i < menuItems.length; i++) {
+					// "일시정지" 메뉴 이후의 메뉴들에 대해 폰트 크기를 작게 설정
+					if (i > 0) g2d.setFont(new Font("SansSerif", Font.BOLD, 30));
+					FontMetrics fm = g2d.getFontMetrics();
+					int menuHeight = fm.getHeight();
+					int startY = (getHeight() - menuHeight * 4) / 4; //화면 상단에서 1/4부분부터 시작
+					String text = menuItems[i];
+					int textWidth = fm.stringWidth(text);
+					int x = (getWidth() - textWidth) / 2; //화면 가운데로
+					int interval_space = 20; //서로 20만큼 간격 넣기 추후 화면크기 조정할 때 수정 필요
+					int y = startY + i * (menuHeight+interval_space);
+
+					if (i == selectedOption) g2d.setColor(Color.YELLOW);
+					else g2d.setColor(menuColors[i]);
+					g2d.fillRect(x, y, textWidth, menuHeight);
+
+					g2d.setColor(Color.BLACK);
+					g2d.drawString(text, x, y + fm.getAscent());
+				}
+				g2d.dispose();
+			}
+		};
+		glassPane.setOpaque(false);
+		// JRootPane의 GlassPane 설정 by chatGPT
+		JRootPane rootPane = this.getRootPane();
+		rootPane.setGlassPane(glassPane);
+		glassPane.setVisible(false); // 초기에는 보이지 않도록 설정
+
 		//Board display setting.
 		pane = new JTextPane();
 		pane.setEditable(false);
@@ -111,6 +161,23 @@ public class Board extends JFrame {
 		timer.start();
 	}
 
+	// 게임 일시 정지 확인용 isPaused by chatGPT3.5
+	private boolean isPaused = false;
+	public void pauseGame() { // 게임 일시 정지 by chatGPT3.5
+		if (!isPaused) {
+			timer.stop(); // 타이머 일시 정지
+			isPaused = true;
+			glassPane.setVisible(!glassPane.isVisible());
+		}
+	}
+	public void resumeGame() { // 게임 다시 시작 by chatGPT3.5
+		if (isPaused) {
+			timer.start(); // 타이머 다시 시작
+			isPaused = false;
+			glassPane.setVisible(!glassPane.isVisible());
+		}
+	}
+
 	private Block getRandomBlock() {
 		Random rnd = new Random(System.currentTimeMillis());
 		int block = rnd.nextInt(7);
@@ -141,7 +208,7 @@ public class Board extends JFrame {
 				// curr.getShape(i, j)가 1일 때만 board 값을 업데이트
 				if (curr.getShape(i, j) == 1) {
 					board[y+j][x+i] = 1; // 현재 블록의 부분이 1일 경우에만 board를 업데이트
-          board_color[offset + i] = curr.getColor();
+          			board_color[offset + i] = curr.getColor();
 					//블럭이 있는 위치에 블럭 색깔 지정
 				}
 			}
@@ -181,11 +248,11 @@ public class Board extends JFrame {
       int offset = rows * (WIDTH + 3) + x + 1;
 			for(int i=0; i<curr.width(); i++) {
 				// 현재 블록의 shape가 1인 부분만 0으로 지워야함 이걸 못찾았다니..
-        // if (board[j][i] == 1)
+				// if (board[j][i] == 1)
 				if (curr.getShape(i, j) == 1) {
 					board[y+j][x+i] = 0;
-          // board_color[offset + (i - x)] = null; // 이전 블록의 색상 초기화
-          board_color[offset + i] = null; // 이전 블록의 색상 초기화
+          			// board_color[offset + (i - x)] = null; // 이전 블록의 색상 초기화
+          			board_color[offset + i] = null; // 이전 블록의 색상 초기화
 				}
 			}
 		}
@@ -239,6 +306,18 @@ public class Board extends JFrame {
 		}
 	}
 
+	private void gameExit() { // 게임 종료
+		//Yes No버튼 선택할 때 마우스입력만 되는건가?
+		//만약 마우스입력만 된다면 이후에 키보드로도 선택할 수 있도록 수정
+		timer.stop();
+		// Option 패널 이용하여 Question
+		int response = JOptionPane.showConfirmDialog(this, "게임을 종료하시겠습니까?",
+				"Game Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if (response == JOptionPane.YES_OPTION) {
+			System.exit(0); // 예를 선택한 경우 게임 종료
+		}
+	}
+
 	protected void moveDown() {
 		// eraseCurr()을 if 안에 넣을지
 		eraseCurr();
@@ -259,6 +338,7 @@ public class Board extends JFrame {
 		}
 		placeBlock();
 		drawBoard();
+
 	}
 
 
@@ -282,8 +362,6 @@ public class Board extends JFrame {
 		placeBlock();
 		drawBoard();
 	}
-
-
 	protected void moveRight() {
 		eraseCurr();
 		if(!collisionCheck(1, 0)) x++;
@@ -377,30 +455,67 @@ public class Board extends JFrame {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			switch(e.getKeyCode()) {
-			case KeyEvent.VK_DOWN:
-				moveDown();
-				drawBoard();
-				break;
-			case KeyEvent.VK_RIGHT:
-				moveRight();
-				drawBoard();
-				break;
-			case KeyEvent.VK_LEFT:
-				moveLeft();
-				drawBoard();
-				break;
-			case KeyEvent.VK_UP:
-				moveRotate();
-				drawBoard();
-				break;
-			case KeyEvent.VK_ENTER:
-				eraseCurr();
-				// 위치 이동 메서드
-				moveBottom();
-				drawBoard();
-				break;
+			if (!isPaused) {
+				switch (e.getKeyCode()) {
+					case KeyEvent.VK_DOWN:
+						moveDown();
+						drawBoard();
+						break;
+					case KeyEvent.VK_RIGHT:
+						moveRight();
+						drawBoard();
+						break;
+					case KeyEvent.VK_LEFT:
+						moveLeft();
+						drawBoard();
+						break;
+					case KeyEvent.VK_UP:
+						moveRotate();
+						drawBoard();
+						break;
+					case KeyEvent.VK_ENTER:
+						eraseCurr();
+						// 위치 이동 메서드
+						moveBottom();
+						drawBoard();
+						break;
+					case KeyEvent.VK_P:
+						pauseGame();
+						break;
+				}
 			}
+			else {
+				// 일시 정지 상태인 경우, 스위치 문을 사용하여 추가 키를 처리합니다.
+				// KeyEvent.VK_P까지 by chatGPT3.5 이후는 추가
+				switch (e.getKeyCode()) {
+					case KeyEvent.VK_P:
+						resumeGame();
+						break;
+					case KeyEvent.VK_DOWN:
+						selectedOption++;
+						if(selectedOption>3) selectedOption=1;
+						glassPane.repaint();
+						break;
+					case KeyEvent.VK_UP:
+						selectedOption--;
+						if(selectedOption<1) selectedOption=3;
+						glassPane.repaint();
+						break;
+					case KeyEvent.VK_ENTER:
+						switch(selectedOption){
+							case 1: //메인메뉴
+								resumeGame(); //이후에 메인메뉴 추가
+								break;
+							case 2: //재시작
+								resumeGame();
+								break;
+							case 3: //게임종료
+								gameExit();
+								break;
+						}
+				}
+			}
+
 		}
 
 		@Override
