@@ -259,6 +259,7 @@ public class Board extends JFrame {
 		}
 		placeBlock();
 		drawBoard();
+
 	}
 
 
@@ -282,8 +283,6 @@ public class Board extends JFrame {
 		placeBlock();
 		drawBoard();
 	}
-
-
 	protected void moveRight() {
 		eraseCurr();
 		if(!collisionCheck(1, 0)) x++;
@@ -400,6 +399,7 @@ public class Board extends JFrame {
 				moveBottom();
 				drawBoard();
 				break;
+
 			}
 		}
 
