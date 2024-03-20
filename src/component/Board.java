@@ -52,9 +52,23 @@ public class Board extends JFrame {
 	private Block curr;
 	int x = 3; //Default Position.
 	int y = 0;
+	int blockCount;
+	int linesCleared;
+	boolean isDowned;
+	private static int initInterval = 1000;
+	long beforeTime;
+	long afterTime;
+	public double getTime(){
+		//1=0.1초
+		double secDiffTime=(afterTime - beforeTime)/100;
 
-	private static final int initInterval = 1000;
+		System.out.println("걸린 시간: " + secDiffTime);
 
+		// 시간을 측정한 후 변수 초기화
+		beforeTime = 0;
+		afterTime = 0;
+		return secDiffTime;
+	}
 	public Board() {
 		super("SeoulTech SE Tetris");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -80,13 +94,20 @@ public class Board extends JFrame {
 		StyleConstants.setBold(styleSet, true);
 		StyleConstants.setForeground(styleSet, Color.WHITE);
 		StyleConstants.setAlignment(styleSet, StyleConstants.ALIGN_CENTER);
-
 		//Set timer for block drops.
 		timer = new Timer(initInterval, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				moveDown();
 				drawBoard();
+				if (blockCount > 100 || linesCleared >= 20) {
+					// Decrease timer interval for faster movement
+					initInterval=700;
+					timer.setDelay(initInterval);
+					System.out.println("빨라졌습니다");
+					// You can adjust this factor according to your needs
+				}
+
 			}
 		});
 
@@ -105,10 +126,13 @@ public class Board extends JFrame {
 		requestFocus();
 
 		//Create the first block and draw.
+		isDowned=false;
 		curr = getRandomBlock();
+		blockCount=1;
 		placeBlock();
 		drawBoard();
 		timer.start();
+		beforeTime= System.currentTimeMillis();
 	}
 
 	private Block getRandomBlock() {
@@ -141,7 +165,7 @@ public class Board extends JFrame {
 				// curr.getShape(i, j)가 1일 때만 board 값을 업데이트
 				if (curr.getShape(i, j) == 1) {
 					board[y+j][x+i] = 1; // 현재 블록의 부분이 1일 경우에만 board를 업데이트
-          board_color[offset + i] = curr.getColor();
+          			board_color[offset + i] = curr.getColor();
 					//블럭이 있는 위치에 블럭 색깔 지정
 				}
 			}
@@ -161,6 +185,10 @@ public class Board extends JFrame {
 
 					// 벽 충돌 체크
 					if (boardX < 0 || boardX >= WIDTH || boardY < 0 || boardY >= HEIGHT) {
+
+//						SidePanel.updateScore(2);
+//						SidePanel.setScore();
+//						System.out.println("벽 충돌이 발생했습니다.");
 						return true;
 					}
 
@@ -228,9 +256,10 @@ public class Board extends JFrame {
 				for (int col = 0; col < WIDTH; col++) {
 					board[0][col] = 0;
 				}
-
+				linesCleared++;
+				System.out.println("삭제된 라인 수"+linesCleared);
 				row++;
-        
+
 			}
 		}
 	}
@@ -240,12 +269,35 @@ public class Board extends JFrame {
 	protected void moveDown() {
     // eraseCurr()을 if 안에 넣을지 
 		eraseCurr();
-		if(!collisionCheck(0, 1)) y++;
+		if(!collisionCheck(0, 1)) {
+			y++;
+			if(initInterval==1000){
+				SidePanel.updateScore(0);
+			}else{
+				SidePanel.updateScore(1);
+			}
+			SidePanel.setScore();
+		}
 		else {
 			placeBlock();
+			//블럭을 내려놓은 시간을 계산 후 빨리 내려놓았으면 추가점수 획득
+			afterTime=System.currentTimeMillis();
+			if(isDowned==false){
+				SidePanel.updateScore(2);
+				SidePanel.setScore();
+				System.out.println("한번도 다운키를 누르지 않으셨습니다.");
+			}
+			isDowned=false;
+			if(getTime()<20){
+				SidePanel.updateScore(1);
+				SidePanel.setScore();
+			}
       // LineClear 과정
 			lineClear();
 			curr = SidePanel.getNextBlock();
+			beforeTime=System.currentTimeMillis();
+			blockCount++;
+			System.out.println("추가 된 블록 수: "+blockCount);
 			SidePanel.paintNextPiece();
 			// curr = getRandomBlock();
 			x = 3;
@@ -353,6 +405,9 @@ public class Board extends JFrame {
 		public void keyPressed(KeyEvent e) {
 			switch(e.getKeyCode()) {
 			case KeyEvent.VK_DOWN:
+				if(isDowned==false){
+					isDowned=true;
+				}
 				moveDown();
 				drawBoard();
 				break;
@@ -369,6 +424,9 @@ public class Board extends JFrame {
 				drawBoard();
 				break;
 			case KeyEvent.VK_ENTER:
+				if(isDowned==false){
+					isDowned=true;
+				}
 				eraseCurr();
 				// 위치 이동 메서드
 				moveBottom();
