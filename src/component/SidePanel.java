@@ -19,7 +19,7 @@ public class SidePanel extends JPanel {
     public static final int WIDTH2 = 5;
     public static final char BORDER_CHAR1 = ' ';
     static SimpleAttributeSet styleSet1;
-    static Block cur;
+
     static int [][] board2;
     public static ArrayList<Block> BlockQueue;
     static int x1 = 2; //Default Position.
@@ -81,6 +81,7 @@ public class SidePanel extends JPanel {
         nextPiece.add(nexttext, BorderLayout.NORTH);
         drawBoard();
     }
+
     public static Block getNextBlock(){
         return BlockQueue.get(0);
     }
@@ -98,8 +99,12 @@ public class SidePanel extends JPanel {
         }
         nextPiece.setStyledDocument(doc);
     }
+
+
     public static void drawBoard() {
         StringBuffer sb = new StringBuffer();
+        for(int t=0; t<WIDTH2+2; t++) sb.append(BORDER_CHAR1);
+        sb.append("\n");
         for(int t=0; t<WIDTH2+2; t++) sb.append(BORDER_CHAR1);
         sb.append("\n");
         for(int i=0; i < board2.length; i++) {
@@ -117,6 +122,7 @@ public class SidePanel extends JPanel {
 
         for(int t=0; t<WIDTH2+2; t++) sb.append(BORDER_CHAR1);
         nextPiece.setText(sb.toString());
+
 
         StyledDocument doc = nextPiece.getStyledDocument();
         SimpleAttributeSet styles = new SimpleAttributeSet();
@@ -185,9 +191,9 @@ public class SidePanel extends JPanel {
         nextPiece.add(nexttext, BorderLayout.NORTH);
         nextPiece.setBorder(new EmptyBorder(5, 5, 5, 5));
         //nextpiece 초기상태 설정
-        board2= new int[2][6];
+        board2= new int[HEIGHT2][WIDTH2];
         BlockQueue=new ArrayList<Block>();
-        cur=getRandomBlock();
+        Block cur=getRandomBlock();
         setNextPanel();
         StyleConstants.setForeground(styleSet1, cur.getColor());
         BlockQueue.add(cur);

@@ -40,7 +40,6 @@ public class Board extends JFrame {
 	public static final int HEIGHT = 20;
 	public static final int WIDTH = 10;
 	public static final char BORDER_CHAR = 'X';
-	public static ArrayList<Block> BlockQueue;
 
 	private JTextPane pane;
 
@@ -185,10 +184,6 @@ public class Board extends JFrame {
 
 					// 벽 충돌 체크
 					if (boardX < 0 || boardX >= WIDTH || boardY < 0 || boardY >= HEIGHT) {
-
-//						SidePanel.updateScore(2);
-//						SidePanel.setScore();
-//						System.out.println("벽 충돌이 발생했습니다.");
 						return true;
 					}
 
@@ -229,7 +224,7 @@ public class Board extends JFrame {
 				if (curr.getShape(i, j) == 1) {
 					board[y+j][x+i] = 0;
           // board_color[offset + (i - x)] = null; // 이전 블록의 색상 초기화
-          board_color[offset + i] = null; // 이전 블록의 색상 초기화
+          			board_color[offset + i] = null; // 이전 블록의 색상 초기화
 				}
 			}
 		}
