@@ -385,8 +385,13 @@ public class Board extends JFrame {
 		y=y+curr.rotate_y();
 		curr.rotate();
 
-		if(x > WIDTH - curr.width() || x<0 || y > HEIGHT - curr.height()|| y<0){
-			//회전한 블럭이 벽에 충돌하면
+		if(collisionCheck(0, 0)){
+			//DawnGlow님의 collisionCheck적용
+			//기존에 collisionCheck 쓸 때는 미래 위치에 있는
+			//블럭의 충돌체크를 위해 horizon, vertical을 받지만
+			//moveRotate에서는 미리 회전시키고 충돌체크하므로 0,0을 전달
+
+			//회전한 블럭이 벽이나 기존 블럭과 충돌하면
 			//3번 더 회전 시켜서 원상태로 복귀
 			x=x+curr.rotate_x();
 			y=y+curr.rotate_y();
@@ -486,7 +491,7 @@ public class Board extends JFrame {
 			}
 			else {
 				// 일시 정지 상태인 경우, 스위치 문을 사용하여 추가 키를 처리합니다.
-				// KeyEvent.VK_P까지 by chatGPT3.5 이후는 추가
+				// KeyEvent.VK_P까지 by chatGPT3.5 이후는 추가 작성
 				switch (e.getKeyCode()) {
 					case KeyEvent.VK_P:
 						resumeGame();
