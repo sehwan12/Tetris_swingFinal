@@ -141,7 +141,7 @@ public class Board extends JFrame {
 				// curr.getShape(i, j)가 1일 때만 board 값을 업데이트
 				if (curr.getShape(i, j) == 1) {
 					board[y+j][x+i] = 1; // 현재 블록의 부분이 1일 경우에만 board를 업데이트
-					board_color[offset + i] = curr.getColor();
+          board_color[offset + i] = curr.getColor();
 					//블럭이 있는 위치에 블럭 색깔 지정
 				}
 			}
@@ -173,19 +173,19 @@ public class Board extends JFrame {
 		}
 		return false; // 충돌 없음
 	}
-
+  
 	private void eraseCurr() {
 		for(int j=0; j<curr.height(); j++) {
-			// int rows = j + 1;
-			int rows = j + y + 1;
-			int offset = rows * (WIDTH + 3) + x + 1;
+      // int rows = j + 1;
+      int rows = j + y + 1;
+      int offset = rows * (WIDTH + 3) + x + 1;
 			for(int i=0; i<curr.width(); i++) {
 				// 현재 블록의 shape가 1인 부분만 0으로 지워야함 이걸 못찾았다니..
-				// if (board[j][i] == 1)
+        // if (board[j][i] == 1)
 				if (curr.getShape(i, j) == 1) {
 					board[y+j][x+i] = 0;
-					// board_color[offset + (i - x)] = null; // 이전 블록의 색상 초기화
-					board_color[offset + i] = null; // 이전 블록의 색상 초기화
+          // board_color[offset + (i - x)] = null; // 이전 블록의 색상 초기화
+          board_color[offset + i] = null; // 이전 블록의 색상 초기화
 				}
 			}
 		}
@@ -214,7 +214,7 @@ public class Board extends JFrame {
 				}
 
 				row++;
-
+        
 			}
 		}
 	}
@@ -259,6 +259,7 @@ public class Board extends JFrame {
 		}
 		placeBlock();
 		drawBoard();
+
 	}
 
 
@@ -282,8 +283,6 @@ public class Board extends JFrame {
 		placeBlock();
 		drawBoard();
 	}
-
-
 	protected void moveRight() {
 		eraseCurr();
 		if(!collisionCheck(1, 0)) x++;
@@ -378,28 +377,29 @@ public class Board extends JFrame {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			switch(e.getKeyCode()) {
-				case KeyEvent.VK_DOWN:
-					moveDown();
-					drawBoard();
-					break;
-				case KeyEvent.VK_RIGHT:
-					moveRight();
-					drawBoard();
-					break;
-				case KeyEvent.VK_LEFT:
-					moveLeft();
-					drawBoard();
-					break;
-				case KeyEvent.VK_UP:
-					moveRotate();
-					drawBoard();
-					break;
-				case KeyEvent.VK_ENTER:
-					eraseCurr();
-					// 위치 이동 메서드
-					moveBottom();
-					drawBoard();
-					break;
+			case KeyEvent.VK_DOWN:
+				moveDown();
+				drawBoard();
+				break;
+			case KeyEvent.VK_RIGHT:
+				moveRight();
+				drawBoard();
+				break;
+			case KeyEvent.VK_LEFT:
+				moveLeft();
+				drawBoard();
+				break;
+			case KeyEvent.VK_UP:
+				moveRotate();
+				drawBoard();
+				break;
+			case KeyEvent.VK_ENTER:
+				eraseCurr();
+				// 위치 이동 메서드
+				moveBottom();
+				drawBoard();
+				break;
+
 			}
 		}
 
