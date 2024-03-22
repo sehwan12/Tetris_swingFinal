@@ -512,36 +512,6 @@ public class Board extends JFrame {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			switch(e.getKeyCode()) {
-			case KeyEvent.VK_DOWN:
-				if(isDowned==false){
-					isDowned=true;
-				}
-				moveDown();
-				drawBoard();
-				break;
-			case KeyEvent.VK_RIGHT:
-				moveRight();
-				drawBoard();
-				break;
-			case KeyEvent.VK_LEFT:
-				moveLeft();
-				drawBoard();
-				break;
-			case KeyEvent.VK_UP:
-				moveRotate();
-				drawBoard();
-				break;
-			case KeyEvent.VK_ENTER:
-				if(isDowned==false){
-					isDowned=true;
-				}
-				eraseCurr();
-				// 위치 이동 메서드
-				moveBottom();
-				drawBoard();
-				break;
-
 			if (!isPaused) {
 				switch (e.getKeyCode()) {
 					case KeyEvent.VK_DOWN:
