@@ -19,7 +19,7 @@ public class SidePanel extends JPanel {
     public static final int WIDTH2 = 5;
     public static final char BORDER_CHAR1 = ' ';
     static SimpleAttributeSet styleSet1;
-    static Block cur;
+
     static int [][] board2;
     public static ArrayList<Block> BlockQueue;
     static int x1 = 2; //Default Position.
@@ -81,6 +81,7 @@ public class SidePanel extends JPanel {
         nextPiece.add(nexttext, BorderLayout.NORTH);
         drawBoard();
     }
+
     public static Block getNextBlock(){
         return BlockQueue.get(0);
     }
@@ -98,8 +99,12 @@ public class SidePanel extends JPanel {
         }
         nextPiece.setStyledDocument(doc);
     }
+
+
     public static void drawBoard() {
         StringBuffer sb = new StringBuffer();
+        for(int t=0; t<WIDTH2+2; t++) sb.append(BORDER_CHAR1);
+        sb.append("\n");
         for(int t=0; t<WIDTH2+2; t++) sb.append(BORDER_CHAR1);
         sb.append("\n");
         for(int i=0; i < board2.length; i++) {
@@ -118,16 +123,38 @@ public class SidePanel extends JPanel {
         for(int t=0; t<WIDTH2+2; t++) sb.append(BORDER_CHAR1);
         nextPiece.setText(sb.toString());
 
+
         StyledDocument doc = nextPiece.getStyledDocument();
         SimpleAttributeSet styles = new SimpleAttributeSet();
         Block curBlock = getNextBlock(); // 다음 블록 가져오기
         StyleConstants.setForeground(styles, curBlock.getColor()); // 다음 블록 색상 설정
+        StyleConstants.setFontFamily(styles, "Courier New");
         doc.setCharacterAttributes(0, doc.getLength(), styles, false); // 모든 문자의 속성을 새로 설정
         nextPiece.setStyledDocument(doc);
 
     }
 
     //점수 업데이트
+    public static void updateScore(int a){
+        switch(a){
+            //디폴트
+            case 0:
+                totalscore+=1;
+                break;
+            //빠른 시간내에 블록을 떨어트린 경우 or 타이머가 빨라진 경우
+            case 1:
+                totalscore+=2;
+                break;
+            //한번도 다운 or 엔터키를 누르지 않은 경우(머뭇거린 경우)
+            case 2:
+                totalscore-=5;
+                break;
+            default:
+                totalscore++;
+        }
+
+    }
+    //점수 출력 업데이트
     public static void setScore(){
         score.setText("score: "+totalscore);
     }
@@ -164,10 +191,9 @@ public class SidePanel extends JPanel {
         nextPiece.add(nexttext, BorderLayout.NORTH);
         nextPiece.setBorder(new EmptyBorder(5, 5, 5, 5));
         //nextpiece 초기상태 설정
-        board2= new int[2][6];
-
+        board2= new int[HEIGHT2][WIDTH2];
         BlockQueue=new ArrayList<Block>();
-        cur=getRandomBlock();
+        Block cur=getRandomBlock();
         setNextPanel();
         StyleConstants.setForeground(styleSet1, cur.getColor());
         BlockQueue.add(cur);

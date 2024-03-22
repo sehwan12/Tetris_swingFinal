@@ -43,7 +43,6 @@ public class Board extends JFrame {
 	public static final int HEIGHT = 20;
 	public static final int WIDTH = 10;
 	public static final char BORDER_CHAR = 'X';
-	public static ArrayList<Block> BlockQueue;
 
 	private JTextPane pane;
 
@@ -53,14 +52,29 @@ public class Board extends JFrame {
 	private SimpleAttributeSet styleSet;
 	private Timer timer;
 	private Block curr;
+  private JPanel glassPane; //게임 정지화면을 나타낼 glassPane
+	private int selectedOption = 1;
+	//게임 정지화면에서 재시작, 메인메뉴, 게임종료를 선택하는 selectedOption
 	int x = 3; //Default Position.
 	int y = 0;
 
-	private static final int initInterval = 1000;
+	int blockCount;
+	int linesCleared;
+	boolean isDowned;
+	private static int initInterval = 1000;
+	long beforeTime;
+	long afterTime;
+	public double getTime(){
+		//1=0.1초
+		double secDiffTime=(afterTime - beforeTime)/100;
 
-	private JPanel glassPane; //게임 정지화면을 나타낼 glassPane
-	private int selectedOption = 1;
-	//게임 정지화면에서 재시작, 메인메뉴, 게임종료를 선택하는 selectedOption
+		System.out.println("걸린 시간: " + secDiffTime);
+
+		// 시간을 측정한 후 변수 초기화
+		beforeTime = 0;
+		afterTime = 0;
+		return secDiffTime;
+	}
 
 	public Board() {
 		super("SeoulTech SE Tetris");
@@ -134,13 +148,20 @@ public class Board extends JFrame {
 		StyleConstants.setBold(styleSet, true);
 		StyleConstants.setForeground(styleSet, Color.WHITE);
 		StyleConstants.setAlignment(styleSet, StyleConstants.ALIGN_CENTER);
-
 		//Set timer for block drops.
 		timer = new Timer(initInterval, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				moveDown();
 				drawBoard();
+				if (blockCount > 100 || linesCleared >= 20) {
+					// Decrease timer interval for faster movement
+					initInterval=700;
+					timer.setDelay(initInterval);
+					System.out.println("빨라졌습니다");
+					// You can adjust this factor according to your needs
+				}
+
 			}
 		});
 
@@ -159,10 +180,13 @@ public class Board extends JFrame {
 		requestFocus();
 
 		//Create the first block and draw.
+		isDowned=false;
 		curr = getRandomBlock();
+		blockCount=1;
 		placeBlock();
 		drawBoard();
 		timer.start();
+		beforeTime= System.currentTimeMillis();
 	}
 
 	// 게임 일시 정지 확인용 isPaused by chatGPT3.5
@@ -255,7 +279,8 @@ public class Board extends JFrame {
 				// if (board[j][i] == 1)
 				if (curr.getShape(i, j) == 1) {
 					board[y+j][x+i] = 0;
-          			// board_color[offset + (i - x)] = null; // 이전 블록의 색상 초기화
+ 			// board_color[offset + (i - x)] = null; // 이전 블록의 색상 초기화
+
           			board_color[offset + i] = null; // 이전 블록의 색상 초기화
 				}
 			}
@@ -283,9 +308,10 @@ public class Board extends JFrame {
 				for (int col = 0; col < WIDTH; col++) {
 					board[0][col] = 0;
 				}
-
+				linesCleared++;
+				System.out.println("삭제된 라인 수"+linesCleared);
 				row++;
-        
+
 			}
 		}
 	}
@@ -324,16 +350,39 @@ public class Board extends JFrame {
 	protected void moveDown() {
 		// eraseCurr()을 if 안에 넣을지
 		eraseCurr();
-		if(!collisionCheck(0, 1)) y++;
+		if(!collisionCheck(0, 1)) {
+			y++;
+			if(initInterval==1000){
+				SidePanel.updateScore(0);
+			}else{
+				SidePanel.updateScore(1);
+			}
+			SidePanel.setScore();
+		}
 		else {
 			placeBlock();
-			// LineClear 과정
+			//블럭을 내려놓은 시간을 계산 후 빨리 내려놓았으면 추가점수 획득
+			afterTime=System.currentTimeMillis();
+			if(isDowned==false){
+				SidePanel.updateScore(2);
+				SidePanel.setScore();
+				System.out.println("한번도 다운키를 누르지 않으셨습니다.");
+			}
+			isDowned=false;
+			if(getTime()<20){
+				SidePanel.updateScore(1);
+				SidePanel.setScore();
+			}
+      // LineClear 과정
 			lineClear();
 			if (y == 0) { // 블록이 맨 위에 도달했을 때
 				gameOver(); // 게임 종료 메서드 호출
 				return; // 추가적인 동작을 방지
 			}
 			curr = SidePanel.getNextBlock();
+			beforeTime=System.currentTimeMillis();
+			blockCount++;
+			System.out.println("추가 된 블록 수: "+blockCount);
 			SidePanel.paintNextPiece();
 			// curr = getRandomBlock();
 			x = 3;
@@ -463,9 +512,42 @@ public class Board extends JFrame {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
+			switch(e.getKeyCode()) {
+			case KeyEvent.VK_DOWN:
+				if(isDowned==false){
+					isDowned=true;
+				}
+				moveDown();
+				drawBoard();
+				break;
+			case KeyEvent.VK_RIGHT:
+				moveRight();
+				drawBoard();
+				break;
+			case KeyEvent.VK_LEFT:
+				moveLeft();
+				drawBoard();
+				break;
+			case KeyEvent.VK_UP:
+				moveRotate();
+				drawBoard();
+				break;
+			case KeyEvent.VK_ENTER:
+				if(isDowned==false){
+					isDowned=true;
+				}
+				eraseCurr();
+				// 위치 이동 메서드
+				moveBottom();
+				drawBoard();
+				break;
+
 			if (!isPaused) {
 				switch (e.getKeyCode()) {
 					case KeyEvent.VK_DOWN:
+				    if(isDowned==false){
+					    isDowned=true;
+				    }
 						moveDown();
 						drawBoard();
 						break;
@@ -482,6 +564,9 @@ public class Board extends JFrame {
 						drawBoard();
 						break;
 					case KeyEvent.VK_ENTER:
+				    if(isDowned==false){
+					    isDowned=true;
+				    }
 						eraseCurr();
 						// 위치 이동 메서드
 						moveBottom();
@@ -491,6 +576,7 @@ public class Board extends JFrame {
 						pauseGame();
 						break;
 				}
+
 			}
 			else {
 				// 일시 정지 상태인 경우, 스위치 문을 사용하여 추가 키를 처리합니다.
