@@ -33,9 +33,12 @@ import blocks.SBlock;
 import blocks.TBlock;
 import blocks.ZBlock;
 
+import static main.Tetris.LevelMain;
+
 public class Board extends JFrame {
 
 	private static final long serialVersionUID = 2434035659171694595L;
+
 
 	public static final int HEIGHT = 20;
 	public static final int WIDTH = 10;
@@ -57,6 +60,7 @@ public class Board extends JFrame {
 
 	public Board() {
 		super("SeoulTech SE Tetris");
+		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setBackground(Color.BLACK);
 		//Board display setting.
@@ -225,8 +229,7 @@ public class Board extends JFrame {
 		int response = JOptionPane.showConfirmDialog(this, "Game Over. 시작 메뉴로 돌아가시겠습니까?\n (No : 게임 종료)", "Game Over", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (response == JOptionPane.YES_OPTION) {
 			// 추후 메인 메뉴로 돌아갈 수 있도록 코드를 작성해야함
-
-
+			LevelMain();
 			/* 아래 코드는 새로운 게임을 진행하도록 만든 코드
 			reset(); // 보드 및 색 배열 초기화
 			curr = getRandomBlock(); // 새로운 블록 생성
