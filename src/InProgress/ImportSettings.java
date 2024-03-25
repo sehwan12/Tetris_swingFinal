@@ -3,9 +3,12 @@ import java.io.*;
 import java.util.*;
 
 public class ImportSettings {
-    private Map<String, String> settings = new HashMap<>();
+    private static Map<String, String> settings = new HashMap<>();
 
-    public ImportSettings() {
+    // 싱글톤
+    private static ImportSettings Singleton = new ImportSettings();
+
+    private ImportSettings() {
         try {
             File file = new File("settings.ini");
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -20,6 +23,10 @@ public class ImportSettings {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static ImportSettings getInstance() {
+        return Singleton;
     }
 
     public String getSetting(String key) {

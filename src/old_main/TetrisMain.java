@@ -1,10 +1,8 @@
-package env;
+package old_main;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-
-import main.Tetris;
 
 public class TetrisMain extends JFrame {
     // 0 : Release, 1 : Development, 2 : Feature, 3: FeatureTest

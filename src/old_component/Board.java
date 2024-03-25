@@ -1,21 +1,10 @@
-package component;
+package old_component;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.font.FontRenderContext;
-import java.awt.font.GlyphVector;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ImageObserver;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.RenderableImage;
-import java.text.AttributedCharacterIterator;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.Random;
 
 import javax.swing.*;
@@ -24,16 +13,16 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import blocks.Block;
-import blocks.IBlock;
-import blocks.JBlock;
-import blocks.LBlock;
-import blocks.OBlock;
-import blocks.SBlock;
-import blocks.TBlock;
-import blocks.ZBlock;
+import model.blocks.Block;
+import model.blocks.IBlock;
+import model.blocks.JBlock;
+import model.blocks.LBlock;
+import model.blocks.OBlock;
+import model.blocks.SBlock;
+import model.blocks.TBlock;
+import model.blocks.ZBlock;
 
-import static main.Tetris.LevelMain;
+import static old_main.Tetris.LevelMain;
 
 public class Board extends JFrame {
 

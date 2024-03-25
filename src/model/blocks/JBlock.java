@@ -1,19 +1,19 @@
-package blocks;
+package model.blocks;
 
 import java.awt.Color;
 
-public class SBlock extends Block {
-
-	public SBlock() {
+public class JBlock extends Block {
+	
+	public JBlock() {
 		shape = new int[][] {
-				{0, 1, 1},
-				{1, 1, 0},
+				{1, 1, 1},
+				{0, 0, 1}
 		};
-		color = Color.GREEN;
+		color = Color.BLUE;
 		rotate_status=1;
 	}
 
-	//SBlock 회전 시 변경되어야 할 x, y 위치
+	//JBlock 회전 시 변경되어야 할 x, y 위치
 	@Override
 	public int rotate_x(){
 		int rotate_x=0;
