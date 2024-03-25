@@ -1,4 +1,4 @@
-package blocks;
+package model.blocks;
 
 import java.awt.Color;
 

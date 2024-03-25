@@ -1,8 +1,7 @@
-package main;
+package old_main;
 
 import InProgress.ImportSettings;
-import env.TetrisMain;
-import component.Board;
+import old_component.Board;
 
 public class Tetris {
 
@@ -18,7 +17,7 @@ public class Tetris {
 	private static int ResolutionSizeY;
 
 	private static void initialize() {
-		settings = new ImportSettings();
+		settings = ImportSettings.getInstance();
 		ResolutionSizeX = Integer.parseInt(settings.getSetting("ResolutionSizeX"));
 		ResolutionSizeY = Integer.parseInt(settings.getSetting("ResolutionSizeY"));
 	}

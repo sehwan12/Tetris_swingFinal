@@ -1,19 +1,19 @@
-package blocks;
+package model.blocks;
 
 import java.awt.Color;
 
-public class TBlock extends Block {
+public class ZBlock extends Block {
 	
-	public TBlock() {
-		shape = new int[][] { 
-				{0, 1, 0},
-				{1, 1, 1},
+	public ZBlock() {
+		shape = new int[][] {
+				{1, 1, 0},
+				{0, 1, 1},
 		};
-		color = Color.MAGENTA;
+		color = Color.RED;
 		rotate_status=1;
 	}
 
-	//TBlock 회전 시 변경되어야 할 x, y 위치
+	//ZBlock 회전 시 변경되어야 할 x, y 위치
 	@Override
 	public int rotate_x(){
 		int rotate_x=0;
