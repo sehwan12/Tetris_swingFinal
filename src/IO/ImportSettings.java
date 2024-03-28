@@ -1,4 +1,4 @@
-package InProgress;
+package IO;
 import java.io.*;
 import java.util.*;
 
@@ -29,8 +29,25 @@ public class ImportSettings {
         return Singleton;
     }
 
-    public String getSetting(String key) {
+    public static String getSetting(String key) {
         return settings.getOrDefault(key, "Unknown");
     }
 
+    public static void importDefaultKeyMap() {
+        try {
+            File file = new File("defaultSettings.ini");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String st;
+            while ((st = br.readLine()) != null) {
+                if (st.contains("=")) {
+                    String[] parts = st.split("=");
+                    settings.put(parts[0].trim(), parts[1].trim());
+                }
+            }
+
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

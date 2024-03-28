@@ -2,36 +2,32 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyListener;
 
-import controller.MenuController;
-import model.MenuModel;
+public class MenuView extends OutGameView {
 
-public class MenuView extends JFrame {
-
-    private JPanel mainPanel;
+    // private JPanel mainPanel;
 
     // Only for featureTest.
-    private JLabel[] arrowLabel = { new JLabel("<"), new JLabel(">") };
+    // private JLabel[] arrowLabel = { new JLabel("<"), new JLabel(">") };
 
     private JLabel[] gameModeLabel;
 
     private JButton[] menuButton;
 
-    private JLabel titleLabel;
+    // private JLabel titleLabel;
 
-    private int curFocus;
+    // private int curFocus;
 
 
     public MenuView() {
-        setLocationRelativeTo(null);
+        super();
+        //setLocationRelativeTo(null);
     }
 
-    public void initPanel() {
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-    }
+//    public void initPanel() {
+//        mainPanel = new JPanel();
+//        mainPanel.setLayout(new BorderLayout());
+//    }
 
     public void initLable(String[] gameModeString) {
         if (gameModeString.length != 0) {
