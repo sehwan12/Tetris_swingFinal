@@ -3,6 +3,7 @@ package controller;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 
 import javax.swing.*;
 
@@ -109,6 +110,7 @@ public class BoardController implements ModelStateChangeListener {
         // 사이드 패널의 점수를 view에 넘겨야 한다
         viewSidePanel.setScoreText(model.getTotalscore());
     }
+
 
     public class PlayerKeyListener implements KeyListener {
         @Override

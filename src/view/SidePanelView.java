@@ -33,8 +33,6 @@ import model.blocks.*;
 
 public class SidePanelView extends JPanel {
 
-    private BoardController controller; // BoardController 참조 추가
-
     private int [][] board;
 
     private static final int WIDTH = 5;
@@ -158,7 +156,4 @@ public class SidePanelView extends JPanel {
 
     }
 
-    public void setController(BoardController controller) {
-        this.controller = controller;
-    }
 }

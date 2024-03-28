@@ -1,6 +1,6 @@
 package old_main;
 
-import InProgress.ImportSettings;
+import IO.ImportSettings;
 import old_component.Board;
 
 public class Tetris {

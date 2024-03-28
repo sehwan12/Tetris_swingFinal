@@ -7,7 +7,7 @@ import view.SidePanelView;
 
 public class Board {
     private BoardModel model;
-    private BoardView view;
+    public BoardView view;
     private SidePanelView viewSide;
     private BoardController controller;
 

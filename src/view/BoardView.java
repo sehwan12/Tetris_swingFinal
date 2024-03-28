@@ -1,22 +1,9 @@
 package view;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.KeyListener;
-import java.awt.font.FontRenderContext;
-import java.awt.font.GlyphVector;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ImageObserver;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.RenderableImage;
-import java.text.AttributedCharacterIterator;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Random;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -27,6 +14,7 @@ import javax.swing.text.StyledDocument;
 
 // MVC에서 View와 Controller의 상호작용
 import controller.BoardController;
+import IO.ImportSettings;
 
 public class BoardView extends JFrame {
     private BoardController controller; // BoardController 참조 추가
@@ -48,7 +36,8 @@ public class BoardView extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setBackground(Color.BLACK);
-        setSize(400, 600);
+        setSize(Integer.parseInt(ImportSettings.getSetting("ResolutionSizeX")),
+                Integer.parseInt(ImportSettings.getSetting("ResolutionSizeY")));
 
         // GlassPane 초기화 by chatGPT
         glassPane = new JPanel() {
@@ -108,12 +97,20 @@ public class BoardView extends JFrame {
 
         //Document default style.
         styleSet = new SimpleAttributeSet();
-        StyleConstants.setFontSize(styleSet, 18);
+        StyleConstants.setFontSize(styleSet, 18 * Integer.parseInt(ImportSettings.getSetting(
+                "ResolutionSizeX"
+        )) / 400); // 추후 defaultsetting 값을 import 하는 것을 구현 한 후 리터럴을 수정해야함
         StyleConstants.setFontFamily(styleSet, "Courier New");
         StyleConstants.setBold(styleSet, true);
         StyleConstants.setForeground(styleSet, Color.WHITE);
         StyleConstants.setAlignment(styleSet, StyleConstants.ALIGN_CENTER);
 
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                requestFocus();
+            }
+        });
     }
 
     public void addKeyListenerToFrame(KeyListener listener) {
@@ -177,6 +174,5 @@ public class BoardView extends JFrame {
     public void glassRepaint() {
         glassPane.repaint();
     }
-
 
 }
