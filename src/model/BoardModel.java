@@ -28,10 +28,17 @@ import javax.swing.text.StyledDocument;
 
 import model.blocks.*;
 import model.ModelStateChangeListener;
+import model.OutGameModel;
 
 public class BoardModel {
     // board
     private int[][] board;
+
+    private String[][] board_text;
+
+    //색맹모드와 무늬모드를 위한 color_blind 와 pattern 선언
+    private boolean color_blind;
+    private int pattern;
 
     public static final int HEIGHT = 20;
     public static final int WIDTH = 10;
@@ -88,6 +95,8 @@ public class BoardModel {
 
             }
         });
+        color_blind = OutGameModel.isBlindMode();
+        pattern = 0;
         //Initialize board for the game.
         board = new int[HEIGHT][WIDTH];
         //보드 색깔 저장 배열
@@ -96,6 +105,8 @@ public class BoardModel {
         //WIDTH에 좌우경계와 '\n'을 더한 WIDTH+2+1
         //HEIGHT에 상하경계를 더한 HEIGHT+2
         board_color = new Color[(HEIGHT+2)*(WIDTH+2+1)];
+        //블럭 무늬를 표현할 보드 텍스트 저장 배열
+        board_text = new String[HEIGHT][WIDTH];
 
         totalscore = 0;
 
@@ -128,26 +139,31 @@ public class BoardModel {
         return board_color;
     }
 
+    public String[][] getBoard_text() {
+        return board_text;
+    }
+
     private Block getRandomBlock() {
         Random rnd = new Random(System.currentTimeMillis());
         int block = rnd.nextInt(7);
+        // Block 객체 생성시 color_blind, pattern 전달 추가
         switch(block) {
             case 0:
-                return new IBlock();
+                return new IBlock(color_blind,pattern);
             case 1:
-                return new JBlock();
+                return new JBlock(color_blind,pattern);
             case 2:
-                return new LBlock();
+                return new LBlock(color_blind,pattern);
             case 3:
-                return new ZBlock();
+                return new ZBlock(color_blind,pattern);
             case 4:
-                return new SBlock();
+                return new SBlock(color_blind,pattern);
             case 5:
-                return new TBlock();
+                return new TBlock(color_blind,pattern);
             case 6:
-                return new OBlock();
+                return new OBlock(color_blind,pattern);
         }
-        return new LBlock();
+        return new LBlock(color_blind,pattern);
     }
 
     public Block getNextBlock() {
@@ -226,6 +242,7 @@ public class BoardModel {
                 if (curr.getShape(i, j) == 1) {
                     board[y+j][x+i] = 1; // 현재 블록의 부분이 1일 경우에만 board를 업데이트
                     board_color[offset + i] = curr.getColor();
+                    board_text[y+j][x+i] = curr.getText(); //블럭이 있는 위치에 블럭 텍스트 지정
                     //블럭이 있는 위치에 블럭 색깔 지정
                 }
             }
@@ -271,6 +288,7 @@ public class BoardModel {
                     // board_color[offset + (i - x)] = null; // 이전 블록의 색상 초기화
 
                     board_color[offset + i] = null; // 이전 블록의 색상 초기화
+                    board_text[y+j][x+i] = null; // 이전 블록으 텍스트 초기화
                 }
             }
         }
@@ -289,14 +307,26 @@ public class BoardModel {
 
             if (fullLine) {
                 for (int moveRow = row; moveRow > 0; moveRow--) {
+                    int rows = moveRow+1;
+                    int offset = (rows) * (WIDTH+3) + 1;
                     for (int col = 0; col < WIDTH; col++) {
                         board[moveRow][col] = board[moveRow - 1][col];
+                        // 색상 추가한 코드
+                        board_color[offset + col] = board_color[offset + col - (WIDTH+3)];
+                        board_text[moveRow][col] = board_text[moveRow - 1][col];
+                        //블럭의 color 와 text 도 lineClear 될 수 있도록 추가
                     }
                 }
 
                 for (int col = 0; col < WIDTH; col++) {
                     board[0][col] = 0;
+                    board_text[0][col] = null;
                 }
+
+                for (int col = 0; col < WIDTH+3; col++){
+                    board_color[col] = null;
+                }
+
                 linesCleared++;
                 System.out.println("삭제된 라인 수"+linesCleared);
                 row++;
@@ -308,6 +338,7 @@ public class BoardModel {
     public void reset() {
         this.board = new int[HEIGHT][WIDTH]; // 리터럴 사용은 자제해주세요
         this.board_color = new Color[(HEIGHT+2)*(WIDTH+2+1)]; // 보드 색상 배열도 리셋
+        this.board_text = new String[HEIGHT][WIDTH]; // 보드 텍스트 배열도 리셋
         x = 3;
         y = 0;
     }

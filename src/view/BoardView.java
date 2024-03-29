@@ -53,7 +53,7 @@ public class BoardView extends JFrame {
 
                 g2d.setFont(new Font("SansSerif", Font.BOLD, 40));
 
-                String[] menuItems = {"일시정지", "메인메뉴", " 재시작 ", "게임종료"};
+                String[] menuItems = {"일시정지", "메인메뉴", "게임재개", "게임종료"}; //재시작을 게임재개로 수정 3/23
                 Color[] menuColors = {new Color(200,200,200), Color.WHITE, Color.WHITE, Color.WHITE};
 
                 for (int i = 0; i < menuItems.length; i++) {
@@ -138,7 +138,7 @@ public class BoardView extends JFrame {
                 "Game Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
     }
 
-    public void drawBoard(int[][] board, Color[] board_color) {
+    public void drawBoard(int[][] board, Color[] board_color, String[][] board_text) {
         StringBuffer sb = new StringBuffer();
         for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
         sb.append("\n");
@@ -146,7 +146,9 @@ public class BoardView extends JFrame {
             sb.append(BORDER_CHAR);
             for(int j=0; j < board[i].length; j++) {
                 if(board[i][j] == 1) {
-                    sb.append("O");
+                    // sb.append("O");
+                    sb.append(board_text[i][j]);
+                    //블럭이 가진 텍스트(무늬)로 보드를 그린다
                 } else {
                     sb.append(" ");
                 }

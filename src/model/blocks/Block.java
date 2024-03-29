@@ -6,6 +6,9 @@ public abstract class Block {
 		
 	protected int[][] shape;
 	protected Color color;
+	protected String text;
+	// Code Review : Static 변수도 아니고, 생성자에서 초기화 해주고 있는데, 굳이 멤버 변수에 값을 미리 대입할 필요는 없다
+	// protected String text="O";
 	protected int rotate_status=1;
 
 	public Block() {
@@ -14,6 +17,7 @@ public abstract class Block {
 				{1, 1}
 		};
 		color = Color.YELLOW;
+		text="O"; //블럭의 무늬를 나타내기 위한 Text 추가
 	}
 	
 	public int getShape(int x, int y) {
@@ -22,6 +26,10 @@ public abstract class Block {
 	
 	public Color getColor() {
 		return color;
+	}
+
+	public String getText() {
+		return text;
 	}
 	
 	public void rotate() {
@@ -43,13 +51,15 @@ public abstract class Block {
 	//블럭 회전할 때 임의의 회전 축을 중심으로 회전하도록 하기 위한
 	//x, y위치 변경 시 필요한 rotate_x, rotate_y
 	public int rotate_x(){
-		int rotate_x=0;
-		return rotate_x;
+		// Code review : return 0 해주면 끝남
+//		int rotate_x=0;
+//		return rotate_x;
+		return 0;
 	}
 
 	public int rotate_y(){
-		int rotate_y=0;
-		return rotate_y;
+		// Code review : return 0 해주면 끝남
+		return 0;
 	}
 
 	public int height() {

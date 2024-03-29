@@ -104,7 +104,7 @@ public class BoardController implements ModelStateChangeListener {
         // 예를 들어, 게임 보드 상태를 업데이트하는 로직 수행
 
         // View에 게임 보드 그리기 요청
-        view.drawBoard(model.getBoard(), model.getBoard_color());
+        view.drawBoard(model.getBoard(), model.getBoard_color(), model.getBoard_text());
         // SidePanel에 다음 블럭 넘기기
         viewSidePanel.drawBoard(model.getNextBlock());
         // 사이드 패널의 점수를 view에 넘겨야 한다
