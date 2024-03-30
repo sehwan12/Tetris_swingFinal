@@ -3,10 +3,10 @@ package controller;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
 
 import javax.swing.*;
 
+import IO.ScoreIO;
 import model.BoardModel;
 import view.BoardView;
 import model.ModelStateChangeListener;
@@ -20,6 +20,12 @@ public class BoardController implements ModelStateChangeListener {
     private KeyListener playerKeyListener;
 
     private int selectedOption = 1;
+
+    public BoardController() {
+        model = new BoardModel();
+        initView();
+        this.model.addModelStateChangeListener(this);
+    }
     public BoardController(BoardModel model, BoardView view, SidePanelView viewSide) {
         this.model = model;
         this.view = view;
@@ -33,6 +39,17 @@ public class BoardController implements ModelStateChangeListener {
         // addKeyListener, setFocusable, requestFocus를 BoardView의 메서드로 대체
         view.addKeyListenerToFrame(playerKeyListener);
         this.model.addModelStateChangeListener(this);
+    }
+
+    public void initView() {
+        view = new BoardView();
+        viewSidePanel = new SidePanelView();
+        view.setController(this);
+        view.getContentPane().add(viewSidePanel, BorderLayout.EAST);
+        view.setVisible(true);
+        playerKeyListener = new PlayerKeyListener();
+        // addKeyListener, setFocusable, requestFocus를 BoardView의 메서드로 대체
+        view.addKeyListenerToFrame(playerKeyListener);
     }
 
 
@@ -66,10 +83,29 @@ public class BoardController implements ModelStateChangeListener {
 
     public void gameOver() {
         model.setPaused(true);
-        int response = view.showGameOverDialog();
+        view.setVisible(false);
+        ScoreBoardController temp = ScoreBoardController.getInstance();
+        temp.initFrame();
+
+        int checkUpdatebool = view.showConfirmDialog(
+                "점수를 저장하시겠습니까?\n (No : 게임 종료)", "Ask for updating score"
+        );
+
+        if (checkUpdatebool == JOptionPane.YES_OPTION) {
+            String name = JOptionPane.showInputDialog("이름을 입력하세요");
+            ScoreIO.writeScore(name, model.getTotalscore());
+            temp.destroyView();
+            temp.initFrame(name, model.getTotalscore());
+        }
+
+        int response = view.showConfirmDialog(
+                "Game Over. 시작 메뉴로 돌아가시겠습니까?\n (No : 게임 종료)",
+                "Game Over"
+        );
 
         if (response == JOptionPane.YES_OPTION) {
-            view.setVisible(false);
+            temp.destroyView();
+            MenuController.getInstance().initFrame();
         } else {
             // 게임 종료
             System.exit(0);
@@ -80,7 +116,8 @@ public class BoardController implements ModelStateChangeListener {
         //Yes No버튼 선택할 때 마우스입력만 되는건가?
         //만약 마우스입력만 된다면 이후에 키보드로도 선택할 수 있도록 수정
         model.setPaused(true);
-        int response = view.showGameExitDialog();
+        int response = view.showConfirmDialog(
+                "게임을 종료하시겠습니까?", "Game Exit");
         if (response == JOptionPane.YES_OPTION) {
             System.exit(0);
 
@@ -177,7 +214,8 @@ public class BoardController implements ModelStateChangeListener {
                     case KeyEvent.VK_ENTER:
                         switch(selectedOption){
                             case 1: //메인메뉴
-                                resumeGame(); //이후에 메인메뉴 추가
+                                view.setVisible(false);
+                                MenuController.getInstance().initFrame();
                                 break;
                             case 2: //재시작
                                 resumeGame();

@@ -3,6 +3,8 @@ package model;
 import IO.ImportSettings;
 import IO.ExportSettings;
 import IO.CopySettings;
+import IO.ScoreIO;
+
 import java.util.HashMap;
 
 public class OutGameModel {
@@ -233,7 +235,7 @@ public class OutGameModel {
     }
 
     public void resetScoreBoard() {
-
+        ScoreIO.clearJsonFile();
     }
 
     public void resetDefault() {

@@ -35,8 +35,8 @@ public class SidePanelView extends JPanel {
 
     private int [][] board;
 
-    private static final int WIDTH = 5;
-    private static final int HEIGHT = 5;
+    private static final int WIDTH = 6;
+    private static final int HEIGHT = 6;
 
     public static final char BORDER_CHAR = ' ';
 
@@ -61,12 +61,12 @@ public class SidePanelView extends JPanel {
         this.setLayout(new BorderLayout());
         nextPiece.setLayout(new BorderLayout());
         nextPiece.setBorder(new LineBorder(Color.BLACK));
-        nextPiece.setPreferredSize(new Dimension(80,110));
+        nextPiece.setPreferredSize(new Dimension(80,100));
         this.add(nextPiece, BorderLayout.NORTH);
         //점수패널
         scorePanel.setLayout(new BorderLayout());
         scorePanel.setBackground(Color.BLACK);
-        scorePanel.setPreferredSize(new Dimension(20,80));
+        // scorePanel.setPreferredSize(new Dimension(20,80));
         this.add(scorePanel,BorderLayout.CENTER);
         // 점수 Text
         scoreText.setLayout(new BorderLayout());
@@ -96,7 +96,7 @@ public class SidePanelView extends JPanel {
         nextPiece.setBackground(Color.BLACK);
         // 왜 2 * 6?
         // board=new int[2][6];
-        board=new int[3][6];
+        board=new int[HEIGHT][WIDTH];
         placeblock(nextBlock);
         JLabel nexttext=new JLabel("Next");
         nexttext.setForeground(Color.WHITE);

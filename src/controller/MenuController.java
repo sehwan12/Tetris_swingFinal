@@ -6,7 +6,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
-import env.Board;
 import model.OutGameModel;
 import view.MenuView;
 
@@ -16,8 +15,12 @@ public class MenuController {
 
     private SettingsController settingsController;
 
+    private ScoreBoardController scoreBoardController;
+
+    private BoardController boardController;
+
     private OutGameModel model;
-    private MenuView view;
+    public MenuView view;
 
 
 
@@ -112,8 +115,11 @@ public class MenuController {
     private void enterMenu(int curFocus) {
         switch (curFocus) {
             case 0:
-                // 테트리스 게임 진입
-                Board.startGame();
+                view.setVisible(false);
+                view.dispose();
+                view = null;
+                // 추후 대전모드를 위해서 Singleton으로 적용하지 않았음
+                boardController = new BoardController();
                 break;
             case 1:
                 view.setVisible(false);
@@ -127,6 +133,12 @@ public class MenuController {
                 // 추후 메서드 추가
                 break;
             case 2:
+                view.setVisible(false);
+                view.dispose();
+                view = null;
+                scoreBoardController = ScoreBoardController.getInstance();
+                scoreBoardController.initFrame();
+
                 // ScoreBoard 진입
                 // 추후 메서드 추가
                 break;

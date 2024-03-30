@@ -87,7 +87,7 @@ public class BoardModel {
                 notifyStateChanged();
                 if (blockCount > 100 || linesCleared >= 20) {
                     // Decrease timer interval for faster movement
-                    initInterval=700;
+                    initInterval=500;
                     timer.setDelay(initInterval);
                     System.out.println("빨라졌습니다");
                     // You can adjust this factor according to your needs
@@ -227,6 +227,10 @@ public class BoardModel {
             case 2:
                 totalscore-=5;
                 break;
+            //빠른 시간내에 블록을 떨어트린 경우
+            case 3:
+                totalscore+=20;
+                break;
             default:
                 totalscore++;
         }
@@ -342,8 +346,19 @@ public class BoardModel {
         x = 3;
         y = 0;
     }
-    // 게임이 종료되면 false를 반환
 
+    protected void checkForScore(){
+        if(isDowned==false){
+            updateScore(2);
+            System.out.println("한번도 다운키를 누르지 않으셨습니다.");
+        }
+        isDowned=false;
+        if(getTime()<20){
+            updateScore(3);
+        }
+    }
+
+    // 게임이 종료되면 false를 반환
     // feedback 1 : SidePanel.setScore();는 함수 마지막에 한 번만 쓰면 됨
     public boolean moveDown() {
         eraseCurr();
@@ -361,18 +376,7 @@ public class BoardModel {
         else {
             placeBlock();
             afterTime=System.currentTimeMillis();
-            if(!isDowned){
-                updateScore(2);
-                // 아래 코드는 view에서 처리해야 함
-                // SidePanel.setScore();
-                System.out.println("한 번도 다운키를 누르지 않으셨습니다.");
-            }
-            isDowned=false;
-            if(getTime()<20){
-                updateScore(1);
-                // 아래 코드는 view에서 처리해야 함
-                // SidePanel.setScore();
-            }
+            checkForScore();
             // LineClear 과정
             lineClear();
             if (y == 0) { // 블록이 맨 위에 도달했을 때
@@ -399,6 +403,8 @@ public class BoardModel {
         // 바닥에 이동
         while (!collisionCheck(0, 1)) { y++; }
         placeBlock();
+        afterTime=System.currentTimeMillis();
+        checkForScore();
         // LineClear 과정
         lineClear();
         if (y == 0) { // 블록이 맨 위에 도달했을 때
@@ -410,6 +416,9 @@ public class BoardModel {
         // SidePanel.paintNextPiece();
         curr = nextBlock;
         nextBlock = getRandomBlock();
+        beforeTime=System.currentTimeMillis();
+        blockCount++;
+        System.out.println("추가 된 블록 수: "+blockCount);
         x = 3;
         y = 0;
         placeBlock();

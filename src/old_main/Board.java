@@ -1,4 +1,4 @@
-package env;
+package old_main;
 
 import controller.BoardController;
 import model.BoardModel;

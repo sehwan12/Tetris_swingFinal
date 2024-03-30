@@ -129,13 +129,13 @@ public class BoardView extends JFrame {
         glassPane.setVisible(show);
     }
 
-    public int showGameOverDialog() {
-        return JOptionPane.showConfirmDialog(this, "Game Over. 시작 메뉴로 돌아가시겠습니까?\n (No : 게임 종료)", "Game Over", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+    public String showInputDialog(String message) {
+        return JOptionPane.showInputDialog(message);
     }
 
-    public int showGameExitDialog() {
-        return JOptionPane.showConfirmDialog(this, "게임을 종료하시겠습니까?",
-                "Game Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+    public int showConfirmDialog(String message, String title) {
+        return JOptionPane.showConfirmDialog(this, message,
+                title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
     }
 
     public void drawBoard(int[][] board, Color[] board_color, String[][] board_text) {
