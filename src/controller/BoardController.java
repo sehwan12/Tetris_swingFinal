@@ -3,11 +3,13 @@ package controller;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
 
 import javax.swing.*;
 
 import IO.ScoreIO;
 import model.BoardModel;
+import model.OutGameModel;
 import view.BoardView;
 import model.ModelStateChangeListener;
 import view.SidePanelView;
@@ -19,7 +21,10 @@ public class BoardController implements ModelStateChangeListener {
     private SidePanelView viewSidePanel;
     private KeyListener playerKeyListener;
 
+
     private int selectedOption = 1;
+
+    private String currentKey;
 
     public BoardController() {
         model = new BoardModel();
@@ -150,6 +155,27 @@ public class BoardController implements ModelStateChangeListener {
 
 
     public class PlayerKeyListener implements KeyListener {
+        private HashMap<String, String> keyMap;
+
+        private String moveLeft;
+        private String moveRight;
+        private String moveDown;
+        private String drop;
+        private String rotate;
+        private String pause;
+
+        public PlayerKeyListener() {
+          keyMap = OutGameModel.getInstance().getKeyMap();
+            // 아래는 getKeyText를 통해 저장된 값임
+          moveLeft = keyMap.get("moveLeft");
+          moveRight = keyMap.get("moveRight");
+          drop = keyMap.get("drop");
+          moveDown = keyMap.get("moveDown");
+          rotate = keyMap.get("rotate");
+          pause = keyMap.get("pause");
+        }
+
+
         @Override
         public void keyTyped(KeyEvent e) {
 
@@ -157,7 +183,39 @@ public class BoardController implements ModelStateChangeListener {
 
         @Override
         public void keyPressed(KeyEvent e) {
+            currentKey = KeyEvent.getKeyText(e.getKeyCode());
             if (!model.isPaused()) {
+                if (currentKey.equals(moveDown)) {
+                    if(!model.isDowned()){
+                        model.setDowned(true);
+                    }
+                    moveDownControl();
+                    updateBoard();
+                }
+                else if (currentKey.equals(moveRight)) {
+                    model.moveRight();
+                    updateBoard();
+                }
+                else if (currentKey.equals(moveLeft)) {
+                    model.moveLeft();
+                    updateBoard();
+                }
+                else if (currentKey.equals(rotate)) {
+                    model.moveRotate();
+                    updateBoard();
+                }
+                else if (currentKey.equals(drop)) {
+                    if(!model.isDowned()){
+                        model.setDowned(true);
+                    }
+                    // 위치 이동 메서드
+                    moveBottomControl();
+                    updateBoard();
+                }
+                else if (currentKey.equals(pause)) {
+                    pauseGame();
+                }
+                /*
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_DOWN:
                         if(!model.isDowned()){
@@ -191,7 +249,7 @@ public class BoardController implements ModelStateChangeListener {
                         pauseGame();
                         break;
                 }
-
+                */
             }
             else {
                 // 일시 정지 상태인 경우, 스위치 문을 사용하여 추가 키를 처리합니다.
