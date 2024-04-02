@@ -22,6 +22,8 @@ public class SettingsView extends OutGameView {
 
     private JButton[] resetButton;
 
+    private JButton[] difficultyButton;
+
     public SettingsView() { }
 
     // public void initPanel() {}
@@ -118,6 +120,23 @@ public class SettingsView extends OutGameView {
         this.add(optionPanel[3]);
     }
 
+    public void initDifficultyPanel(String[] difficultyString) {
+        optionPanel[4] = new JPanel();
+        optionPanel[4].setLayout(null);
+        if (difficultyString.length > 0) {
+            difficultyButton = new JButton[difficultyString.length];
+        }
+        for (int i = 0; i < difficultyString.length; i++) {
+            difficultyButton[i] = new JButton(difficultyString[i]);
+            difficultyButton[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+            optionPanel[4].add(difficultyButton[i]);
+            difficultyButton[i].setVisible(true);
+        }
+        optionPanel[4].setVisible(false);
+        difficultyButton[0].setBorder(BorderFactory.createLineBorder(Color.YELLOW, 3));
+        this.add(optionPanel[4]);
+    }
+
     public void initWindow(int resX, int resY) {
         setTitle("Option");
         setResizable(false);
@@ -126,7 +145,7 @@ public class SettingsView extends OutGameView {
         if (optionLabel != null) {
             for (int i = 0; i < optionLabel.length; i++) {
                 optionLabel[i].setFont(new Font("Arial", Font.BOLD, 15));
-                optionLabel[i].setBounds(resX * (i + 1) / (optionLabel.length + 1), resY / 6, resX / optionLabel.length , resY / 15);
+                optionLabel[i].setBounds(resX * (i + 1) * 5 / (optionLabel.length * 6 ), resY / 6, 5 * resX / ( 6 * optionLabel.length), resY / 15);
                 // optionLabel[i].setHorizontalAlignment(JLabel.CENTER);
                 this.add(optionLabel[i]);
                 optionLabel[0].setForeground(Color.YELLOW);
@@ -138,7 +157,7 @@ public class SettingsView extends OutGameView {
 
             arrowLabel[0].setBounds(resX / 10, resY / 6, resX / 3, resY / 15);
             arrowLabel[0].setForeground(Color.GREEN);
-            arrowLabel[1].setBounds(resX * 9 / 10, resY / 6, resX / 3, resY / 15);
+            arrowLabel[1].setBounds(resX - 10, resY / 6, resX / 3, resY / 15);
             arrowLabel[1].setForeground(Color.GREEN);
             this.add(arrowLabel[0]);
             this.add(arrowLabel[1]);
@@ -171,6 +190,10 @@ public class SettingsView extends OutGameView {
         for (int i = 0; i < resetButton.length; i++) {
             resetButton[i].setBounds(resX / 4,  i * (resY / 20 + resY / 30), resX / 2, resY / 20);
         }
+        for (int i = 0; i < difficultyButton.length; i++) {
+            difficultyButton[i].setBounds(resX / 4,  i * (resY / 20 + resY / 30), resX / 2, resY / 20);
+        }
+
 
 
         this.add(mainPanel);
@@ -219,6 +242,9 @@ public class SettingsView extends OutGameView {
             case 3:
                 releaseButton(resetButton, yCursor);
                 break;
+            case 4:
+                releaseButton(difficultyButton, yCursor);
+                break;
         }
     }
 
@@ -266,6 +292,9 @@ public class SettingsView extends OutGameView {
                 break;
             case 3:
                 highlightButton(resetButton, yCursor);
+                break;
+            case 4:
+                highlightButton(difficultyButton, yCursor);
                 break;
         }
     }

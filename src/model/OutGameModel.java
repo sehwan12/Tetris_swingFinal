@@ -16,18 +16,23 @@ public class OutGameModel {
     private static boolean blindMode;
     private static int resX;
     private static int resY;
+
+    private static int difficulty = 0; // 0 : easy, 1 : normal, 2 : Hard
     private int curGameMode = 0;
 
     private int curFocus = 0;
 
-    private static final int buildType = 3;
+    private static final int buildType = 2;
     private static String[] buildString = { "Release", "Development", "Feature", "InProgress"};
 
     private static String[] menuString = { "Start Game", "Settings", "ScoreBoard", "Quit" };
 
-    private static String[] gameModeString = { "Single Play", "Duo Play"};
+    private static String[] gameModeString = { "Single Play", "Duo Play" };
+
+    private static String[] difficultyString = { "Easy", "Normal", "Hard" };
+
     // 초기화에 스코어보드 기록 초기화, 설정 되돌리기 포함시키기
-    private static String[] optionString = { "해상도", "키 매핑", "색맹 모드", "초기화"};
+    private static String[] optionString = { "해상도", "키 매핑", "색맹 모드", "초기화", "난이도"};
 
     private final static int[][] resolutionData = { {400, 600}, {500, 750}, {600, 900}};
 
@@ -39,7 +44,7 @@ public class OutGameModel {
 
     private static String[] resetString = { "스코어보드 기록 초기화", "모두 기본 설정으로 초기화" };
 
-    private static String[][] stringType = { recommendResolution, keyString, blindString, resetString };
+    private static String[][] stringType = { recommendResolution, keyString, blindString, resetString, difficultyString };
 
     private int optionFocus = 0; // 0 : 해상도, 1 : 키 매핑, 2 : 색맹 모드, 3 : 초기화
 
@@ -191,6 +196,14 @@ public class OutGameModel {
         OutGameModel.resetString = resetString;
     }
 
+    public static String[] getDifficultyString() {
+        return difficultyString;
+    }
+
+    public static void setDifficultyString(String[] difficultyString) {
+        OutGameModel.difficultyString = difficultyString;
+    }
+
     public int getyCursor() {
         return yCursor;
     }
@@ -216,6 +229,11 @@ public class OutGameModel {
             blindMode = false;
             ExportSettings.saveSettings("blindMode", "false");
         }
+    }
+
+    public static void setDifficulty() {
+         difficulty = instance.yCursor;
+         // 추후 세팅 Export 추가해야함!
     }
 
 

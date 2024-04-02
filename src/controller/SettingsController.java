@@ -47,6 +47,7 @@ public class SettingsController {
         view.initKeyMapPanel(OutGameModel.getKeyString(), OutGameModel.getKeyMap());
         view.initCBlindPanel(OutGameModel.getBlindString());
         view.initResetPanel(OutGameModel.getResetString());
+        view.initDifficultyPanel(OutGameModel.getDifficultyString());
         view.initWindow(model.getResX(), model.getResY());
     }
 
@@ -150,6 +151,11 @@ public class SettingsController {
                                 view.updateKeyMap(model.getKeyString(), model.getKeyMap());
                             }
                         }
+                        break;
+                    case 4:
+                        view.paintButton(model.getOptionFocus(), model.getyCursor());
+                        model.setDifficulty();
+                        view.showWarning(OutGameModel.getDifficultyString()[model.getyCursor()] + " 난이도로 설정되었습니다.");
                         break;
                     default:
                         break;
