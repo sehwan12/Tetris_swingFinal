@@ -45,7 +45,7 @@ public class MenuView extends OutGameView {
             fullTitle += buildString[buildType];
         }
         titleLabel = new JLabel(fullTitle);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setFont(new Font("malgun gothic", Font.BOLD, 20));
     }
 
     public void initButtons(String[] menuString) {
@@ -55,7 +55,7 @@ public class MenuView extends OutGameView {
         for (int i = 0; i < menuString.length; i++) {
             menuButton[i] = new JButton(menuString[i]);
             menuButton[i].setFocusPainted(false);
-            menuButton[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+            menuButton[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
             mainPanel.add(menuButton[i]);
             this.add(menuButton[i]);
         }
@@ -75,7 +75,7 @@ public class MenuView extends OutGameView {
         // 여기서부터 함수 코드 끝까지는 해상도에 따른 프로퍼티를 구현함
         if (gameModeLabel != null) {
             for (int i = 0; i < gameModeLabel.length; i++) {
-                gameModeLabel[i].setFont(new Font("Arial", Font.BOLD, 15));
+                gameModeLabel[i].setFont(new Font("malgun gothic", Font.BOLD, 15));
                 gameModeLabel[i].setBounds(resX / 3, resY / 6, resX / 3, resY / 15);
                 gameModeLabel[i].setHorizontalAlignment(JLabel.CENTER);
                 this.add(gameModeLabel[i]);

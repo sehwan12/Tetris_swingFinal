@@ -109,18 +109,16 @@ public class ScoreBoardView extends JFrame {
     //게임이 끝난 후 스코어보드를 보여줄 때
     public void highlightScoreBoard(String name, int score) {
         // 이런식으로 강조하는 방법은 명세에 맞지 않아요
-        JLabel nowUserScore = new JLabel();
-        nowUserScore.setText(name + ": " + score);
-        nowUserScore.setForeground(Color.ORANGE);
-        nowUserScore.setFont(new Font("Malgun Gothic", Font.PLAIN, 20));
-        nowUserScore.setBorder(new EmptyBorder(0, 0, 15, 0));
-        this.getContentPane().add(nowUserScore, BorderLayout.NORTH);
-        // 스코어 리스트 내에서 특정 row를 찾아서 그 row를 강조해야 함
-        for (int i = 0; i < tableModel.getRowCount(); i++) {
-            if (tableModel.getValueAt(i, 1).equals(name)
-                    && tableModel.getValueAt(i, 2).equals(score)) {
-                // 강조 로직 작성
-            }
+//        JLabel nowUserScore = new JLabel();
+//        nowUserScore.setText(name + ": " + score);
+//        nowUserScore.setForeground(Color.ORANGE);
+//        nowUserScore.setFont(new Font("Malgun Gothic", Font.PLAIN, 20));
+//        nowUserScore.setBorder(new EmptyBorder(0, 0, 15, 0));
+//        this.getContentPane().add(nowUserScore, BorderLayout.NORTH);
+//        // 스코어 리스트 내에서 특정 row를 찾아서 그 row를 강조해야 함
+        HighlightRenderer highlightRenderer = new HighlightRenderer(name, score);
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(highlightRenderer);
         }
     }
 
@@ -134,5 +132,38 @@ public class ScoreBoardView extends JFrame {
             int modelIndex = table.convertRowIndexToModel(i); // Convert view index to model index
             tableModel.setValueAt(i + 1, modelIndex, 0); // Set rank in the model
         }
+    }
+}
+
+// GPT4.0으로 작성한 클래스 (기존의 table 인스턴스의 메서드에는 특정 row를 highlight 할 수 있는 메서드가 존재 X)
+class HighlightRenderer extends DefaultTableCellRenderer {
+    private String highlightName;
+    private int highlightScore;
+
+    public HighlightRenderer(String highlightName, int highlightScore) {
+        this.highlightName = highlightName;
+        this.highlightScore = highlightScore;
+        setOpaque(true);
+    }
+
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value,
+                                                   boolean isSelected, boolean hasFocus,
+                                                   int row, int column) {
+        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+        // Convert score to Long for comparison because table stores it as Long
+        Long scoreValue = (table.getValueAt(row, 2) instanceof Long) ? (Long)table.getValueAt(row, 2) : 0;
+
+        // Check if this row matches the highlighted row based on name and score
+        if (table.getValueAt(row, 1).equals(highlightName) && scoreValue == highlightScore) {
+            c.setForeground(Color.ORANGE); // Change text color
+            c.setFont(c.getFont().deriveFont(Font.BOLD)); // Make text bold
+        } else {
+            c.setForeground(Color.BLACK); // Set default text color
+            c.setFont(c.getFont().deriveFont(Font.PLAIN)); // Set default font style
+        }
+
+        return c;
     }
 }

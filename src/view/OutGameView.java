@@ -27,7 +27,7 @@ public class OutGameView extends JFrame {
     public void initTitle() {
         String fullTitle = "";
         titleLabel = new JLabel(fullTitle);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setFont(new Font("malgun gothic", Font.BOLD, 20));
     }
 
     public void initWindow() {
