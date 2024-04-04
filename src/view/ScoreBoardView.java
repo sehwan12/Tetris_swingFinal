@@ -99,8 +99,9 @@ public class ScoreBoardView extends JFrame {
                 for (int i = 0; i < jsonArr.size(); i++) {
                     JSONObject jsonObj = (JSONObject) jsonArr.get(i);
                     String name = (String) jsonObj.get("name");
+                    String dif = (String) jsonObj.get("difficulty");
                     Long score = (Long) jsonObj.get("score");
-                    tableModel.addRow(new Object[]{i + 1, name, score});
+                    tableModel.addRow(new Object[]{i + 1,dif, name, score});
                 }
             }
         }
