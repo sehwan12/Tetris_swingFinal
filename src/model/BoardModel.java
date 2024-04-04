@@ -1,7 +1,6 @@
 package model;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,15 +16,15 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Random;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.border.CompoundBorder;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import controller.BoardController;
 import model.blocks.*;
 import model.ModelStateChangeListener;
 import model.OutGameModel;
@@ -35,6 +34,8 @@ public class BoardModel {
     private int[][] board;
 
     private String[][] board_text;
+
+    private List<Integer> linesToClear = new LinkedList<>();
 
     //색맹모드와 무늬모드를 위한 color_blind 와 pattern 선언
     private boolean color_blind;
@@ -128,6 +129,18 @@ public class BoardModel {
     private void notifyStateChanged() {
         for (ModelStateChangeListener listener : listeners) {
             listener.onModelStateChanged();
+        }
+    }
+
+    private void notifyUpdateBoard() {
+        for (ModelStateChangeListener listener : listeners) {
+            listener.notifyUpdateBoard();
+        }
+    }
+
+    private void notifyGameOver() {
+        for (ModelStateChangeListener listener : listeners) {
+            listener.notifyGameOver();
         }
     }
 
@@ -266,11 +279,13 @@ public class BoardModel {
 
                     // 벽 충돌 체크
                     if (boardX < 0 || boardX >= WIDTH || boardY < 0 || boardY >= HEIGHT) {
+                        System.out.println("벽과 충돌");
                         return true;
                     }
 
                     // 다른 블록과 충돌하는지 검사
                     if (board[boardY][boardX] != 0) {
+                        System.out.println("다른 블록과 충돌");
                         return true;
                     }
                 }
@@ -295,6 +310,46 @@ public class BoardModel {
                     board_text[y+j][x+i] = null; // 이전 블록으 텍스트 초기화
                 }
             }
+        }
+    }
+
+    public void startLineClearAnimation() {
+        linesToClear.clear(); // 이전 애니메이션 정보 초기화
+        for (int row = HEIGHT - 1; row >= 0; row--) {
+            boolean fullLine = true;
+            for (int col = 0; col < WIDTH; col++) {
+                if (board[row][col] == 0) {
+                    fullLine = false;
+                    break;
+                }
+            }
+            if (fullLine) {
+                linesToClear.add(row); // 지워질 줄을 linesToClear에 추가
+            }
+        }
+
+        if (!linesToClear.isEmpty()) {
+            // 강조할 줄을 노란색으로 변경하는 로직
+            for (int line : linesToClear) {
+                for (int col = 0; col < WIDTH; col++) {
+                    // 노란색으로 변경하는 부분은 UI에 따라 다르게 구현될 수 있습니다.
+                    // 예시로, 각 줄의 색상을 변경하는 방식을 사용할 수 있습니다.
+                    board_color[(line + 1) * (WIDTH + 3) + col + 1] = Color.WHITE;
+                }
+            }
+            notifyUpdateBoard();
+            timer.stop();
+            // 애니메이션을 위한 타이머 시작
+            Timer timer2 = new Timer(200, e -> {
+                lineClear(); // 실제로 줄을 지우는 메서드
+                generateBlock();
+                timer.start();
+            });
+            timer2.setRepeats(false); // Timer가 한 번만 실행되도록 설정
+            timer2.start(); // Timer 시작
+        }
+        else {
+            generateBlock();
         }
     }
 
@@ -358,9 +413,29 @@ public class BoardModel {
         }
     }
 
+    public void generateBlock() {
+        if (y == 0) { // 블록이 맨 위에 도달했을 때
+            notifyGameOver();
+            return;
+        }
+        // curr = SidePanel.getNextBlock();
+        curr = nextBlock;
+        nextBlock = getRandomBlock();
+        beforeTime=System.currentTimeMillis();
+        blockCount++;
+        System.out.println("추가 된 블록 수: "+blockCount);
+        x = 3;
+        y = 0;
+        if (collisionCheck(0, 0)) {
+            notifyGameOver();
+            return;
+        }
+        placeBlock();
+    }
+
     // 게임이 종료되면 false를 반환
     // feedback 1 : SidePanel.setScore();는 함수 마지막에 한 번만 쓰면 됨
-    public boolean moveDown() {
+    public void moveDown() {
         eraseCurr();
         if(!collisionCheck(0, 1)) {
             y++;
@@ -370,35 +445,18 @@ public class BoardModel {
             }else{
                 updateScore(1);
             }
-            // 아래 코드는 view에서 처리해야 함
-            //SidePanel.setScore();
+            placeBlock();
         }
         else {
             placeBlock();
             afterTime=System.currentTimeMillis();
             checkForScore();
             // LineClear 과정
-            lineClear();
-            if (y == 0) { // 블록이 맨 위에 도달했을 때
-                return false; // Controller에 게임 종료 전달
-            }
-            // curr = SidePanel.getNextBlock();
-            curr = nextBlock;
-            nextBlock = getRandomBlock();
-            beforeTime=System.currentTimeMillis();
-            blockCount++;
-            System.out.println("추가 된 블록 수: "+blockCount);
-            x = 3;
-            y = 0;
-            if (collisionCheck(0, 0)) {
-                return false;
-            }
+            startLineClearAnimation();
         }
-        placeBlock();
-        return true;
     }
 
-    public boolean moveBottom() {
+    public void moveBottom() {
         eraseCurr();
         // 바닥에 이동
         while (!collisionCheck(0, 1)) { y++; }
@@ -406,23 +464,7 @@ public class BoardModel {
         afterTime=System.currentTimeMillis();
         checkForScore();
         // LineClear 과정
-        lineClear();
-        if (y == 0) { // 블록이 맨 위에 도달했을 때
-            // gameOver(); // 게임 종료 메서드 호출
-            return false; // 추가적인 동작을 방지
-        }
-        // 새로운 블럭 생성
-        //curr = SidePanel.getNextBlock();
-        // SidePanel.paintNextPiece();
-        curr = nextBlock;
-        nextBlock = getRandomBlock();
-        beforeTime=System.currentTimeMillis();
-        blockCount++;
-        System.out.println("추가 된 블록 수: "+blockCount);
-        x = 3;
-        y = 0;
-        placeBlock();
-        return true;
+        startLineClearAnimation();
     }
 
     public void moveRight() {
