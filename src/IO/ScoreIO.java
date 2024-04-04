@@ -1,6 +1,7 @@
 package IO;
 
 
+import model.OutGameModel;
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -13,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class ScoreIO {
-    private final static String JSON_FILE = "userScore.json";
+    private final static String JSON_FILE = "Tetris_swing/userScore.json";
 
     public JSONArray jsonArr = null;
 
@@ -49,6 +50,7 @@ public class ScoreIO {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("score", score);
+        jsonObject.put("difficulty", OutGameModel.getDifficulty());
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(jsonObject);
         try (FileWriter file = new FileWriter(JSON_FILE)) {
@@ -64,6 +66,7 @@ public class ScoreIO {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("score", score);
+        jsonObject.put("difficulty", OutGameModel.getDifficulty());
         try (FileReader reader = new FileReader(JSON_FILE)) {
             JSONParser parser = new JSONParser();
             JSONArray jsonArray = (JSONArray) parser.parse(reader);

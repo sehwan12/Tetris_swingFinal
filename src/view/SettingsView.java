@@ -32,7 +32,7 @@ public class SettingsView extends OutGameView {
         // Title as buildType
         String fullTitle = "Options";
         titleLabel = new JLabel(fullTitle);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setFont(new Font("Malgun Gothic", Font.BOLD, 20));
     }
 
     public void initLabel(String[] optionString) {
@@ -75,7 +75,7 @@ public class SettingsView extends OutGameView {
             keyLabel[i] = new JLabel(keyMap.get(keyString[i]));
             keyButton[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
             keyButton[i].setBackground(Color.WHITE);
-            keyLabel[i].setFont(new Font("Arial", Font.BOLD, 20));
+            keyLabel[i].setFont(new Font("Malgun Gothic", Font.BOLD, 20));
             optionPanel[1].add(keyButton[i]);
             optionPanel[1].add(keyLabel[i]);
             keyButton[i].setVisible(true);
@@ -144,7 +144,7 @@ public class SettingsView extends OutGameView {
 
         if (optionLabel != null) {
             for (int i = 0; i < optionLabel.length; i++) {
-                optionLabel[i].setFont(new Font("Arial", Font.BOLD, 15));
+                optionLabel[i].setFont(new Font("Malgun Gothic", Font.BOLD, 15));
                 optionLabel[i].setBounds(resX * (i + 1) * 5 / (optionLabel.length * 6 ), resY / 6, 5 * resX / ( 6 * optionLabel.length), resY / 15);
                 // optionLabel[i].setHorizontalAlignment(JLabel.CENTER);
                 this.add(optionLabel[i]);

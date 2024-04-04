@@ -60,10 +60,15 @@ public class MenuController {
 
     private void initFocus() {
         HashSet<String> keys = new HashSet<>();
-        keys.add("↑");
-        keys.add("↓");
-        keys.add("⏎");
-        keys.add("⎋");
+        //mac용
+//        keys.add("↑");
+//        keys.add("↓");
+//        keys.add("⏎");
+//        keys.add("⎋");
+        keys.add("Up");
+        keys.add("Down");
+        keys.add("Enter");
+        keys.add("Escape");
         // JComponent.WHEN_IN_FOCUSED_WINDOW
         InputMap im = view.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         // InputMap im = view.getRootPane().getInputMap();
