@@ -53,6 +53,7 @@ public class MenuController {
         view.initButtons(model.getMenuString());
         view.initWindow(model.getResX(), model.getResY());
         view.paintFocus(model.getCurFocus());
+        view.setLocationRelativeTo(null);
     }
 
 

@@ -99,7 +99,7 @@ public class BoardController implements ModelStateChangeListener {
 
         if (checkUpdatebool == JOptionPane.YES_OPTION) {
             String name = JOptionPane.showInputDialog("이름을 입력하세요");
-            ScoreIO.writeScore(name, model.getTotalscore());
+            ScoreIO.writeScore(name, model.getTotalscore(),OutGameModel.getDifficulty());
             temp.destroyView();
             temp.initFrame(name, model.getTotalscore());
         }
