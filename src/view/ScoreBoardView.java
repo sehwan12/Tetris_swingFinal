@@ -154,10 +154,12 @@ class HighlightRenderer extends DefaultTableCellRenderer {
         Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
         // Convert score to Long for comparison because table stores it as Long
-        Long scoreValue = (table.getValueAt(row, 2) instanceof Long) ? (Long)table.getValueAt(row, 2) : 0;
+        // Since 'difficulty' was added, 'name' is now at column 2 and 'score' at column 3 in the model
+        Long scoreValue = (table.getValueAt(row, 3) instanceof Long) ? (Long)table.getValueAt(row, 3) : 0;
+        String nameValue = (String) table.getValueAt(row, 2); // Retrieve name from column 2
 
         // Check if this row matches the highlighted row based on name and score
-        if (table.getValueAt(row, 1).equals(highlightName) && scoreValue == highlightScore) {
+        if (nameValue.equals(highlightName) && scoreValue == highlightScore) {
             c.setForeground(Color.ORANGE); // Change text color
             c.setFont(c.getFont().deriveFont(Font.BOLD)); // Make text bold
         } else {
