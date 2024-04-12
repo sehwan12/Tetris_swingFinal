@@ -13,6 +13,7 @@ import model.OutGameModel;
 import view.BoardView;
 import model.ModelStateChangeListener;
 import view.SidePanelView;
+import java.util.List;
 
 public class BoardController implements ModelStateChangeListener {
 
@@ -69,9 +70,17 @@ public class BoardController implements ModelStateChangeListener {
     public void onModelStateChanged() {
         // Model에서 상태 변경 시 호출될 메서드
         // 여기서 View의 갱신 로직 호출
-        moveDownControl();
+        model.moveDown();
         updateBoard();
     }
+    public void notifyUpdateBoard() {
+        updateBoard();
+    }
+
+    public void notifyGameOver() {
+        gameOver();
+    }
+
     public void pauseGame() {
         if (!model.isPaused()) {
             model.setPaused(true);
@@ -129,17 +138,6 @@ public class BoardController implements ModelStateChangeListener {
         } else { }
     }
 
-    public void moveDownControl() {
-        if (!model.moveDown()) {
-            gameOver();
-        }
-    }
-
-    public void moveBottomControl() {
-        if (!model.moveBottom()) {
-            gameOver();
-        }
-    }
     // 게임 상태 업데이트 후 View update를 위한 메서드
     public void updateBoard() {
         // 게임 로직 처리...
@@ -189,7 +187,7 @@ public class BoardController implements ModelStateChangeListener {
                     if(!model.isDowned()){
                         model.setDowned(true);
                     }
-                    moveDownControl();
+                    model.moveDown();
                     updateBoard();
                 }
                 else if (currentKey.equals(moveRight)) {
@@ -209,7 +207,7 @@ public class BoardController implements ModelStateChangeListener {
                         model.setDowned(true);
                     }
                     // 위치 이동 메서드
-                    moveBottomControl();
+                    model.moveBottom();
                     updateBoard();
                 }
                 else if (currentKey.equals(pause)) {

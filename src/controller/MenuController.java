@@ -125,6 +125,13 @@ public class MenuController {
                 view.setVisible(false);
                 view.dispose();
                 view = null;
+                // 아이템 모드 진입하도록 수정해야 함
+                boardController = new BoardController();
+                break;
+            case 2:
+                view.setVisible(false);
+                view.dispose();
+                view = null;
                 // Option 창 진입
                 settingsController = SettingsController.getInstance();
                 if (settingsController.view == null) {
@@ -132,7 +139,7 @@ public class MenuController {
                 }
                 // 추후 메서드 추가
                 break;
-            case 2:
+            case 3:
                 view.setVisible(false);
                 view.dispose();
                 view = null;
@@ -142,7 +149,7 @@ public class MenuController {
                 // ScoreBoard 진입
                 // 추후 메서드 추가
                 break;
-            case 3:
+            case 4:
                 System.exit(0); // 정상 종료
                 break;
         }

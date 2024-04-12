@@ -25,7 +25,7 @@ public class OutGameModel {
     private static final int buildType = 3;
     private static String[] buildString = { "Release", "Development", "Feature", "InProgress"};
 
-    private static String[] menuString = { "Start Game", "Settings", "ScoreBoard", "Quit" };
+    private static String[] menuString = { "Start Game", "Item Mode", "Settings", "ScoreBoard", "Quit" };
 
     private static String[] gameModeString = { "Single Play", "Duo Play" };
 
@@ -277,7 +277,6 @@ public class OutGameModel {
         if ((x > 0 && (curFocus + x) < menuString.length) || (x < 0 && curFocus + x >= 0))
             curFocus += x;
     }
-
 
 
 }
