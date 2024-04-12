@@ -48,6 +48,7 @@ public class MenuView extends OutGameView {
         titleLabel.setFont(new Font("malgun gothic", Font.BOLD, 20));
     }
 
+
     public void initButtons(String[] menuString) {
         if (menuString.length > 0) {
             menuButton = new JButton[menuString.length];

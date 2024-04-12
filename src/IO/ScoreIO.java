@@ -1,6 +1,7 @@
 package IO;
 
 
+import model.OutGameModel;
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -13,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class ScoreIO {
-    private final static String JSON_FILE = "userScore.json";
+    private final static String JSON_FILE = "Tetris_swing/userScore.json";
 
     public JSONArray jsonArr = null;
 
@@ -36,19 +37,20 @@ public class ScoreIO {
     }
 
 
-    public static void writeScore(String name, int score) {
+    public static void writeScore(String name, int score, String difficulty) {
         if (isFileEmpty()) {
-            writeFirstScore(name, score);
+            writeFirstScore(name, score, difficulty);
         }
         else {
-            writeAfterScore(name, score);
+            writeAfterScore(name, score, difficulty);
         }
     }
     // 기록이 없는 경우
-    public static void writeFirstScore(String name, int score) {
+    public static void writeFirstScore(String name, int score, String difficulty) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("score", score);
+        jsonObject.put("difficulty", difficulty);
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(jsonObject);
         try (FileWriter file = new FileWriter(JSON_FILE)) {
@@ -60,10 +62,11 @@ public class ScoreIO {
     }
 
     // 기록이 존재하는 경우
-    public static void writeAfterScore(String name, int score) {
+    public static void writeAfterScore(String name, int score, String difficulty) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("score", score);
+        jsonObject.put("difficulty", difficulty);
         try (FileReader reader = new FileReader(JSON_FILE)) {
             JSONParser parser = new JSONParser();
             JSONArray jsonArray = (JSONArray) parser.parse(reader);

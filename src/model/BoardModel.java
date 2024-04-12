@@ -88,9 +88,18 @@ public class BoardModel {
                 notifyStateChanged();
                 if (blockCount > 100 || linesCleared >= 20) {
                     // Decrease timer interval for faster movement
-                    initInterval=500;
+                    if(OutGameModel.getDifficulty()=="Easy"){
+                        updateTimer(1);
+                        System.out.println("현재속도:1.38배");
+                    }else if(OutGameModel.getDifficulty()=="Hard"){
+                        updateTimer(2);
+                        System.out.println("현재속도:2.08배");
+                    }else{
+                        updateTimer(0);
+                        System.out.println("현재속도:1.66배");
+                    }
                     timer.setDelay(initInterval);
-                    System.out.println("빨라졌습니다");
+
                     // You can adjust this factor according to your needs
                 }
 
@@ -247,7 +256,26 @@ public class BoardModel {
             default:
                 totalscore++;
         }
+    }
 
+    public void updateTimer(int a){
+        switch(a){
+            //normalmode에서 타이머가 빨라질 때
+            case 0:
+                initInterval=600;
+                break;
+            //easymode에서 타이머가 빨라질때
+            case 1:
+                initInterval=720;
+                break;
+            //hardmode에서 타이머가 빨라질때
+            case 2:
+                initInterval=480;
+                break;
+            //혹시 다른 경우가 필요한 경우 업데이트
+            default:
+                initInterval=1000;
+        }
     }
 
     private void placeBlock() {

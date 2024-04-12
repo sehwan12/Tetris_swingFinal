@@ -233,9 +233,13 @@ public class OutGameModel {
 
     public static void setDifficulty() {
          difficulty = instance.yCursor;
+         ExportSettings.saveSettings("difficulty", String.valueOf(difficulty));
          // 추후 세팅 Export 추가해야함!
     }
 
+    public static String getDifficulty(){
+        return difficultyString[difficulty];
+    }
 
 
     public static void setKeyMap(String KeyText) {
@@ -270,6 +274,7 @@ public class OutGameModel {
         else {
             blindMode = true;
         }
+        difficulty=Integer.parseInt(ImportSettings.getSetting("difficulty"));
         CopySettings.restore();
     }
 
