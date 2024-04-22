@@ -173,7 +173,7 @@ public class SettingsController {
                 // 설정 모델에 키 업데이트
                 if (isKeyMappingMode) {
                     isKeyMappingMode = false;
-                    if (currentKey.equals("⏎")) {
+                    if (currentKey.equals("⏎") || currentKey.equals("Enter")) {
                         SwingUtilities.invokeLater(() -> {
                             view.showWarning("Enter 키는 설정하실 수 없습니다.");
                             // 경고 메시지 후 다음 명령 실행

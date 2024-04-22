@@ -61,11 +61,10 @@ public class MenuController {
 
     private void initFocus() {
         HashSet<String> keys = new HashSet<>();
-        //mac용
-//        keys.add("↑");
-//        keys.add("↓");
-//        keys.add("⏎");
-//        keys.add("⎋");
+        keys.add("↑");
+        keys.add("↓");
+        keys.add("⏎");
+        keys.add("⎋");
         keys.add("Up");
         keys.add("Down");
         keys.add("Enter");
@@ -76,9 +75,15 @@ public class MenuController {
         ActionMap am = view.getRootPane().getActionMap();
 
         im.put(KeyStroke.getKeyStroke("UP"), "up");
+        im.put(KeyStroke.getKeyStroke("↑"), "up");
         im.put(KeyStroke.getKeyStroke("DOWN"), "down");
+        im.put(KeyStroke.getKeyStroke("↓"), "down");
         im.put(KeyStroke.getKeyStroke("ENTER"), "enter");
+        im.put(KeyStroke.getKeyStroke("⏎"), "enter");
         im.put(KeyStroke.getKeyStroke("ESC"), "esc");
+        im.put(KeyStroke.getKeyStroke("⎋"), "esc");
+
+
 
         am.put("up", new AbstractAction() {
             @Override
