@@ -73,6 +73,9 @@ public class OutGameModel {
         return instance;
     }
 
+    public static int getDifficultyInt() {
+        return difficulty;
+    }
 
     public String[] getBuildString() {
         return buildString;
@@ -232,9 +235,15 @@ public class OutGameModel {
     }
 
     public static void setDifficulty() {
-         difficulty = instance.yCursor;
-         ExportSettings.saveSettings("difficulty", String.valueOf(difficulty));
-         // 추후 세팅 Export 추가해야함!
+        difficulty = instance.yCursor;
+        ExportSettings.saveSettings("difficulty", String.valueOf(difficulty));
+        // 추후 세팅 Export 추가해야함!
+    }
+
+    public static void setDifficulty(int difficulty) {
+        OutGameModel.difficulty = difficulty;
+        ExportSettings.saveSettings("difficulty", String.valueOf(difficulty));
+        // 추후 세팅 Export 추가해야함!
     }
 
     public static String getDifficulty(){

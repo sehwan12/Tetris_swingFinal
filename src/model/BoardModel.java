@@ -29,6 +29,7 @@ import model.blocks.*;
 import model.ModelStateChangeListener;
 import model.OutGameModel;
 
+
 public class BoardModel {
     // board
     private int[][] board;
@@ -166,8 +167,9 @@ public class BoardModel {
     }
 
     private Block getRandomBlock() {
-        Random rnd = new Random(System.currentTimeMillis());
-        int block = rnd.nextInt(7);
+        // Random rnd = new Random(System.currentTimeMillis());
+        // int block = rnd.nextInt(7);
+        int block = rws_select();
         // Block 객체 생성시 color_blind, pattern 전달 추가
         switch(block) {
             case 0:
@@ -186,6 +188,46 @@ public class BoardModel {
                 return new OBlock(color_blind,pattern);
         }
         return new LBlock(color_blind,pattern);
+    }
+
+    public int rws_select() { //확률에 따른 블럭 생성
+        // 블럭들의 적합도(가중치)
+        double I = 10, J = 10, L = 10, Z = 10, S = 10, T = 10, O = 10;
+        if (OutGameModel.getDifficultyInt() == 0) {
+            I = 12;
+            //System.out.println("Easy");
+        }
+        else if (OutGameModel.getDifficultyInt() == 1) {
+            I = 10;
+            //System.out.println("Normal");
+        }
+        else if (OutGameModel.getDifficultyInt() == 2) {
+            I = 8;
+            //System.out.println("Hard");
+        }
+
+        // 블럭들의 적합도(가중치) 배열
+        double[] fitness = {I, J, L, Z, S, T, O};
+
+        Random random = new Random();
+        //Random random = new Random(System.currentTimeMillis()); // 이것을 쓰면 오차범위가 5%를 넘음
+
+        // 최대 적합도 찾기
+        double maxFitness = 0;
+        for (double fit : fitness) {
+            if (fit > maxFitness) {
+                maxFitness = fit;
+            }
+        }
+        // 확률적 수락을 통한 개체 선택
+        while (true) {
+            // 임의의 개체 선택
+            int index = random.nextInt(fitness.length);
+            // 선택된 개체의 적합도가 확률적으로 수락되는지 확인
+            if (random.nextDouble() < fitness[index] / maxFitness) {
+                return index; // 선택된 개체의 인덱스 반환
+            }
+        }
     }
 
     public Block getNextBlock() {
