@@ -16,7 +16,7 @@ public class Board {
         model = new BoardModel();
         view = new BoardView();
         viewSide = new SidePanelView();
-        controller = new BoardController(model, view, viewSide); // 컨트롤러에 모델과 뷰를 연결
+        controller = new BoardController();
 
         // 뷰에 컨트롤러 설정
         view.setController(controller);
