@@ -4,7 +4,7 @@ import org.json.simple.*;
 import IO.ScoreIO;
 
 public class ScoreBoardModel {
-    private static String[] columnString = { "순위","난이도","이름", "점수" };
+    private static String[] columnString = { "순위","난이도","모드","이름", "점수" };
 
 
     private static JSONArray jsonArr;

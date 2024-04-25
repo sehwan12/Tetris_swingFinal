@@ -37,20 +37,21 @@ public class ScoreIO {
     }
 
 
-    public static void writeScore(String name, int score, String difficulty) {
+    public static void writeScore(String name, int score, String difficulty, String mode) {
         if (isFileEmpty()) {
-            writeFirstScore(name, score, difficulty);
+            writeFirstScore(name, score, difficulty, mode);
         }
         else {
-            writeAfterScore(name, score, difficulty);
+            writeAfterScore(name, score, difficulty, mode);
         }
     }
     // 기록이 없는 경우
-    public static void writeFirstScore(String name, int score, String difficulty) {
+    public static void writeFirstScore(String name, int score, String difficulty,String mode) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("score", score);
         jsonObject.put("difficulty", difficulty);
+        jsonObject.put("mode", mode);
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(jsonObject);
         try (FileWriter file = new FileWriter(JSON_FILE)) {
@@ -62,11 +63,12 @@ public class ScoreIO {
     }
 
     // 기록이 존재하는 경우
-    public static void writeAfterScore(String name, int score, String difficulty) {
+    public static void writeAfterScore(String name, int score, String difficulty, String mode) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("score", score);
         jsonObject.put("difficulty", difficulty);
+        jsonObject.put("mode", mode);
         try (FileReader reader = new FileReader(JSON_FILE)) {
             JSONParser parser = new JSONParser();
             JSONArray jsonArray = (JSONArray) parser.parse(reader);

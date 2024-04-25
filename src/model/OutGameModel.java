@@ -86,7 +86,7 @@ public class OutGameModel {
         return menuString;
     }
 
-    public int getResX() {
+    public static int getResX() {
         return resX;
     }
 
@@ -94,7 +94,7 @@ public class OutGameModel {
         this.resX = resX;
     }
 
-    public int getResY() {
+    public static int getResY() {
         return resY;
     }
 

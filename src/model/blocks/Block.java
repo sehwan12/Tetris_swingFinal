@@ -19,9 +19,11 @@ public abstract class Block {
 		color = Color.YELLOW;
 		text="O"; //블럭의 무늬를 나타내기 위한 Text 추가
 	}
-	
-	public int getShape(int x, int y) {
+	public int getShape(int x, int y){
 		return shape[y][x];
+	}
+	public void setShape(int x, int y,int i) {
+		shape[y][x]=i;
 	}
 	
 	public Color getColor() {

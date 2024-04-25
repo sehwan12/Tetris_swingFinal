@@ -1,4 +1,6 @@
 package model.blocks;
+import model.blocks.Block;
+
 import java.awt.Color;
 
 public class WeightBlock extends Block {

@@ -15,6 +15,7 @@ import javax.swing.text.StyledDocument;
 // MVC에서 View와 Controller의 상호작용
 import controller.BoardController;
 import IO.ImportSettings;
+import model.OutGameModel;
 
 public class BoardView extends JFrame {
     private BoardController controller; // BoardController 참조 추가
@@ -36,8 +37,8 @@ public class BoardView extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setBackground(Color.BLACK);
-        setSize(Integer.parseInt(ImportSettings.getSetting("ResolutionSizeX")),
-                Integer.parseInt(ImportSettings.getSetting("ResolutionSizeY")));
+        setSize(OutGameModel.getResX(),
+                OutGameModel.getResY());
 
         // GlassPane 초기화 by chatGPT
         glassPane = new JPanel() {

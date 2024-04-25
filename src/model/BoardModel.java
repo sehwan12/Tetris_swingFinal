@@ -24,6 +24,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import IO.ExportSettings;
 import controller.BoardController;
 import model.blocks.*;
 import model.ModelStateChangeListener;
@@ -34,13 +35,15 @@ public class BoardModel {
     // board
     protected int[][] board;
 
-    private String[][] board_text;
+    protected String[][] board_text;
 
-    private List<Integer> linesToClear = new LinkedList<>();
+    protected List<Integer> linesToClear = new LinkedList<>();
 
     //색맹모드와 무늬모드를 위한 color_blind 와 pattern 선언
     protected boolean color_blind;
     protected int pattern;
+    protected  String gamemode;
+    private boolean isClearBlock=false;
 
     public static final int HEIGHT = 20;
     public static final int WIDTH = 10;
@@ -54,13 +57,13 @@ public class BoardModel {
     static int x1 = 2; //Default Position.
     static int y1= 0;
 
-    private Color[] board_color; //보드 색깔 저장 배열
+    protected Color[] board_color; //보드 색깔 저장 배열
 
-    private Timer timer;
+    protected Timer timer;
 
     protected Block curr;
 
-    private Block nextBlock;
+    protected Block nextBlock;
 
 
 
@@ -82,6 +85,16 @@ public class BoardModel {
     // Observer pattern을 위한 리스트
     private List<ModelStateChangeListener> listeners = new ArrayList<>();
 
+    public int getWhat_item(){
+        return what_item;
+    }
+
+    public void setWhat_item(){
+        this.what_item=what_item;
+    }
+
+    int what_item;// 아이템 모드에서 아이템인지를 표현
+    int how_many_items=3;// 아이템 모드에서 총 아이템 개수
     public BoardModel() {
         timer = new Timer(initInterval, new ActionListener() {
             @Override
@@ -107,6 +120,8 @@ public class BoardModel {
             }
         });
         color_blind = OutGameModel.isBlindMode();
+        gamemode="normal";
+        ExportSettings.saveSettings("mode",gamemode);
         pattern = 0;
         //Initialize board for the game.
         board = new int[HEIGHT][WIDTH];
@@ -125,7 +140,7 @@ public class BoardModel {
         isDowned=false;
         curr = getRandomBlock();
         nextBlock = getRandomBlock();
-        blockCount=1;
+        blockCount=0;
         placeBlock();
         timer.start();
         beforeTime= System.currentTimeMillis();
@@ -136,19 +151,19 @@ public class BoardModel {
         listeners.add(listener);
     }
 
-    private void notifyStateChanged() {
+    protected void notifyStateChanged() {
         for (ModelStateChangeListener listener : listeners) {
             listener.onModelStateChanged();
         }
     }
 
-    private void notifyUpdateBoard() {
+    protected void notifyUpdateBoard() {
         for (ModelStateChangeListener listener : listeners) {
             listener.notifyUpdateBoard();
         }
     }
 
-    private void notifyGameOver() {
+    protected void notifyGameOver() {
         for (ModelStateChangeListener listener : listeners) {
             listener.notifyGameOver();
         }
@@ -171,23 +186,26 @@ public class BoardModel {
         // int block = rnd.nextInt(7);
         int block = rws_select();
         // Block 객체 생성시 color_blind, pattern 전달 추가
-        switch(block) {
+
+        switch (block) {
             case 0:
-                return new IBlock(color_blind,pattern);
+                return new IBlock(color_blind, pattern);
             case 1:
-                return new JBlock(color_blind,pattern);
+                return new JBlock(color_blind, pattern);
             case 2:
-                return new LBlock(color_blind,pattern);
+                return new LBlock(color_blind, pattern);
             case 3:
-                return new ZBlock(color_blind,pattern);
+                return new ZBlock(color_blind, pattern);
             case 4:
-                return new SBlock(color_blind,pattern);
+                return new SBlock(color_blind, pattern);
             case 5:
-                return new TBlock(color_blind,pattern);
+                return new TBlock(color_blind, pattern);
             case 6:
-                return new OBlock(color_blind,pattern);
+                return new OBlock(color_blind, pattern);
         }
-        return new LBlock(color_blind,pattern);
+        return new LBlock(color_blind, pattern);
+
+
     }
 
     public int rws_select() { //확률에 따른 블럭 생성
@@ -314,7 +332,10 @@ public class BoardModel {
             case 2:
                 initInterval=480;
                 break;
-            //혹시 다른 경우가 필요한 경우 업데이트
+            //타이머 아이템이 있는 줄이 지워졌을 때
+            case 3:
+                initInterval=1500;
+                break;
             default:
                 initInterval=1000;
         }
@@ -331,6 +352,7 @@ public class BoardModel {
                     board_color[offset + i] = curr.getColor();
                     board_text[y+j][x+i] = curr.getText(); //블럭이 있는 위치에 블럭 텍스트 지정
                     //블럭이 있는 위치에 블럭 색깔 지정
+
                 }
             }
         }
@@ -372,7 +394,7 @@ public class BoardModel {
             for(int i=0; i<curr.width(); i++) {
                 // 현재 블록의 shape가 1인 부분만 0으로 지워야함 이걸 못찾았다니..
                 // if (board[j][i] == 1)
-                if (curr.getShape(i, j) == 1) {
+                if (curr.getShape(i, j) >= 1) {
                     board[y+j][x+i] = 0;
                     // board_color[offset + (i - x)] = null; // 이전 블록의 색상 초기화
 
@@ -423,7 +445,7 @@ public class BoardModel {
         }
     }
 
-    private void lineClear() {
+    protected void lineClear() {
         for (int row = HEIGHT - 1; row >= 0; row--) {
             boolean fullLine = true;
 
@@ -432,7 +454,9 @@ public class BoardModel {
                     fullLine = false;
                     break;
                 }
+
             }
+
 
             if (fullLine) {
                 for (int moveRow = row; moveRow > 0; moveRow--) {
@@ -521,6 +545,7 @@ public class BoardModel {
             placeBlock();
             afterTime=System.currentTimeMillis();
             checkForScore();
+
             // LineClear 과정
             startLineClearAnimation();
         }
@@ -583,6 +608,9 @@ public class BoardModel {
         }
 
         placeBlock();
+    }
+    public String getGamemode(){
+        return gamemode;
     }
 
 }
