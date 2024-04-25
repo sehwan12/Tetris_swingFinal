@@ -20,6 +20,11 @@ import java.util.List;
 public class BoardController implements ModelStateChangeListener {
 
     private BoardModel model;
+
+    public BoardView getView() {
+        return view;
+    }
+
     private BoardView view;
     private SidePanelView viewSidePanel;
     private KeyListener playerKeyListener;
@@ -39,6 +44,19 @@ public class BoardController implements ModelStateChangeListener {
         initView();
         this.model.addModelStateChangeListener(this);
     }
+    public BoardController(BoardModel model, BoardView view, SidePanelView viewSidePanel) {
+        this.model = model;
+        this.view = view;
+        this.viewSidePanel = viewSidePanel;
+        view.setController(this);
+        view.getContentPane().add(viewSidePanel, BorderLayout.EAST);
+        view.setVisible(true);
+        playerKeyListener = new PlayerKeyListener();
+        // addKeyListener, setFocusable, requestFocus를 BoardView의 메서드로 대체
+        view.addKeyListenerToFrame(playerKeyListener);
+        this.model.addModelStateChangeListener(this);
+    }
+
 
 
     public void initView() {

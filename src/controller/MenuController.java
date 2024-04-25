@@ -124,7 +124,7 @@ public class MenuController {
         view.requestFocusInWindow();
 
     }
-    private void enterMenu(int curFocus) {
+    protected void enterMenu(int curFocus) {
         switch (curFocus) {
             case 0:
                 view.setVisible(false);

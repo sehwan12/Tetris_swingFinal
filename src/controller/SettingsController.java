@@ -51,7 +51,7 @@ public class SettingsController {
         view.initWindow(model.getResX(), model.getResY());
     }
 
-    private void initFocus() {
+    protected void initFocus() {
         InputMap im = view.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = view.getRootPane().getActionMap();
 
