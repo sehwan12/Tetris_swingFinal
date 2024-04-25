@@ -355,6 +355,7 @@ public class ItemBoardModel extends BoardModel {
             while (y < HEIGHT - curr.height()) {
                 moveDown();
             }
+            startLineClearAnimation();
         }
         else {
             while (!collisionCheck(0, 1)) {

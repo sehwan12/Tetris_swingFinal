@@ -10,6 +10,7 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 
 import IO.ScoreIO;
+import model.OutGameModel;
 import model.ScoreBoardModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -21,7 +22,6 @@ public class ScoreBoardView extends JFrame {
 
     public ScoreBoardView() {
         super("User Score Board");
-        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setBackground(Color.BLACK);
         initModel(ScoreBoardModel.getColumnString());
@@ -34,6 +34,8 @@ public class ScoreBoardView extends JFrame {
         TableRowSorter rowSorter = new TableRowSorter<TableModel>(table.getModel());
         rowSorter.addRowSorterListener(e -> updateRanks());
         table.setRowSorter(rowSorter);
+        setSize(OutGameModel.getResX(), OutGameModel.getResY());
+        setLocationRelativeTo(null);
     }
 
     public ScoreBoardView(String name, int score) {
@@ -52,6 +54,8 @@ public class ScoreBoardView extends JFrame {
         TableRowSorter rowSorter = new TableRowSorter<TableModel>(table.getModel());
         rowSorter.addRowSorterListener(e -> updateRanks());
         table.setRowSorter(rowSorter);
+        setSize(OutGameModel.getResX(), OutGameModel.getResY());
+        setLocationRelativeTo(null);
     }
 
     private void initModel(String[] columnString) {
@@ -73,6 +77,7 @@ public class ScoreBoardView extends JFrame {
         scroll.setBorder(border);
         //테이블을 수정불가능하게 설정
         table.setEnabled(false);
+        setLocationRelativeTo(null);
     }
 
     private void settingForTable(String[] columnString) {

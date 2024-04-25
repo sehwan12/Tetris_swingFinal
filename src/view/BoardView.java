@@ -37,8 +37,6 @@ public class BoardView extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setBackground(Color.BLACK);
-        setSize(OutGameModel.getResX(),
-                OutGameModel.getResY());
 
         // GlassPane 초기화 by chatGPT
         glassPane = new JPanel() {
@@ -87,7 +85,7 @@ public class BoardView extends JFrame {
 
         //Board display setting.
         pane = new JTextPane();
-        pane.setEditable(false);
+        pane.setSize(OutGameModel.getResX(), OutGameModel.getResY());
         pane.setBackground(Color.BLACK);
         CompoundBorder border = BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.GRAY, 10),
@@ -98,13 +96,15 @@ public class BoardView extends JFrame {
 
         //Document default style.
         styleSet = new SimpleAttributeSet();
-        StyleConstants.setFontSize(styleSet, 18 * Integer.parseInt(ImportSettings.getSetting(
-                "ResolutionSizeX"
-        )) / 400); // 추후 defaultsetting 값을 import 하는 것을 구현 한 후 리터럴을 수정해야함
+        StyleConstants.setFontSize(styleSet, 18 * OutGameModel.getResX() / 400); // 추후 defaultsetting 값을 import 하는 것을 구현 한 후 리터럴을 수정해야함
         StyleConstants.setFontFamily(styleSet, "Courier New");
         StyleConstants.setBold(styleSet, true);
         StyleConstants.setForeground(styleSet, Color.WHITE);
         StyleConstants.setAlignment(styleSet, StyleConstants.ALIGN_CENTER);
+        setSize(OutGameModel.getResX(),
+                OutGameModel.getResY());
+        setLocationRelativeTo(null);
+        setFocusable(true);
 
         this.addMouseListener(new MouseAdapter() {
             @Override

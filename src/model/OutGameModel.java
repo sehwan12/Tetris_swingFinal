@@ -22,7 +22,7 @@ public class OutGameModel {
 
     private int curFocus = 0;
 
-    private static final int buildType = 3;
+    private static final int buildType = 0;
     private static String[] buildString = { "Release", "Development", "Feature", "InProgress"};
 
     private static String[] menuString = { "Start Game", "Item Mode", "Settings", "ScoreBoard", "Quit" };
