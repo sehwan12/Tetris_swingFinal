@@ -6,6 +6,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
+import model.ItemModel;
 import model.OutGameModel;
 import view.MenuView;
 
@@ -137,7 +138,7 @@ public class MenuController {
                 view.dispose();
                 view = null;
                 // 아이템 모드 진입하도록 수정해야 함
-                boardController = new BoardController();
+                boardController = new BoardController(new ItemModel());
                 break;
             case 2:
                 view.setVisible(false);

@@ -14,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class ScoreIO {
-    private final static String JSON_FILE = "Tetris_swing/userScore.json";
+    private final static String JSON_FILE = "userScore.json";
 
     public JSONArray jsonArr = null;
 

@@ -32,15 +32,15 @@ import model.OutGameModel;
 
 public class BoardModel {
     // board
-    private int[][] board;
+    protected int[][] board;
 
     private String[][] board_text;
 
     private List<Integer> linesToClear = new LinkedList<>();
 
     //색맹모드와 무늬모드를 위한 color_blind 와 pattern 선언
-    private boolean color_blind;
-    private int pattern;
+    protected boolean color_blind;
+    protected int pattern;
 
     public static final int HEIGHT = 20;
     public static final int WIDTH = 10;
@@ -58,7 +58,7 @@ public class BoardModel {
 
     private Timer timer;
 
-    private Block curr;
+    protected Block curr;
 
     private Block nextBlock;
 
@@ -69,7 +69,7 @@ public class BoardModel {
     boolean isDowned;
 
 
-    private static int initInterval = 1000;
+    protected static int initInterval = 1000;
     long beforeTime;
     long afterTime;
 
@@ -166,7 +166,7 @@ public class BoardModel {
         return board_text;
     }
 
-    private Block getRandomBlock() {
+    protected Block getRandomBlock() {
         // Random rnd = new Random(System.currentTimeMillis());
         // int block = rnd.nextInt(7);
         int block = rws_select();
@@ -320,7 +320,7 @@ public class BoardModel {
         }
     }
 
-    private void placeBlock() {
+    protected void placeBlock() {
         for(int j=0; j<curr.height(); j++) {
             int rows = y+j+1;
             int offset = (rows) * (WIDTH+3) + x + 1;
@@ -336,7 +336,7 @@ public class BoardModel {
         }
     }
 
-    private boolean collisionCheck(int horizon, int vertical) { // 블록, 벽 충돌을 체크하는 메서드
+    protected boolean collisionCheck(int horizon, int vertical) { // 블록, 벽 충돌을 체크하는 메서드
         int nextX = x + horizon;
         int nextY = y + vertical;
 
