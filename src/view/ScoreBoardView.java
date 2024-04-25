@@ -146,6 +146,7 @@ public class ScoreBoardView extends JFrame {
 class HighlightRenderer extends DefaultTableCellRenderer {
     private String highlightName;
     private int highlightScore;
+    private String highlightMode;
 
     public HighlightRenderer(String highlightName, int highlightScore) {
         this.highlightName = highlightName;
@@ -160,12 +161,12 @@ class HighlightRenderer extends DefaultTableCellRenderer {
         Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
         // Convert score to Long for comparison because table stores it as Long
-        // Since 'difficulty' was added, 'name' is now at column 2 and 'score' at column 3 in the model
-        Long scoreValue = (table.getValueAt(row, 3) instanceof Long) ? (Long)table.getValueAt(row, 3) : 0;
-        String nameValue = (String) table.getValueAt(row, 2); // Retrieve name from column 2
+        // Since 'difficulty' was added, 'name' is now at column 2, 'mode' at column 3, and 'score' at column 4 in the model
+        Long scoreValue = (table.getValueAt(row, 4) instanceof Long) ? (Long) table.getValueAt(row, 4) : 0;
+        String nameValue = (String) table.getValueAt(row, 3); // Retrieve name from column 3
 
-        // Check if this row matches the highlighted row based on name and score
-        if (nameValue.equals(highlightName) && scoreValue == highlightScore) {
+        // Check if this row matches the highlighted row based on name, mode, and score
+        if (nameValue.equals(highlightName) && scoreValue == highlightScore  ) {
             c.setForeground(Color.ORANGE); // Change text color
             c.setFont(c.getFont().deriveFont(Font.BOLD)); // Make text bold
         } else {
