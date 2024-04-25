@@ -42,6 +42,7 @@ public class ItemBoardModel extends BoardModel {
                     isPlusItem=true;
                     return newBlock;
                 case 2:
+                    linesCleared_10--;
                     return new WeightBlock();
                 default:
                     return new ClearBlock();
@@ -183,7 +184,7 @@ public class ItemBoardModel extends BoardModel {
             }
         }
     }
-    private void lineFill() {
+    protected void lineFill() {
         for (int col = 0; col < WIDTH; col++) {
             boolean is_F=false;
             int F_row_position=HEIGHT - 1;
@@ -372,7 +373,6 @@ public class ItemBoardModel extends BoardModel {
     public int rws_selectItem() { //확률에 따른 블럭 생성
         // 블럭들의 적합도(가중치)
         double A=10,B=30, C=10;
-
 
         // 블럭들의 적합도(가중치) 배열
         double[] fitness = {A,B,C};

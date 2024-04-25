@@ -613,4 +613,27 @@ public class BoardModel {
         return gamemode;
     }
 
+    public void setCurr(Block curr) {
+        this.curr = curr;
+    }
+
+    public Block getCurr() {
+        return curr;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
 }

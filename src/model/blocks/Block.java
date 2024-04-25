@@ -73,4 +73,8 @@ public abstract class Block {
 			return shape[0].length;
 		return 0;
 	}
+
+	public int getRotate_status() {
+		return rotate_status;
+	}
 }

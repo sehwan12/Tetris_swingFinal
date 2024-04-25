@@ -102,28 +102,12 @@ public class OutGameModel {
         this.resY = resY;
     }
 
-    public int getCurGameMode() {
-        return curGameMode;
-    }
-
-    public void setCurGameMode(int curGameMode) {
-        this.curGameMode = curGameMode;
-    }
-
     public int getCurFocus() {
         return curFocus;
     }
 
-    public void setCurFocus(int curFocus) {
-        this.curFocus = curFocus;
-    }
-
     public String[] getGameModeString() {
         return gameModeString;
-    }
-
-    public void setGameModeString(String[] gameModeString) {
-        OutGameModel.gameModeString = gameModeString;
     }
 
     public int getBuildType() {
@@ -132,10 +116,6 @@ public class OutGameModel {
 
     public static String[] getOptionString() {
         return optionString;
-    }
-
-    public static void setOptionString(String[] optionString) {
-        OutGameModel.optionString = optionString;
     }
 
     public int getOptionFocus() {
@@ -179,32 +159,16 @@ public class OutGameModel {
         return keyString;
     }
 
-    public static void setKeyString(String[] keyString) {
-        OutGameModel.keyString = keyString;
-    }
-
     public static String[] getBlindString() {
         return blindString;
-    }
-
-    public static void setBlindString(String[] blindString) {
-        OutGameModel.blindString = blindString;
     }
 
     public static String[] getResetString() {
         return resetString;
     }
 
-    public static void setResetString(String[] resetString) {
-        OutGameModel.resetString = resetString;
-    }
-
     public static String[] getDifficultyString() {
         return difficultyString;
-    }
-
-    public static void setDifficultyString(String[] difficultyString) {
-        OutGameModel.difficultyString = difficultyString;
     }
 
     public int getyCursor() {
@@ -293,4 +257,7 @@ public class OutGameModel {
     }
 
 
+    public String[][] getStringType() {
+        return stringType;
+    }
 }
