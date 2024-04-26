@@ -16,6 +16,7 @@ public class ItemBoardModel extends BoardModel {
     boolean isTimerBlock=false;
     //기존블럭을 변형한 블럭인지 체크
     boolean isPlusItem=false;
+    boolean horizonLock=false;
     int linesCleared_10=0;
     public ItemBoardModel(){
         gamemode="Item";
@@ -103,6 +104,43 @@ public class ItemBoardModel extends BoardModel {
                 }
             }
         }
+    }
+
+    @Override
+    protected boolean collisionCheck(int horizon, int vertical) { // 블록, 벽 충돌을 체크하는 메서드
+        int nextX = x + horizon;
+        int nextY = y + vertical;
+
+        // 경계 및 블록과의 충돌 체크
+        for (int j = 0; j < curr.height(); j++) {
+            for (int i = 0; i < curr.width(); i++) {
+                if (curr.getShape(i, j) != 0) { // 현재 블록의 해당 부분이 실제로 블록을 구성하는지 확인 (1인지 0인지)
+                    int boardX = nextX + i;
+                    int boardY = nextY + j;
+
+                    // 벽 충돌 체크
+                    if (boardX < 0 || boardX >= WIDTH || boardY < 0 || boardY >= HEIGHT) {
+                        System.out.println("벽과 충돌");
+                        return true;
+                    }
+
+                    if ((boardY >= HEIGHT - 1) && curr instanceof WeightBlock) {
+                        System.out.println("바닥과 충돌");
+                        horizonLock = true;
+                    }
+
+                    // 다른 블록과 충돌하는지 검사
+                    if (board[boardY][boardX] != 0) {
+                        System.out.println("다른 블록과 충돌");
+                        if (curr instanceof WeightBlock) {
+                            horizonLock = true;
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+        return false; // 충돌 없음
     }
 
     @Override
@@ -245,6 +283,7 @@ public class ItemBoardModel extends BoardModel {
 
     @Override
     public void generateBlock() {
+        horizonLock = false;
         if (y == 0) { // 블록이 맨 위에 도달했을 때
             notifyGameOver();
             System.out.println("게임오버");
@@ -313,6 +352,26 @@ public class ItemBoardModel extends BoardModel {
         else {
             generateBlock();
         }
+    }
+    @Override
+    public void moveRight() {
+        if (horizonLock) {
+            return;
+        }
+        eraseCurr();
+        if(!collisionCheck(1, 0)) x++;
+        placeBlock();
+    }
+    @Override
+    public void moveLeft() {
+        if (horizonLock) {
+            return;
+        }
+        eraseCurr();
+        if(!collisionCheck(-1, 0)) {
+            x--;
+        }
+        placeBlock();
     }
     @Override
     public void moveDown() {
