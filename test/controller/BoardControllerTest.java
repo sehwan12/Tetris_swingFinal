@@ -67,7 +67,7 @@ public class BoardControllerTest {
         verify(view).drawBoard(eq(board), eq(board_color), eq(board_text));
 
         // SidePanelView에 대한 호출 확인
-        verify(sidePanelView).drawBoard(any(Block.class), any(int.class));
+        verify(sidePanelView).drawBoard(any(Block.class));
         verify(sidePanelView).setScoreText(any(int.class));
     }
 

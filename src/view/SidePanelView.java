@@ -30,6 +30,9 @@ import javax.swing.text.StyledDocument;
 // MVC에서 View와 Controller의 상호작용
 import controller.BoardController;
 import model.blocks.*;
+import model.blocks.item.Alias.LineClearBlock;
+import model.blocks.item.Alias.LineFillBlock;
+import model.blocks.item.Alias.TimerBlock;
 
 public class SidePanelView extends JPanel {
 
@@ -122,7 +125,7 @@ public class SidePanelView extends JPanel {
         nextPiece.setStyledDocument(doc);
     }
 
-    public void drawBoard(Block nextBlock, int what_item) {
+    public void drawBoard(Block nextBlock) {
         paintNextPiece(nextBlock);
         placeblock(nextBlock);
         StringBuffer sb = new StringBuffer();
@@ -146,16 +149,14 @@ public class SidePanelView extends JPanel {
                 } else if (board[i][j] == 2) {
                     offset = sb.length();
                     char displayChar = ' ';
-                    switch (what_item) {
-                        case 0:
-                            displayChar = 'L';
-                            break;
-                        case 1:
-                            displayChar = 'F';
-                            break;
-                        case 2:
-                            displayChar = 'S';
-                            break;
+                    if (nextBlock instanceof LineClearBlock) {
+                        displayChar = 'L';
+                    }
+                    else if (nextBlock instanceof LineFillBlock) {
+                        displayChar = 'F';
+                    }
+                    else if (nextBlock instanceof TimerBlock) {
+                        displayChar = 'S';
                     }
                     sb.append(displayChar);
                 } else {

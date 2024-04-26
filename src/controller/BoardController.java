@@ -159,7 +159,7 @@ public class BoardController implements ModelStateChangeListener {
         // View에 게임 보드 그리기 요청
         view.drawBoard(model.getBoard(), model.getBoard_color(), model.getBoard_text());
         // SidePanel에 다음 블럭 넘기기
-        viewSidePanel.drawBoard(model.getNextBlock(), model.getWhat_item());
+        viewSidePanel.drawBoard(model.getNextBlock());
         // 사이드 패널의 점수를 view에 넘겨야 한다
         viewSidePanel.setScoreText(model.getTotalscore());
     }

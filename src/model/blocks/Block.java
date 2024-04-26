@@ -25,6 +25,10 @@ public abstract class Block {
 	public void setShape(int x, int y,int i) {
 		shape[y][x]=i;
 	}
+
+	public int[][] getShapeArray() {
+		return shape;
+	}
 	
 	public Color getColor() {
 		return color;

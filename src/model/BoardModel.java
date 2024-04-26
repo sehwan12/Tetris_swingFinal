@@ -85,16 +85,6 @@ public class BoardModel {
     // Observer pattern을 위한 리스트
     private List<ModelStateChangeListener> listeners = new ArrayList<>();
 
-    public int getWhat_item(){
-        return what_item;
-    }
-
-    public void setWhat_item(){
-        this.what_item=what_item;
-    }
-
-    int what_item;// 아이템 모드에서 아이템인지를 표현
-    int how_many_items=3;// 아이템 모드에서 총 아이템 개수
     public BoardModel() {
         timer = new Timer(initInterval, new ActionListener() {
             @Override

@@ -1,5 +1,6 @@
 package model.blocks;
 
+import model.blocks.item.WeightBlock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.awt.Color;
