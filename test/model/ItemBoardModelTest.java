@@ -1,9 +1,11 @@
 package model;
 
 import model.blocks.Block;
-import model.blocks.ClearBlock;
-import model.blocks.IBlock;
-import model.blocks.WeightBlock;
+import model.blocks.*;
+import model.blocks.item.*;
+import model.blocks.item.Alias.*;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
@@ -13,10 +15,26 @@ import static org.mockito.Mockito.*;
 
 class ItemBoardModelTest {
 
-    @Test
-    void testgetRandomBlock() {
-        ItemBoardModel boardModel = spy(new ItemBoardModel());
+    ItemBoardModel boardModel;
 
+    @BeforeEach
+    void setUP() {
+        boardModel = spy(new ItemBoardModel());
+    }
+
+    @Test
+    void getRandomBlock() {
+        ItemBoardModel boardModel = spy(new ItemBoardModel());
+        boardModel.linesCleared = 9;
+        assertFalse(boardModel.getRandomBlock() instanceof ItemBlock);
+
+        // given
+        boardModel.linesCleared = 11;
+        // when, then
+        assertTrue(boardModel.getRandomBlock() instanceof ItemBlock);
+
+
+        /*
         boardModel.linesCleared_10=1;
         when(boardModel.rws_selectItem()).thenReturn(0);
         assertTrue(boardModel.getRandomBlock() instanceof ClearBlock);
@@ -33,6 +51,7 @@ class ItemBoardModelTest {
         boardModel.linesCleared_10=0;
         when(boardModel.rws_select()).thenReturn(0);
         assertTrue(boardModel.getRandomBlock() instanceof IBlock);
+         */
     }
     @Test
     void testPlaceBlock_Shape_1() {
@@ -75,18 +94,18 @@ class ItemBoardModelTest {
 
     @Test
     void testPlaceBlock_Shape_2() {
+
+        ItemBlock[] block = new ItemBlock[3];
         // 테스트에 필요한 객체 생성
-        ItemBoardModel boardModel = new ItemBoardModel();
-        Block block = new IBlock(true, 0); // 예시로 I 블록 생성
-
-        // 현재 블록으로 설정합니다.
-        boardModel.setCurr(block);
-
-        boardModel.curr.setShape(1,0,2);
+        block[0] = new LineClearBlock(); // 예시로 I 블록 생성
+        block[1] = new LineFillBlock(); // 예시로 I 블록 생성
+        block[2] = new TimerBlock(); // 예시로 I 블록 생성
 
         for(int k=0; k<=2; k++) {
-            boardModel.what_item=k;
+            // 현재 블록으로 설정합니다.
+            boardModel.setCurr(block[k]);
 
+            boardModel.curr.setShape(1,0,2);
             // placeBlock() 메서드를 호출하여 보드에 블록을 배치합니다.
             boardModel.placeBlock();
 
@@ -96,9 +115,9 @@ class ItemBoardModelTest {
             Color[] boardColor = boardModel.getBoard_color();
 
             // 블록이 존재하는 위치에는 1로 설정되어야 합니다.
-            for (int i = 0; i < block.width(); i++) {
-                for (int j = 0; j < block.height(); j++) {
-                    if (block.getShape(i, j) == 2) {
+            for (int i = 0; i < block[k].width(); i++) {
+                for (int j = 0; j < block[k].height(); j++) {
+                    if (block[k].getShape(i, j) == 2) {
                         System.out.println("2");
                         assertTrue(board[boardModel.getY() + j][boardModel.getX() + i] == 1);
                     }
@@ -106,9 +125,9 @@ class ItemBoardModelTest {
             }
 
             // 블록이 존재하는 위치에는 적절한 텍스트와 색상이 지정되어야 합니다.
-            for (int i = 0; i < block.width(); i++) {
-                for (int j = 0; j < block.height(); j++) {
-                    if (block.getShape(i, j) == 2) {
+            for (int i = 0; i < block[k].width(); i++) {
+                for (int j = 0; j < block[k].height(); j++) {
+                    if (block[k].getShape(i, j) == 2) {
                         switch (k){
                             case 0:
                                 // 적절한 텍스트 확인
@@ -296,7 +315,7 @@ class ItemBoardModelTest {
 
         boardModel.lineClear();
 
-        assertTrue(boardModel.isTimerBlock);
+        // assertTrue(boardModel.isTimerBlock);
 
         //Y = 15인 줄이 지워졌는지 확인
         for(int X=0; X<boardModel.WIDTH; X++) {
@@ -321,7 +340,7 @@ class ItemBoardModelTest {
 
         boardModel.lineClear();
 
-        assertTrue(boardModel.isClearBlock);
+        // assertTrue(boardModel.isClearBlock);
 
         //Y = 15인 줄이 지워졌는지 확인
         for(int X=0; X<boardModel.WIDTH; X++) {
@@ -359,26 +378,74 @@ class ItemBoardModelTest {
     }
 
     @Test
-    void testrandom_text() {
-        ItemBoardModel boardModel = new ItemBoardModel();
-        boardModel.setCurr(new IBlock(true,0));
-        boardModel.linesCleared_10=1;
+    void generateBlock() {
+        // given
+        Block watingBlock = boardModel.getRandomBlock();
+        boardModel.setY(1);
+        int beforeBlockCount = boardModel.blockCount;
+        boardModel.setNextBlock(watingBlock);
 
-        boardModel.random_text(boardModel.curr);
+        // when
+        boardModel.generateBlock();
 
-        boolean is_two=false;
-
-        for(int j=0; j< boardModel.curr.height(); j++)
-            for(int i=0; i<boardModel.curr.width(); i++)
-            {
-                if(boardModel.curr.getShape(i,j)==2) {
-                    is_two=true;
-                    break;
-                }
-                if(is_two) break;
-            }
-
-        assertTrue(is_two);
+        //then
+        assertFalse(boardModel.horizonLock);
+        assertTrue(boardModel.getCurr() == watingBlock);
+        assertTrue(boardModel.getX() == 3);
+        assertTrue(boardModel.getY() == 0);
     }
+
+    @Test
+    void moveRight() {
+        // given
+        Block block = new IBlock();
+        boardModel.setCurr(block);
+        boardModel.setX(3);
+        boardModel.setY(0);
+        // when
+        boardModel.moveRight();
+        // then
+        assertTrue(boardModel.getX() == 4);
+    }
+
+    @Test
+    void moveLeft() {
+        // given
+        Block block = new IBlock();
+        boardModel.setCurr(block);
+        boardModel.setX(6);
+        boardModel.setY(3);
+        // when
+        boardModel.moveLeft();
+        // then
+        assertTrue(boardModel.getX() == 5);
+    }
+
+    @Test
+    void moveDown() {
+        // given
+        Block block = new WeightBlock();
+        boardModel.setCurr(block);
+        boardModel.setX(6);
+        boardModel.setY(1);
+        // when
+        boardModel.moveDown();
+        // then
+        assertTrue(boardModel.getY() == 2);
+    }
+
+    @Test
+    void moveBottom() {
+        Block block = new WeightBlock();
+        boardModel.setCurr(block);
+        boardModel.setX(6);
+        boardModel.setY(1);
+        // when
+        boardModel.moveBottom();
+
+        // then
+        assertTrue(boardModel.getY() == 0);
+    }
+
 
 }

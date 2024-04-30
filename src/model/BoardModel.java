@@ -242,6 +242,10 @@ public class BoardModel {
         return nextBlock;
     }
 
+    public void setNextBlock(Block nextBlock) {
+        this.nextBlock = nextBlock;
+    }
+
     // 피드백 : 함수 명을 보고 단순 getter라고 착각할 수 있음
     public double getTime() {
         //1=0.1초
@@ -626,4 +630,7 @@ public class BoardModel {
     public void setX(int x) {
         this.x = x;
     }
+
+
+
 }

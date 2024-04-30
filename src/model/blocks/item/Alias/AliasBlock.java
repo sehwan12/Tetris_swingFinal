@@ -2,11 +2,12 @@ package model.blocks.item.Alias;
 
 import model.blocks.Block;
 import model.blocks.*;
+import model.blocks.item.ItemBlock;
 
 import java.awt.*;
 import java.util.Random;
 
-public class AliasBlock extends Block {
+public class AliasBlock extends ItemBlock {
     public Block subBlock;
     String itemText;
     public AliasBlock() {

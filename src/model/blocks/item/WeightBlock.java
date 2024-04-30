@@ -3,7 +3,7 @@ import model.blocks.Block;
 
 import java.awt.Color;
 
-public class WeightBlock extends Block {
+public class WeightBlock extends ItemBlock {
     public WeightBlock() {
         shape = new int[][] {
                 {0, 1, 1, 0},

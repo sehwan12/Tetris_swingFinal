@@ -4,7 +4,7 @@ import model.blocks.Block;
 
 import java.awt.*;
 
-public class ClearBlock extends Block {
+public class ClearBlock extends ItemBlock {
     public ClearBlock() {
         shape = new int[][] {
                 {1}

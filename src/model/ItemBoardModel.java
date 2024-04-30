@@ -18,7 +18,7 @@ import java.util.Random;
 public class ItemBoardModel extends BoardModel {
     private int beforeLineCount;
 
-    private static int ci = 2;
+    private final static int ci = 10;
 
     boolean horizonLock =false;
     public ItemBoardModel(){
@@ -72,11 +72,8 @@ public class ItemBoardModel extends BoardModel {
                         else if (curr instanceof LineFillBlock) {
                             board_text[y+j][x+i] = "F";
                         }
-                        else if (curr instanceof TimerBlock) {
-                            board_text[y+j][x+i] = "S";
-                        }
                         else {
-                            board_text[y+j][x+i] = "C";
+                            board_text[y+j][x+i] = "S";
                         }
                         board_color[offset + i]=Color.WHITE;
                     }
