@@ -2,73 +2,54 @@ package model;
 
 import IO.ExportSettings;
 import model.blocks.*;
+import model.blocks.item.Alias.AliasBlock;
+import model.blocks.item.Alias.LineClearBlock;
+import model.blocks.item.Alias.LineFillBlock;
+import model.blocks.item.Alias.TimerBlock;
+import model.blocks.item.ClearBlock;
+import model.blocks.item.WeightBlock;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Objects;
 import java.util.Random;
 
 //아이템모드를 위한 모델
 public class ItemBoardModel extends BoardModel {
-    boolean isClearBlock=false;
-    boolean isTimerBlock=false;
-    //기존블럭을 변형한 블럭인지 체크
-    boolean isPlusItem=false;
-    int linesCleared_10=0;
+    private int beforeLineCount;
+
+    private final static int ci = 10;
+
+    boolean horizonLock =false;
     public ItemBoardModel(){
         gamemode="Item";
-        ExportSettings.saveSettings("mode", gamemode);
+        beforeLineCount = 0;
     }
     @Override
-    protected Block getRandomBlock(){
-        int block = rws_select();
-        Block newBlock;
-        isPlusItem=false;
-        //if (linesCleared_10==1) {
-        if(linesCleared_10==1)
-        {
-            int itemNum= rws_selectItem();
-            switch(itemNum){
-                //올 클리어 아이템
+    protected Block getRandomBlock() {
+        int maxThreshold = (beforeLineCount / ci) * ci;
+        if ((linesCleared >= (maxThreshold + ci))) {
+            beforeLineCount = linesCleared;
+            Random random = new Random();
+            int item = random.nextInt(5);
+            switch (item) {
                 case 0:
-                    linesCleared_10--;
                     return new ClearBlock();
-                //기존 블럭을 수정하는 아이템 3개(줄삭제, 타이머, 라인채우기)
                 case 1:
-                    int block2 = rws_select();
-                    newBlock = normalGetBlock(block2);
-                    isPlusItem=true;
-                    return newBlock;
-                case 2:
                     return new WeightBlock();
+                case 2:
+                    return new LineClearBlock();
+                case 3:
+                    return new LineFillBlock();
+                case 4:
+                    return new TimerBlock();
                 default:
-                    return new ClearBlock();
+                    return new TimerBlock();
             }
-
-        } else {
-            return normalGetBlock(block);
         }
-    }
-    private Block normalGetBlock(int block){
-        switch (block) {
-            case 0:
-                return new IBlock(color_blind, pattern);
-            case 1:
-                return new JBlock(color_blind, pattern);
-            case 2:
-                return new LBlock(color_blind, pattern);
-            case 3:
-                return new ZBlock(color_blind, pattern);
-            case 4:
-                return new SBlock(color_blind, pattern);
-            case 5:
-                return new TBlock(color_blind, pattern);
-            case 6:
-                return new OBlock(color_blind, pattern);
+        else {
+            return super.getRandomBlock();
         }
-        return new LBlock(color_blind, pattern);
     }
     @Override
     protected void placeBlock() {
@@ -85,18 +66,15 @@ public class ItemBoardModel extends BoardModel {
                     if(curr.getShape(i, j) == 2) {
                         //블럭의 shape가 2인곳에서
                         //what_item에 따라서 L과 F를 설정
-                        switch (what_item){
-                            case 0:
-                                board_text[y+j][x+i]="L";
-                                break;
-                            case 1:
-                                board_text[y+j][x+i]="F";
-                                break;
-                            case 2:
-                                board_text[y+j][x+i]="S";
-                                break;
+                        if (curr instanceof LineClearBlock) {
+                            board_text[y+j][x+i] = "L";
                         }
-
+                        else if (curr instanceof LineFillBlock) {
+                            board_text[y+j][x+i] = "F";
+                        }
+                        else {
+                            board_text[y+j][x+i] = "S";
+                        }
                         board_color[offset + i]=Color.WHITE;
                     }
                 }
@@ -105,7 +83,46 @@ public class ItemBoardModel extends BoardModel {
     }
 
     @Override
+    protected boolean collisionCheck(int horizon, int vertical) { // 블록, 벽 충돌을 체크하는 메서드
+        int nextX = x + horizon;
+        int nextY = y + vertical;
+
+        // 경계 및 블록과의 충돌 체크
+        for (int j = 0; j < curr.height(); j++) {
+            for (int i = 0; i < curr.width(); i++) {
+                if (curr.getShape(i, j) != 0) { // 현재 블록의 해당 부분이 실제로 블록을 구성하는지 확인 (1인지 0인지)
+                    int boardX = nextX + i;
+                    int boardY = nextY + j;
+
+                    // 벽 충돌 체크
+                    if (boardX < 0 || boardX >= WIDTH || boardY < 0 || boardY >= HEIGHT) {
+                        System.out.println("벽과 충돌");
+                        return true;
+                    }
+
+                    if ((boardY >= HEIGHT - 1) && curr instanceof WeightBlock) {
+                        System.out.println("바닥과 충돌");
+                        horizonLock = true;
+                    }
+
+                    // 다른 블록과 충돌하는지 검사
+                    if (board[boardY][boardX] != 0) {
+                        System.out.println("다른 블록과 충돌");
+                        if (curr instanceof WeightBlock) {
+                            horizonLock = true;
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+        return false; // 충돌 없음
+    }
+
+    @Override
     protected void lineClear() {
+        boolean isClearBlock=false;
+        boolean isTimerBlock=false;
         int Crow=0;
         int Srow=0;
         for (int row = HEIGHT - 1; row >= 0; row--) {
@@ -169,21 +186,13 @@ public class ItemBoardModel extends BoardModel {
                 for (int col = 0; col < WIDTH+3; col++){
                     board_color[col] = null;
                 }
-
                 linesCleared++;
-                if(linesCleared!=0 && linesCleared%10==0) {
-                    //linesCleared 증가하는 것이 lineClear 내에서 증가는데
-                    //이때 10단위로 증가할 때마다 linesCleared_10++
-                    linesCleared_10++;
-                    System.out.println("10개 라인 삭제"+linesCleared_10);
-                }
-                System.out.println("삭제된 라인 수"+linesCleared);
                 row++;
 
             }
         }
     }
-    private void lineFill() {
+    protected void lineFill() {
         for (int col = 0; col < WIDTH; col++) {
             boolean is_F=false;
             int F_row_position=HEIGHT - 1;
@@ -207,43 +216,10 @@ public class ItemBoardModel extends BoardModel {
             }
         }
     }
-    protected void random_text(Block block){
-        if(true){
-            //if(linesCleared_10>0){
-            Random random = new Random();
-
-            linesCleared_10--;
-
-            what_item=random.nextInt(how_many_items);
-            //what_item=1;
-
-            //블럭 shape 안에 1이 몇개 있는지 검사
-            int block_count=0;
-            for(int j=0; j< block.height(); j++)
-                for(int i=0; i<block.width(); i++)
-                    if(block.getShape(i,j)==1) block_count++;
-
-            //블럭 shape 안에 1의 개수를 기반으로 랜덤한 숫자 배정
-            int random_text_position=random.nextInt(block_count)+1;
-            block_count=0;
-
-            //블럭 shape 안에 random_text_position 번째의 1이 나오면
-            //해당 블럭 shape 안의 1을 2로 설정하고 return
-            for(int j=0; j< block.height(); j++)
-                for(int i=0; i<block.width(); i++)
-                {
-                    if(block.getShape(i,j)==1) block_count++;
-                    if(block_count==random_text_position){
-                        block.setShape(i,j,2);
-                        return;
-                    }
-
-                }
-        }
-    }
 
     @Override
     public void generateBlock() {
+        horizonLock = false;
         if (y == 0) { // 블록이 맨 위에 도달했을 때
             notifyGameOver();
             System.out.println("게임오버");
@@ -252,9 +228,6 @@ public class ItemBoardModel extends BoardModel {
         // curr = SidePanel.getNextBlock();
         curr = nextBlock;
         nextBlock = getRandomBlock();
-        if(isPlusItem==true){
-            random_text(nextBlock);
-        }
         beforeTime=System.currentTimeMillis();
         blockCount++;
         System.out.println("추가 된 블록 수: "+blockCount);
@@ -314,6 +287,26 @@ public class ItemBoardModel extends BoardModel {
         }
     }
     @Override
+    public void moveRight() {
+        if (horizonLock) {
+            return;
+        }
+        eraseCurr();
+        if(!collisionCheck(1, 0)) x++;
+        placeBlock();
+    }
+    @Override
+    public void moveLeft() {
+        if (horizonLock) {
+            return;
+        }
+        eraseCurr();
+        if(!collisionCheck(-1, 0)) {
+            x--;
+        }
+        placeBlock();
+    }
+    @Override
     public void moveDown() {
         eraseCurr();
         if (curr instanceof WeightBlock) {
@@ -369,32 +362,5 @@ public class ItemBoardModel extends BoardModel {
             startLineClearAnimation();
         }
     }
-    public int rws_selectItem() { //확률에 따른 블럭 생성
-        // 블럭들의 적합도(가중치)
-        double A=10,B=30, C=10;
 
-
-        // 블럭들의 적합도(가중치) 배열
-        double[] fitness = {A,B,C};
-
-        Random random = new Random();
-        //Random random = new Random(System.currentTimeMillis()); // 이것을 쓰면 오차범위가 5%를 넘음
-
-        // 최대 적합도 찾기
-        double maxFitness = 0;
-        for (double fit : fitness) {
-            if (fit > maxFitness) {
-                maxFitness = fit;
-            }
-        }
-        // 확률적 수락을 통한 개체 선택
-        while (true) {
-            // 임의의 개체 선택
-            int index = random.nextInt(fitness.length);
-            // 선택된 개체의 적합도가 확률적으로 수락되는지 확인
-            if (random.nextDouble() < fitness[index] / maxFitness) {
-                return index; // 선택된 개체의 인덱스 반환
-            }
-        }
-    }
 }

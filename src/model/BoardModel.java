@@ -85,16 +85,6 @@ public class BoardModel {
     // Observer pattern을 위한 리스트
     private List<ModelStateChangeListener> listeners = new ArrayList<>();
 
-    public int getWhat_item(){
-        return what_item;
-    }
-
-    public void setWhat_item(){
-        this.what_item=what_item;
-    }
-
-    int what_item;// 아이템 모드에서 아이템인지를 표현
-    int how_many_items=3;// 아이템 모드에서 총 아이템 개수
     public BoardModel() {
         timer = new Timer(initInterval, new ActionListener() {
             @Override
@@ -250,6 +240,10 @@ public class BoardModel {
 
     public Block getNextBlock() {
         return nextBlock;
+    }
+
+    public void setNextBlock(Block nextBlock) {
+        this.nextBlock = nextBlock;
     }
 
     // 피드백 : 함수 명을 보고 단순 getter라고 착각할 수 있음
@@ -612,5 +606,31 @@ public class BoardModel {
     public String getGamemode(){
         return gamemode;
     }
+
+    public void setCurr(Block curr) {
+        this.curr = curr;
+    }
+
+    public Block getCurr() {
+        return curr;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+
 
 }

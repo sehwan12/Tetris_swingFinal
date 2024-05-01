@@ -11,30 +11,6 @@ import java.io.FileReader;
 
 public class ExportSettings {
 
-    // 설정을 파일로 저장하는 메소드
-    public static void saveSettings(Map<String, String> settings) {
-        File file = new File("settings.ini");
-        BufferedWriter bw = null;
-        try {
-            bw = new BufferedWriter(new FileWriter(file));
-            for (Map.Entry<String, String> entry : settings.entrySet()) {
-                bw.write(entry.getKey() + "=" + entry.getValue());
-                bw.newLine();
-            }
-            bw.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (bw != null) {
-                try {
-                    bw.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
     public static void saveSettings(String key, String value) {
         File file = new File("settings.ini");
         Map<String, String> settings = new HashMap<>();

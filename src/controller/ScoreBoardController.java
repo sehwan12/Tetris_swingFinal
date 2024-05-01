@@ -61,7 +61,7 @@ public class ScoreBoardController {
         model.initData();
     }
 
-    private void initFocus() {
+    protected void initFocus() {
         // JComponent.WHEN_IN_FOCUSED_WINDOW
         InputMap im = view.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         // InputMap im = view.getRootPane().getInputMap();
@@ -81,4 +81,11 @@ public class ScoreBoardController {
 
     }
 
+    public Object getView() {
+        return view;
+    }
+
+    public void setView(ScoreBoardView view) {
+        this.view = view;
+    }
 }

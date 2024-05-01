@@ -20,6 +20,11 @@ import java.util.List;
 public class BoardController implements ModelStateChangeListener {
 
     private BoardModel model;
+
+    public BoardView getView() {
+        return view;
+    }
+
     private BoardView view;
     private SidePanelView viewSidePanel;
     private KeyListener playerKeyListener;
@@ -39,6 +44,19 @@ public class BoardController implements ModelStateChangeListener {
         initView();
         this.model.addModelStateChangeListener(this);
     }
+    public BoardController(BoardModel model, BoardView view, SidePanelView viewSidePanel) {
+        this.model = model;
+        this.view = view;
+        this.viewSidePanel = viewSidePanel;
+        view.setController(this);
+        view.getContentPane().add(viewSidePanel, BorderLayout.EAST);
+        view.setVisible(true);
+        playerKeyListener = new PlayerKeyListener();
+        // addKeyListener, setFocusable, requestFocus를 BoardView의 메서드로 대체
+        view.addKeyListenerToFrame(playerKeyListener);
+        this.model.addModelStateChangeListener(this);
+    }
+
 
 
     public void initView() {
@@ -141,7 +159,7 @@ public class BoardController implements ModelStateChangeListener {
         // View에 게임 보드 그리기 요청
         view.drawBoard(model.getBoard(), model.getBoard_color(), model.getBoard_text());
         // SidePanel에 다음 블럭 넘기기
-        viewSidePanel.drawBoard(model.getNextBlock(), model.getWhat_item());
+        viewSidePanel.drawBoard(model.getNextBlock());
         // 사이드 패널의 점수를 view에 넘겨야 한다
         viewSidePanel.setScoreText(model.getTotalscore());
     }

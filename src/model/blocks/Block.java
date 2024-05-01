@@ -25,6 +25,10 @@ public abstract class Block {
 	public void setShape(int x, int y,int i) {
 		shape[y][x]=i;
 	}
+
+	public int[][] getShapeArray() {
+		return shape;
+	}
 	
 	public Color getColor() {
 		return color;
@@ -72,5 +76,9 @@ public abstract class Block {
 		if(shape.length > 0)
 			return shape[0].length;
 		return 0;
+	}
+
+	public int getRotate_status() {
+		return rotate_status;
 	}
 }

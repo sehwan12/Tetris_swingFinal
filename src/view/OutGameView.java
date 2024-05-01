@@ -14,11 +14,15 @@ public class OutGameView extends JFrame {
 
     protected JLabel[] arrowLabel = { new JLabel("["), new JLabel("]") };
 
+    private ImportSettings importSettings;  // ImportSettings 객체를 저장하기 위한 private 멤버 변수
+
     public OutGameView() {
         setLocationRelativeTo(null);
     }
 
-
+    public void setImportSettings(ImportSettings settings) {
+        this.importSettings = settings;  // 외부에서 전달받은 ImportSettings 인스턴스 저장
+    }
     public void initPanel() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -31,16 +35,15 @@ public class OutGameView extends JFrame {
     }
 
     public void initWindow() {
+        /*if (importSettings != null) {  // importSettings가 null이 아니면 설정값을 사용하여 창 크기 설정
+            String width = importSettings.getSetting("ResolutionSizeX");
+            String height = importSettings.getSetting("ResolutionSizeY");
+            setSize(Integer.parseInt(width), Integer.parseInt(height));
+        }
         setTitle("");
-        setSize(
-                Integer.parseInt(ImportSettings.getSetting("ResoultionSizeX")),
-                Integer.parseInt(ImportSettings.getSetting("ResoultionSizeY"))
-        );
         setResizable(false);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);*/
     }
-
-    public void paintFocus() { }
     public void showWarning(String message) {
         JOptionPane.showMessageDialog(this,
                 message,
