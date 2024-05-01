@@ -10,11 +10,11 @@ import java.awt.event.KeyEvent;
 
 public class SettingsController {
     private static SettingsController instance;
-    private OutGameModel model;
+    protected OutGameModel model;
     public SettingsView view;
 
     private String currentKey;
-    private boolean isKeyMappingMode = false; // 키 매핑 모드 상태를 추적하는 변수
+    protected boolean isKeyMappingMode = false; // 키 매핑 모드 상태를 추적하는 변수
 
     private SettingsController() {
         model = OutGameModel.getInstance();
@@ -39,7 +39,7 @@ public class SettingsController {
     }
 
 
-    private void initView() {
+    protected void initView() {
         view.initPanel();
         view.initTitle();
         view.initLabel(OutGameModel.getOptionString());

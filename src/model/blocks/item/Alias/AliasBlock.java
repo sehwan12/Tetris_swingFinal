@@ -81,7 +81,6 @@ public class AliasBlock extends ItemBlock {
     }
     @Override
     public int rotate_y(){
-        // Code review : return 0 해주면 끝남
         return subBlock.rotate_y();
     }
 

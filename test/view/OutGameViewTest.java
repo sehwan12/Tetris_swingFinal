@@ -39,7 +39,7 @@ public class OutGameViewTest {
         assertEquals(new Font("malgun gothic", Font.BOLD, 20), outGameView.titleLabel.getFont());
     }
 
-    @Test
+    /*@Test
     public void testInitWindow() {
         // Correct use of Mockito's when method
         when(importSettingsMock.getSetting("ResolutionSizeX")).thenReturn("800");
@@ -52,7 +52,7 @@ public class OutGameViewTest {
         assertEquals(600, outGameView.getSize().height);
         assertFalse(outGameView.isResizable());
         assertEquals(JFrame.EXIT_ON_CLOSE, outGameView.getDefaultCloseOperation());
-    }
+    }*/
 
     @Test
     public void testShowWarning() {

@@ -1,4 +1,4 @@
-package model.blocks;
+package model.blocks.item;
 
 import model.blocks.item.WeightBlock;
 import org.junit.jupiter.api.BeforeEach;

@@ -35,17 +35,15 @@ public class OutGameView extends JFrame {
     }
 
     public void initWindow() {
-        if (importSettings != null) {  // importSettings가 null이 아니면 설정값을 사용하여 창 크기 설정
+        /*if (importSettings != null) {  // importSettings가 null이 아니면 설정값을 사용하여 창 크기 설정
             String width = importSettings.getSetting("ResolutionSizeX");
             String height = importSettings.getSetting("ResolutionSizeY");
             setSize(Integer.parseInt(width), Integer.parseInt(height));
         }
         setTitle("");
         setResizable(false);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);*/
     }
-
-    public void paintFocus() { }
     public void showWarning(String message) {
         JOptionPane.showMessageDialog(this,
                 message,
