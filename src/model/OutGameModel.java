@@ -118,6 +118,11 @@ public class OutGameModel {
         return optionString;
     }
 
+    // 유닛 테스트를 위해 setOptionFocus 추가
+    public void setOptionFocus(int optionFocus) {
+        this.optionFocus = optionFocus;
+    }
+
     public int getOptionFocus() {
         return optionFocus;
     }
