@@ -1,8 +1,8 @@
-package controller;
+package controller.OutGame;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import view.MenuView;
+import view.OutGame.MenuView;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

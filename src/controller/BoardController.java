@@ -7,32 +7,26 @@ import java.util.HashMap;
 
 import javax.swing.*;
 
-import IO.ImportSettings;
 import IO.ScoreIO;
-import model.BoardModel;
-import model.ItemBoardModel;
-import model.OutGameModel;
+import controller.OutGame.MenuController;
+import controller.OutGame.ScoreBoardController;
+import model.SingleMode.BoardModel;
+import model.OutGame.OutGameModel;
 import view.BoardView;
-import model.ModelStateChangeListener;
+import model.SingleMode.ModelStateChangeListener;
 import view.SidePanelView;
-import java.util.List;
 
 public class BoardController implements ModelStateChangeListener {
 
-    private BoardModel model;
-
-    public BoardView getView() {
-        return view;
-    }
-
-    private BoardView view;
-    private SidePanelView viewSidePanel;
-    private KeyListener playerKeyListener;
+    protected BoardModel model;
+    protected BoardView view;
+    protected SidePanelView sidePanelView;
+    protected KeyListener playerKeyListener;
 
 
-    private int selectedOption = 1;
+    protected int selectedOption = 1;
 
-    private String currentKey;
+    protected String currentKey;
 
     public BoardController() {
         model = new BoardModel();
@@ -47,7 +41,7 @@ public class BoardController implements ModelStateChangeListener {
     public BoardController(BoardModel model, BoardView view, SidePanelView viewSidePanel) {
         this.model = model;
         this.view = view;
-        this.viewSidePanel = viewSidePanel;
+        this.sidePanelView = viewSidePanel;
         view.setController(this);
         view.getContentPane().add(viewSidePanel, BorderLayout.EAST);
         view.setVisible(true);
@@ -61,15 +55,14 @@ public class BoardController implements ModelStateChangeListener {
 
     public void initView() {
         view = new BoardView();
-        viewSidePanel = new SidePanelView();
+        sidePanelView = new SidePanelView();
         view.setController(this);
-        view.getContentPane().add(viewSidePanel, BorderLayout.EAST);
+        view.getContentPane().add(sidePanelView, BorderLayout.EAST);
         view.setVisible(true);
         playerKeyListener = new PlayerKeyListener();
         // addKeyListener, setFocusable, requestFocus를 BoardView의 메서드로 대체
         view.addKeyListenerToFrame(playerKeyListener);
     }
-
 
 
     public int getSelectedOption() {
@@ -80,17 +73,17 @@ public class BoardController implements ModelStateChangeListener {
         this.selectedOption = selectedOption;
     }
 
-    public void onModelStateChanged() {
+    public void onModelStateChanged(int playerType) {
         // Model에서 상태 변경 시 호출될 메서드
         // 여기서 View의 갱신 로직 호출
         model.moveDown();
         updateBoard();
     }
-    public void notifyUpdateBoard() {
+    public void notifyUpdateBoard(int playerType) {
         updateBoard();
     }
 
-    public void notifyGameOver() {
+    public void notifyGameOver(int playerType) {
         gameOver();
     }
 
@@ -159,9 +152,13 @@ public class BoardController implements ModelStateChangeListener {
         // View에 게임 보드 그리기 요청
         view.drawBoard(model.getBoard(), model.getBoard_color(), model.getBoard_text());
         // SidePanel에 다음 블럭 넘기기
-        viewSidePanel.drawBoard(model.getNextBlock());
+        sidePanelView.drawBoard(model.getNextBlock());
         // 사이드 패널의 점수를 view에 넘겨야 한다
-        viewSidePanel.setScoreText(model.getTotalscore());
+        sidePanelView.setScoreText(model.getTotalscore());
+    }
+
+    public BoardView getView() {
+        return view;
     }
 
 
@@ -178,12 +175,12 @@ public class BoardController implements ModelStateChangeListener {
         public PlayerKeyListener() {
           keyMap = OutGameModel.getInstance().getKeyMap();
             // 아래는 getKeyText를 통해 저장된 값임
-          moveLeft = keyMap.get("moveLeft");
-          moveRight = keyMap.get("moveRight");
-          drop = keyMap.get("drop");
-          moveDown = keyMap.get("moveDown");
-          rotate = keyMap.get("rotate");
-          pause = keyMap.get("pause");
+          moveLeft = keyMap.get("moveLeft1P");
+          moveRight = keyMap.get("moveRight1P");
+          drop = keyMap.get("drop1P");
+          moveDown = keyMap.get("moveDown1P");
+          rotate = keyMap.get("rotate1P");
+          pause = keyMap.get("pause1P");
         }
 
 

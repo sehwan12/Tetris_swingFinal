@@ -1,8 +1,7 @@
-package view;
+package view.OutGame;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -10,8 +9,8 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 
 import IO.ScoreIO;
-import model.OutGameModel;
-import model.ScoreBoardModel;
+import model.OutGame.OutGameModel;
+import model.OutGame.ScoreBoardModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

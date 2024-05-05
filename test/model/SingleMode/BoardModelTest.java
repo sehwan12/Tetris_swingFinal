@@ -1,5 +1,6 @@
-package model;
+package model.SingleMode;
 
+import model.SingleMode.BoardModel;
 import model.blocks.Block;
 import model.blocks.IBlock;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,6 @@
 package controller;
 
-import IO.ScoreIO;
-import model.BoardModel;
+import model.SingleMode.BoardModel;
 import model.blocks.Block;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,9 +8,7 @@ import org.mockito.Mockito;
 import view.BoardView;
 import view.SidePanelView;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

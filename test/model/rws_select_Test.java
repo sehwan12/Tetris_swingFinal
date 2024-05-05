@@ -1,8 +1,8 @@
 package model;
 
 import junit.framework.TestCase;
-import model.BoardModel;
-import model.OutGameModel;
+import model.OutGame.OutGameModel;
+import model.SingleMode.BoardModel;
 import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

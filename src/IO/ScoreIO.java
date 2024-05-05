@@ -1,7 +1,6 @@
 package IO;
 
 
-import model.OutGameModel;
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;

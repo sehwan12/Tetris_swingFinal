@@ -1,8 +1,6 @@
-package model;
+package model.SingleMode;
 
-import IO.ExportSettings;
 import model.blocks.*;
-import model.blocks.item.Alias.AliasBlock;
 import model.blocks.item.Alias.LineClearBlock;
 import model.blocks.item.Alias.LineFillBlock;
 import model.blocks.item.Alias.TimerBlock;
@@ -18,7 +16,7 @@ import java.util.Random;
 public class ItemBoardModel extends BoardModel {
     private int beforeLineCount;
 
-    private final static int ci = 10;
+    private final static int ci = 2;
 
     boolean horizonLock =false;
     public ItemBoardModel(){

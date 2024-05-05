@@ -1,5 +1,7 @@
-package model;
+package model.SingleMode;
 
+import model.SingleMode.BoardModel;
+import model.SingleMode.ItemBoardModel;
 import model.blocks.Block;
 import model.blocks.*;
 import model.blocks.item.*;
