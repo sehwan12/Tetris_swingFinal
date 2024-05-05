@@ -1,11 +1,11 @@
-package controller;
+package controller.OutGame;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-import model.ScoreBoardModel;
-import view.ScoreBoardView;
-import model.OutGameModel;
+import model.OutGame.ScoreBoardModel;
+import view.OutGame.ScoreBoardView;
+import model.OutGame.OutGameModel;
 
 public class ScoreBoardController {
 

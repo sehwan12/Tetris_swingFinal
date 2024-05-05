@@ -1,4 +1,11 @@
-package controller;
+package controller.OutGame;
+
+import controller.BoardController;
+import controller.VersusBoardController;
+import model.VersusMode.VsBoardModel;
+import model.VersusMode.VsItemBoardModel;
+import model.VersusMode.VsTimeBoardModel;
+import view.OutGame.VersusEnterView;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -6,61 +13,40 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
-import model.ItemBoardModel;
-import model.OutGameModel;
-import view.MenuView;
+public class VersusEnterController extends MenuController {
+    private static VersusEnterController instance;
 
-public class MenuController {
-
-    private static MenuController instance;
-
-    private SettingsController settingsController;
-
-    private ScoreBoardController scoreBoardController;
-
-    private BoardController boardController;
-
-    private OutGameModel model;
-    public MenuView view;
-
-
-
-    private MenuController() {
-        this.model = OutGameModel.getInstance();
-        initFrame();
+    private VersusEnterController() {
+        super();
+        // initFrame();
     }
-    // 싱글턴
-    public static synchronized MenuController getInstance() {
+
+    public static synchronized VersusEnterController getInstance() {
         if (instance == null) {
-            instance = new MenuController();
+            instance = new VersusEnterController();
         }
         return instance;
     }
 
     public void initFrame() {
-        this.view = new MenuView();
+        this.view = new VersusEnterView();
         initView();
         initFocus();
         view.setVisible(true);
     }
 
-
-    private void initView() {
+    @Override
+    protected void initView() {
         view.initPanel();
-        if (model.getBuildType() == 3) {
-            view.initLable(model.getGameModeString());
-        }
-        view.initTitle(model.getBuildString(), model.getBuildType());
-        view.initButtons(model.getMenuString());
+        view.initTitle();
+        view.initButtons(model.getVersusMenuString());
         view.initWindow(model.getResX(), model.getResY());
         view.paintFocus(model.getCurFocus());
         view.setLocationRelativeTo(null);
     }
 
-
-
-
-    private void initFocus() {
+    @Override
+    protected void initFocus() {
         HashSet<String> keys = new HashSet<>();
         keys.add("↑");
         keys.add("↓");
@@ -81,7 +67,7 @@ public class MenuController {
         im.put(KeyStroke.getKeyStroke("↓"), "down");
         im.put(KeyStroke.getKeyStroke("ENTER"), "enter");
         im.put(KeyStroke.getKeyStroke("⏎"), "enter");
-        im.put(KeyStroke.getKeyStroke("ESC"), "esc");
+        im.put(KeyStroke.getKeyStroke("ESCAPE"), "esc");
         im.put(KeyStroke.getKeyStroke("⎋"), "esc");
 
 
@@ -89,15 +75,24 @@ public class MenuController {
         am.put("up", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.moveFocus(-1);
+                model.moveVersusFocus(-1);
                 view.paintFocus(model.getCurFocus());
             }
         });
         am.put("down", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.moveFocus(+1);
+                model.moveVersusFocus(+1);
                 view.paintFocus(model.getCurFocus());
+            }
+        });
+        am.put("esc", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                model.setyCursor(0);
+                view.dispose();
+                view = null;
+                MenuController.getInstance().initFrame();
             }
         });
         am.put("enter", new AbstractAction() {
@@ -124,6 +119,8 @@ public class MenuController {
         view.requestFocusInWindow();
 
     }
+
+    @Override
     protected void enterMenu(int curFocus) {
         switch (curFocus) {
             case 0:
@@ -131,40 +128,29 @@ public class MenuController {
                 view.dispose();
                 view = null;
                 // 추후 대전모드를 위해서 Singleton으로 적용하지 않았음
-                boardController = new BoardController();
+                boardController = new VersusBoardController(new VsBoardModel(0), new VsBoardModel(1));
+                System.out.println("기본모드 진입");
                 break;
             case 1:
                 view.setVisible(false);
                 view.dispose();
                 view = null;
                 // 아이템 모드 진입하도록 수정해야 함
-                boardController = new BoardController(new ItemBoardModel());
+                boardController = new VersusBoardController(new VsItemBoardModel(0), new VsItemBoardModel(1));
+                System.out.println("아이템모드 진입");
                 break;
             case 2:
                 view.setVisible(false);
                 view.dispose();
                 view = null;
-                // Option 창 진입
-                settingsController = SettingsController.getInstance();
-                if (settingsController.view == null) {
-                    settingsController.initFrame();
-                }
-                // 추후 메서드 추가
+                // 아이템 모드 진입하도록 수정해야 함
+                boardController = new VersusBoardController(new VsTimeBoardModel(0), new VsTimeBoardModel(1));
+                System.out.println("시간제한 모드 진입");
                 break;
-            case 3:
-                view.setVisible(false);
-                view.dispose();
-                view = null;
-                scoreBoardController = ScoreBoardController.getInstance();
-                scoreBoardController.initFrame();
 
-                // ScoreBoard 진입
-                // 추후 메서드 추가
-                break;
-            case 4:
-                System.exit(0); // 정상 종료
-                break;
         }
     }
+
+
 
 }

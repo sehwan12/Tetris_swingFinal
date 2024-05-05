@@ -1,4 +1,4 @@
-package model;
+package model.OutGame;
 
 import org.json.simple.*;
 import IO.ScoreIO;

@@ -1,4 +1,4 @@
-package view;
+package view.OutGame;
 
 // 아웃게임 View를 위한 super class
 import javax.swing.*;
@@ -28,13 +28,19 @@ public class OutGameView extends JFrame {
         mainPanel.setLayout(new BorderLayout());
     }
 
+    public void initTitle(String[] buildStirng, int buildType) {
+        String fullTitle = "";
+        titleLabel = new JLabel(fullTitle);
+        titleLabel.setFont(new Font("malgun gothic", Font.BOLD, 20));
+    }
+
     public void initTitle() {
         String fullTitle = "";
         titleLabel = new JLabel(fullTitle);
         titleLabel.setFont(new Font("malgun gothic", Font.BOLD, 20));
     }
 
-    public void initWindow() {
+    public void initWindow(int x, int y) {
         /*if (importSettings != null) {  // importSettings가 null이 아니면 설정값을 사용하여 창 크기 설정
             String width = importSettings.getSetting("ResolutionSizeX");
             String height = importSettings.getSetting("ResolutionSizeY");
@@ -54,5 +60,17 @@ public class OutGameView extends JFrame {
     public int showQuestion(String message) {
         return JOptionPane.showConfirmDialog(this, message,
                 "경고", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+    }
+
+    public void initButtons(String[] buttonStrings) {
+
+    }
+
+    public void paintFocus(int focus) {
+
+    }
+
+    public void initLable(String[] labelStrings) {
+
     }
 }

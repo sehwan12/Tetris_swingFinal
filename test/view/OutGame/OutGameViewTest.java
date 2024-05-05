@@ -1,6 +1,5 @@
-package view;
+package view.OutGame;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import javax.swing.*;
@@ -9,6 +8,7 @@ import IO.ImportSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import view.OutGame.OutGameView;
 
 import java.awt.*;
 
