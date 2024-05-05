@@ -1,10 +1,10 @@
-package controller;
+package controller.OutGame;
 
-import model.OutGameModel;
+import model.OutGame.OutGameModel;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import view.SettingsView;
+import view.OutGame.SettingsView;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -157,7 +157,7 @@ class SettingsControllerTest2 {
         controller.view.getRootPane().getActionMap().get("enter").actionPerformed(null);
 
         // 키 매핑 모드가 올바르게 설정되었는지 확인
-        assertTrue(controller.isKeyMappingMode, "Key mapping mode should be set to true");
+        assertTrue(controller.isP1KeyMappingMode, "Key mapping mode should be set to true");
     }
 
     @Test
@@ -223,12 +223,12 @@ class SettingsControllerTest2 {
         KeyEvent enterKeyEvent = new KeyEvent(new JPanel(), KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, KeyEvent.VK_ENTER, KeyEvent.CHAR_UNDEFINED);
 
         // 키 매핑 모드를 활성화 시킴
-        settingsController.isKeyMappingMode = true;
+        settingsController.isP1KeyMappingMode = true;
 
         // 키 입력 처리
         settingsController.view.getKeyListeners()[0].keyPressed(enterKeyEvent);
 
         // 키 매핑 모드가 비활성화되었는지 확인
-        assertFalse(settingsController.isKeyMappingMode);
+        assertFalse(settingsController.isP1KeyMappingMode);
     }
 }
