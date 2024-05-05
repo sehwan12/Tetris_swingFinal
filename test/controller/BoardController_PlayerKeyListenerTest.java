@@ -8,8 +8,7 @@ import java.awt.event.KeyEvent;
 import org.junit.Before;
 import org.junit.Test;
 
-import controller.BoardController;
-import model.BoardModel;
+import model.SingleMode.BoardModel;
 import org.mockito.Mockito;
 import view.BoardView;
 import view.SidePanelView;

@@ -1,6 +1,4 @@
-package view;
-
-import view.OutGameView;
+package view.OutGame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,8 +13,10 @@ public class SettingsView extends OutGameView {
     private JButton[] resButton;
 
     private JButton[] keyButton;
+    private JButton[] keyButton2;
 
     private JLabel[] keyLabel;
+    private JLabel[] keyLabel2;
 
     private JButton[] blindButton;
 
@@ -28,6 +28,7 @@ public class SettingsView extends OutGameView {
 
     // public void initPanel() {}
 
+    @Override
     public void initTitle() {
         // Title as buildType
         String fullTitle = "Options";
@@ -36,7 +37,6 @@ public class SettingsView extends OutGameView {
         titleLabel.setFont(new Font("Malgun Gothic", Font.BOLD, 20));
 
     }
-
     public void initLabel(String[] optionString) {
         if (optionString.length > 0) {
             optionLabel = new JLabel[optionString.length];
@@ -74,7 +74,7 @@ public class SettingsView extends OutGameView {
         }
         for (int i = 0; i < keyString.length; i++) {
             keyButton[i] = new JButton(keyString[i]);
-            keyLabel[i] = new JLabel(keyMap.get(keyString[i]));
+            keyLabel[i] = new JLabel(keyMap.get(keyString[i] + "1P"));
             keyButton[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
             keyButton[i].setBackground(Color.WHITE);
 
@@ -91,56 +91,80 @@ public class SettingsView extends OutGameView {
         keyButton[0].setBorder(BorderFactory.createLineBorder(Color.YELLOW, 3));
         this.add(optionPanel[1]);
     }
-
-    public void initCBlindPanel(String[] patternString) {
+    public void initKeyMapPanel2(String[] keyString, HashMap<String, String> keyMap) {
         optionPanel[2] = new JPanel();
         optionPanel[2].setLayout(null);
+        if (keyString.length > 0) {
+            keyButton2 = new JButton[keyString.length];
+            keyLabel2 = new JLabel[keyString.length];
+        }
+        for (int i = 0; i < keyString.length; i++) {
+            keyButton2[i] = new JButton(keyString[i]);
+            keyLabel2[i] = new JLabel(keyMap.get(keyString[i] + "2P"));
+            keyButton2[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+            keyButton2[i].setBackground(Color.WHITE);
+
+            keyLabel2[i].setFont(new Font("Malgun Gothic", Font.BOLD, 20));
+
+            optionPanel[2].add(keyButton2[i]);
+            optionPanel[2].add(keyLabel2[i]);
+            keyButton2[i].setVisible(true);
+            keyLabel2[i].setVisible(true);
+        }
+        optionPanel[2].setVisible(false);
+        keyButton2[0].setBorder(BorderFactory.createLineBorder(Color.YELLOW, 3));
+        this.add(optionPanel[2]);
+    }
+
+    public void initCBlindPanel(String[] patternString) {
+        optionPanel[3] = new JPanel();
+        optionPanel[3].setLayout(null);
         if (patternString.length > 0) {
             blindButton = new JButton[patternString.length];
         }
         for (int i = 0; i < patternString.length; i++) {
             blindButton[i] = new JButton(patternString[i]);
             blindButton[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-            optionPanel[2].add(blindButton[i]);
+            optionPanel[3].add(blindButton[i]);
             blindButton[i].setVisible(true);
         }
-        optionPanel[2].setVisible(false);
+        optionPanel[3].setVisible(false);
         blindButton[0].setBorder(BorderFactory.createLineBorder(Color.YELLOW, 3));
-        this.add(optionPanel[2]);
+        this.add(optionPanel[3]);
     }
 
     public void initResetPanel(String[] resetString) {
-        optionPanel[3] = new JPanel();
-        optionPanel[3].setLayout(null);
+        optionPanel[4] = new JPanel();
+        optionPanel[4].setLayout(null);
         if (resetString.length > 0) {
             resetButton = new JButton[resetString.length];
         }
         for (int i = 0; i < resetString.length; i++) {
             resetButton[i] = new JButton(resetString[i]);
             resetButton[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-            optionPanel[3].add(resetButton[i]);
+            optionPanel[4].add(resetButton[i]);
             resetButton[i].setVisible(true);
         }
-        optionPanel[3].setVisible(false);
+        optionPanel[4].setVisible(false);
         resetButton[0].setBorder(BorderFactory.createLineBorder(Color.YELLOW, 3));
-        this.add(optionPanel[3]);
+        this.add(optionPanel[4]);
     }
 
     public void initDifficultyPanel(String[] difficultyString) {
-        optionPanel[4] = new JPanel();
-        optionPanel[4].setLayout(null);
+        optionPanel[5] = new JPanel();
+        optionPanel[5].setLayout(null);
         if (difficultyString.length > 0) {
             difficultyButton = new JButton[difficultyString.length];
         }
         for (int i = 0; i < difficultyString.length; i++) {
             difficultyButton[i] = new JButton(difficultyString[i]);
             difficultyButton[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-            optionPanel[4].add(difficultyButton[i]);
+            optionPanel[5].add(difficultyButton[i]);
             difficultyButton[i].setVisible(true);
         }
-        optionPanel[4].setVisible(false);
+        optionPanel[5].setVisible(false);
         difficultyButton[0].setBorder(BorderFactory.createLineBorder(Color.YELLOW, 3));
-        this.add(optionPanel[4]);
+        this.add(optionPanel[5]);
     }
 
     public void initWindow(int resX, int resY) {
@@ -153,7 +177,7 @@ public class SettingsView extends OutGameView {
 
                 optionLabel[i].setFont(new Font("Malgun Gothic", Font.BOLD, 15));
 
-                optionLabel[i].setBounds(resX * (i + 1) * 5 / (optionLabel.length * 6 ), resY / 6, 5 * resX / ( 6 * optionLabel.length), resY / 15);
+                optionLabel[i].setBounds(20 + (i) * resX / optionLabel.length, resY / 6, 5 * resX / ( 6 * optionLabel.length), resY / 15);
                 // optionLabel[i].setHorizontalAlignment(JLabel.CENTER);
                 this.add(optionLabel[i]);
                 optionLabel[0].setForeground(Color.YELLOW);
@@ -163,7 +187,7 @@ public class SettingsView extends OutGameView {
 //                optionLabel[0].setVisible(true);
 //            }
 
-            arrowLabel[0].setBounds(resX / 10, resY / 6, resX / 3, resY / 15);
+            arrowLabel[0].setBounds(10, resY / 6, resX / 3, resY / 15);
             arrowLabel[0].setForeground(Color.GREEN);
             arrowLabel[1].setBounds(resX - 10, resY / 6, resX / 3, resY / 15);
             arrowLabel[1].setForeground(Color.GREEN);
@@ -172,7 +196,7 @@ public class SettingsView extends OutGameView {
 
         }
 
-        titleLabel.setBounds(resX / 2 - titleLabel.getText().length() * 5 , resY / 20, resX / 2, resY / 6);
+        titleLabel.setBounds(resX / 2 - titleLabel.getText().length() * 5 , resY / 50, resX / 2, resY / 6);
         this.add(titleLabel);
 
         for (int i = 0; i < optionLabel.length; i++) {
@@ -189,6 +213,14 @@ public class SettingsView extends OutGameView {
 
         for (int i = 0; i < keyLabel.length; i++) {
             keyLabel[i].setBounds(2 * resX / 3,  i * (resY / 20 + resY / 30), resX / 3, resY / 20);
+        }
+
+        for (int i = 0; i < keyButton2.length; i++) {
+            keyButton2[i].setBounds(resX / 6,  i * (resY / 20 + resY / 30), resX / 3, resY / 20);
+        }
+
+        for (int i = 0; i < keyLabel2.length; i++) {
+            keyLabel2[i].setBounds(2 * resX / 3,  i * (resY / 20 + resY / 30), resX / 3, resY / 20);
         }
 
         for (int i = 0; i < blindButton.length; i++) {
@@ -223,9 +255,16 @@ public class SettingsView extends OutGameView {
         optionPanel[section].setVisible(true);
     }
 
-    public void updateKeyMap(String[] keyString, HashMap<String, String> keyMap) {
-        for (int i = 0; i < keyString.length; i++) {
-            keyLabel[i].setText(keyMap.get(keyString[i]));
+    public void updateKeyMap(String[] keyString, HashMap<String, String> keyMap, String player) {
+        if (player.equals("1P")) {
+            for (int i = 0; i < keyString.length; i++) {
+                keyLabel[i].setText(keyMap.get(keyString[i] + player));
+            }
+        }
+        else {
+            for (int i = 0; i < keyString.length; i++) {
+                keyLabel2[i].setText(keyMap.get(keyString[i] + player));
+            }
         }
     }
 
@@ -245,12 +284,15 @@ public class SettingsView extends OutGameView {
                 releaseButton(keyButton, yCursor);
                 break;
             case 2:
-                releaseButton(blindButton, yCursor);
+                releaseButton(keyButton2, yCursor);
                 break;
             case 3:
-                releaseButton(resetButton, yCursor);
+                releaseButton(blindButton, yCursor);
                 break;
             case 4:
+                releaseButton(resetButton, yCursor);
+                break;
+            case 5:
                 releaseButton(difficultyButton, yCursor);
                 break;
         }
@@ -270,9 +312,12 @@ public class SettingsView extends OutGameView {
                 paintButton(keyButton, yCursor);
                 break;
             case 2:
-                paintButton(blindButton, yCursor);
+                paintButton(keyButton2, yCursor);
                 break;
             case 3:
+                paintButton(blindButton, yCursor);
+                break;
+            case 4:
                 paintButton(resetButton, yCursor);
                 break;
         }
@@ -296,12 +341,15 @@ public class SettingsView extends OutGameView {
                 highlightButton(keyButton, yCursor);
                 break;
             case 2:
-                highlightButton(blindButton, yCursor);
+                highlightButton(keyButton2, yCursor);
                 break;
             case 3:
-                highlightButton(resetButton, yCursor);
+                highlightButton(blindButton, yCursor);
                 break;
             case 4:
+                highlightButton(resetButton, yCursor);
+                break;
+            case 5:
                 highlightButton(difficultyButton, yCursor);
                 break;
         }

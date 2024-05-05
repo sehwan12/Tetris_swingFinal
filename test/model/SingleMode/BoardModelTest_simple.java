@@ -1,8 +1,9 @@
-package model;
+package model.SingleMode;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import model.SingleMode.BoardModel;
 import model.blocks.Block;
 import model.blocks.IBlock;
 import model.blocks.OBlock;

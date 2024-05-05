@@ -1,8 +1,8 @@
-package controller;
+package controller.OutGame;
 
 import org.junit.Before;
 import org.junit.Test;
-import view.SettingsView;
+import view.OutGame.SettingsView;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
