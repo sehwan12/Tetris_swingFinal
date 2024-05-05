@@ -1,7 +1,7 @@
-package controller;
+package controller.OutGame;
 
-import model.OutGameModel;
-import view.SettingsView;
+import model.OutGame.OutGameModel;
+import view.OutGame.SettingsView;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -14,7 +14,8 @@ public class SettingsController {
     public SettingsView view;
 
     private String currentKey;
-    protected boolean isKeyMappingMode = false; // 키 매핑 모드 상태를 추적하는 변수
+    protected boolean isP1KeyMappingMode = false; // 키 매핑 모드 상태를 추적하는 변수
+    protected boolean isP2KeyMappingMode = false; // 키 매핑 모드 상태를 추적하는 변수
 
     private SettingsController() {
         model = OutGameModel.getInstance();
@@ -45,6 +46,7 @@ public class SettingsController {
         view.initLabel(OutGameModel.getOptionString());
         view.initResPanel(OutGameModel.getRecommendResolution());
         view.initKeyMapPanel(OutGameModel.getKeyString(), OutGameModel.getKeyMap());
+        view.initKeyMapPanel2(OutGameModel.getKeyString(), OutGameModel.getKeyMap());
         view.initCBlindPanel(OutGameModel.getBlindString());
         view.initResetPanel(OutGameModel.getResetString());
         view.initDifficultyPanel(OutGameModel.getDifficultyString());
@@ -116,14 +118,22 @@ public class SettingsController {
                         view.initWindow(model.getResX(), model.getResY());
                         break;
                     case 1:
-                        if (!isKeyMappingMode) {
-                            isKeyMappingMode = true;
+                        if (!isP1KeyMappingMode) {
+                            isP1KeyMappingMode = true;
                             view.paintButton(model.getOptionFocus(), model.getyCursor());
                             // 키 매핑 모드 진입
                             // 여기서 키 입력 대기, 아래 KeyAdapter에서 처리
                         }
                         break;
                     case 2:
+                        if (!isP2KeyMappingMode) {
+                            isP2KeyMappingMode = true;
+                            view.paintButton(model.getOptionFocus(), model.getyCursor());
+                            // 키 매핑 모드 진입
+                            // 여기서 키 입력 대기, 아래 KeyAdapter에서 처리
+                        }
+                        break;
+                    case 3:
                         view.paintButton(model.getOptionFocus(), model.getyCursor());
                         model.setBlindMode();
                         if (model.isBlindMode()) {
@@ -137,7 +147,7 @@ public class SettingsController {
                             });
                         }
                         break;
-                    case 3:
+                    case 4:
                         view.paintButton(model.getOptionFocus(), model.getyCursor());
                         if (model.getyCursor() == 0) {
                             if (JOptionPane.YES_OPTION == view.showQuestion("스코어 보드 기록을 초기화하시겠습니까?")) {
@@ -148,11 +158,12 @@ public class SettingsController {
                             if (JOptionPane.YES_OPTION == view.showQuestion("모든 옵션이 기본값으로 초기화됩니다")) {
                                 model.resetDefault();
                                 view.initWindow(model.getResX(), model.getResY());
-                                view.updateKeyMap(model.getKeyString(), model.getKeyMap());
+                                view.updateKeyMap(model.getKeyString(), model.getKeyMap(), "1P");
+                                view.updateKeyMap(model.getKeyString(), model.getKeyMap(), "2P");
                             }
                         }
                         break;
-                    case 4:
+                    case 5:
                         view.paintButton(model.getOptionFocus(), model.getyCursor());
                         model.setDifficulty();
                         view.showWarning(OutGameModel.getDifficultyString()[model.getyCursor()] + " 난이도로 설정되었습니다.");
@@ -171,19 +182,27 @@ public class SettingsController {
                 System.out.println("Pressed key: " + currentKey);
 
                 // 설정 모델에 키 업데이트
-                if (isKeyMappingMode) {
-                    isKeyMappingMode = false;
+                if (isP1KeyMappingMode || isP2KeyMappingMode) {
+                    isP1KeyMappingMode = false;
+                    isP2KeyMappingMode = false;
                     if (currentKey.equals("⏎") || currentKey.equals("Enter")) {
                         SwingUtilities.invokeLater(() -> {
                             view.showWarning("Enter 키는 설정하실 수 없습니다.");
                             // 경고 메시지 후 다음 명령 실행
                             view.releaseButton(model.getOptionFocus(), model.getyCursor());
-                            isKeyMappingMode = false;
+                            isP1KeyMappingMode = false;
+                            isP2KeyMappingMode = false;
                         });
                     }
                     else {
-                        OutGameModel.setKeyMap(currentKey);
-                        view.updateKeyMap(model.getKeyString(), model.getKeyMap());
+                        if (model.getOptionFocus() == 1) {
+                            OutGameModel.setP1KeyMap(currentKey);
+                            view.updateKeyMap(model.getKeyString(), model.getKeyMap(), "1P");
+                        }
+                        else {
+                            OutGameModel.setP2KeyMap(currentKey);
+                            view.updateKeyMap(model.getKeyString(), model.getKeyMap(), "2P");
+                        }
                         view.releaseButton(model.getOptionFocus(), model.getyCursor());
                     }
                 }

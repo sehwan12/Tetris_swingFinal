@@ -14,20 +14,19 @@ import javax.swing.text.StyledDocument;
 
 // MVC에서 View와 Controller의 상호작용
 import controller.BoardController;
-import IO.ImportSettings;
-import model.OutGameModel;
+import model.OutGame.OutGameModel;
 
 public class BoardView extends JFrame {
     private BoardController controller; // BoardController 참조 추가
 
     // board array size
-    private static final int WIDTH = 10;
+    protected static final int WIDTH = 10;
     private static final int HEIGHT = 20;
 
     public static final char BORDER_CHAR = 'X';
 
-    private JTextPane pane;
-    private SimpleAttributeSet styleSet;
+    protected JTextPane pane;
+    protected SimpleAttributeSet styleSet;
 
 
     private JPanel glassPane; //게임 정지화면을 나타낼 glassPane

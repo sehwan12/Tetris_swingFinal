@@ -1,9 +1,9 @@
-package controller;
+package controller.OutGame;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import view.ScoreBoardView;
+import view.OutGame.ScoreBoardView;
 
 import javax.swing.*;
 

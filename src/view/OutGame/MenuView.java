@@ -1,4 +1,4 @@
-package view;
+package view.OutGame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +12,7 @@ public class MenuView extends OutGameView {
 
     private JLabel[] gameModeLabel;
 
-    private JButton[] menuButton;
+    protected JButton[] menuButton;
 
     // private JLabel titleLabel;
 
@@ -74,6 +74,7 @@ public class MenuView extends OutGameView {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         // 여기서부터 함수 코드 끝까지는 해상도에 따른 프로퍼티를 구현함
+        /*
         if (gameModeLabel != null) {
             for (int i = 0; i < gameModeLabel.length; i++) {
                 gameModeLabel[i].setFont(new Font("malgun gothic", Font.BOLD, 15));
@@ -91,11 +92,13 @@ public class MenuView extends OutGameView {
             this.add(arrowLabel[1]);
         }
 
-        titleLabel.setBounds(resX / 2 - titleLabel.getText().length() * 5 , resY / 20, resX / 2, resY / 6);
+         */
+
+        titleLabel.setBounds(resX / 2 - titleLabel.getText().length() * 5 , resY / 40, resX / 2, resY / 6);
         this.add(titleLabel);
 
         for (int i = 0; i < menuButton.length; i++) {
-            menuButton[i].setBounds(resX / 3,  resY / 5 + (resY / 8) * (i + 1), resX / 3, resY / 10);
+            menuButton[i].setBounds(resX / 3,  resY / 13 + (resY / 8) * (i + 1), resX / 3, resY / 10);
         }
 
         this.add(mainPanel);
