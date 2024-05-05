@@ -1,4 +1,4 @@
-package model;
+package model.OutGame;
 
 import IO.ImportSettings;
 import IO.ExportSettings;
@@ -22,17 +22,19 @@ public class OutGameModel {
 
     private int curFocus = 0;
 
-    private static final int buildType = 0;
+    private static final int buildType = 3;
     private static String[] buildString = { "Release", "Development", "Feature", "InProgress"};
 
-    private static String[] menuString = { "Start Game", "Item Mode", "Settings", "ScoreBoard", "Quit" };
+    private static String[] menuString = { "Start Game", "Item Mode", "Versus Mode", "Settings", "ScoreBoard", "Quit" };
+
+    private static String[] versusMenuString = { "Basic Mode", "Item Mode", "TimeLimit Mode" };
 
     private static String[] gameModeString = { "Single Play", "Duo Play" };
 
     private static String[] difficultyString = { "Easy", "Normal", "Hard" };
 
     // 초기화에 스코어보드 기록 초기화, 설정 되돌리기 포함시키기
-    private static String[] optionString = { "해상도", "키 매핑", "색맹 모드", "초기화", "난이도"};
+    private static String[] optionString = { "해상도", "1p 키", "2p 키", "색맹모드", "초기화", "난이도"};
 
     private final static int[][] resolutionData = { {400, 600}, {500, 750}, {600, 900}};
 
@@ -44,7 +46,7 @@ public class OutGameModel {
 
     private static String[] resetString = { "스코어보드 기록 초기화", "모두 기본 설정으로 초기화" };
 
-    private static String[][] stringType = { recommendResolution, keyString, blindString, resetString, difficultyString };
+    private static String[][] stringType = { recommendResolution, keyString, keyString, blindString, resetString, difficultyString };
 
     private int optionFocus = 0; // 0 : 해상도, 1 : 키 매핑, 2 : 색맹 모드, 3 : 초기화
 
@@ -56,7 +58,8 @@ public class OutGameModel {
         resY = Integer.parseInt(ImportSettings.getSetting("ResolutionSizeY"));
         keyMap = new HashMap<>();
         for (int i = 0; i < keyString.length; i++) {
-            keyMap.put(keyString[i], ImportSettings.getSetting(keyString[i]));
+            keyMap.put(keyString[i] + "1P", ImportSettings.getSetting(keyString[i] + "1P"));
+            keyMap.put(keyString[i] + "2P", ImportSettings.getSetting(keyString[i] + "2P"));
         }
         if (ImportSettings.getSetting("blindMode").equals("false")) {
             blindMode = false;
@@ -108,6 +111,10 @@ public class OutGameModel {
 
     public String[] getGameModeString() {
         return gameModeString;
+    }
+
+    public static String[] getVersusMenuString() {
+        return versusMenuString;
     }
 
     public int getBuildType() {
@@ -225,6 +232,16 @@ public class OutGameModel {
         ExportSettings.saveSettings(keyString[instance.yCursor], KeyText);
     }
 
+    public static void setP1KeyMap(String KeyText) {
+        keyMap.put(keyString[instance.yCursor] + "1P", KeyText);
+        ExportSettings.saveSettings(keyString[instance.yCursor] + "1P", KeyText);
+    }
+
+    public static void setP2KeyMap(String KeyText) {
+        keyMap.put(keyString[instance.yCursor] + "2P", KeyText);
+        ExportSettings.saveSettings(keyString[instance.yCursor] + "2P", KeyText);
+    }
+
     public void setResolution() {
         resX = resolutionData[yCursor][0];
         resY = resolutionData[yCursor][1];
@@ -244,7 +261,9 @@ public class OutGameModel {
         resY = Integer.parseInt(ImportSettings.getSetting("ResolutionSizeY"));
         keyMap = new HashMap<>();
         for (int i = 0; i < keyString.length; i++) {
-            keyMap.put(keyString[i], ImportSettings.getSetting(keyString[i]));
+            keyMap.put(keyString[i] + "1P", ImportSettings.getSetting(keyString[i] + "1P"));
+            keyMap.put(keyString[i] + "2P", ImportSettings.getSetting(keyString[i] + "2P"));
+
         }
         if (ImportSettings.getSetting("blindMode").equals("false")) {
             blindMode = false;
@@ -258,6 +277,11 @@ public class OutGameModel {
 
     public void moveFocus(int x) {
         if ((x > 0 && (curFocus + x) < menuString.length) || (x < 0 && curFocus + x >= 0))
+            curFocus += x;
+    }
+
+    public void moveVersusFocus(int x) {
+        if ((x > 0 && (curFocus + x) < versusMenuString.length) || (x < 0 && curFocus + x >= 0))
             curFocus += x;
     }
 

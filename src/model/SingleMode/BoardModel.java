@@ -1,34 +1,16 @@
-package model;
+package model.SingleMode;
 
 import java.util.*;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.font.FontRenderContext;
-import java.awt.font.GlyphVector;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ImageObserver;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.RenderableImage;
-import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
 
-import javax.swing.*;
 import javax.swing.Timer;
-import javax.swing.border.CompoundBorder;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
 
 import IO.ExportSettings;
-import controller.BoardController;
 import model.blocks.*;
-import model.ModelStateChangeListener;
-import model.OutGameModel;
+import model.OutGame.OutGameModel;
 
 
 public class BoardModel {
@@ -81,9 +63,9 @@ public class BoardModel {
 
     // 게임 일시 정지 확인용 isPaused by chatGPT3.5
     // 피드백 : 멤버 메서드와 변수는 따로 분리해서 써주세요
-    private boolean isPaused = false;
+    protected boolean isPaused = false;
     // Observer pattern을 위한 리스트
-    private List<ModelStateChangeListener> listeners = new ArrayList<>();
+    protected List<ModelStateChangeListener> listeners = new ArrayList<>();
 
     public BoardModel() {
         timer = new Timer(initInterval, new ActionListener() {
@@ -143,19 +125,19 @@ public class BoardModel {
 
     protected void notifyStateChanged() {
         for (ModelStateChangeListener listener : listeners) {
-            listener.onModelStateChanged();
+            listener.onModelStateChanged(0);
         }
     }
 
     protected void notifyUpdateBoard() {
         for (ModelStateChangeListener listener : listeners) {
-            listener.notifyUpdateBoard();
+            listener.notifyUpdateBoard(0);
         }
     }
 
     protected void notifyGameOver() {
         for (ModelStateChangeListener listener : listeners) {
-            listener.notifyGameOver();
+            listener.notifyGameOver(0);
         }
     }
 
@@ -631,6 +613,8 @@ public class BoardModel {
         this.x = x;
     }
 
-
+    public Timer getTimer() {
+        return timer;
+    }
 
 }

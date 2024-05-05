@@ -1,7 +1,6 @@
 
 
-import javax.swing.*;
-import controller.*;
+import controller.OutGame.MenuController;
 
 public class Tetris {
     public static void main(String[] args) {

@@ -1,17 +1,19 @@
-package view;
+package view.OutGame;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 
+import java.util.Comparator;
+
+
 import IO.ScoreIO;
-import model.OutGameModel;
-import model.ScoreBoardModel;
+import model.OutGame.OutGameModel;
+import model.OutGame.ScoreBoardModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -32,6 +34,12 @@ public class ScoreBoardView extends JFrame {
         loadScoreBoard(ScoreBoardModel.getJsonArr());
         //각 칼럼을 누르면 칼럼별로 정렬됨
         TableRowSorter rowSorter = new TableRowSorter<TableModel>(table.getModel());
+        rowSorter.setComparator(4, new Comparator<Long>() {
+            @Override
+            public int compare(Long o1, Long o2) {
+                return Long.compare(o1, o2);
+            }
+        });
         rowSorter.addRowSorterListener(e -> updateRanks());
         table.setRowSorter(rowSorter);
         setSize(OutGameModel.getResX(), OutGameModel.getResY());
@@ -52,6 +60,12 @@ public class ScoreBoardView extends JFrame {
         loadScoreBoard(ScoreBoardModel.getJsonArr());
         //각 칼럼을 누르면 칼럼별로 정렬됨
         TableRowSorter rowSorter = new TableRowSorter<TableModel>(table.getModel());
+        rowSorter.setComparator(4, new Comparator<Long>() {
+            @Override
+            public int compare(Long o1, Long o2) {
+                return Long.compare(o1, o2);
+            }
+        });
         rowSorter.addRowSorterListener(e -> updateRanks());
         table.setRowSorter(rowSorter);
         setSize(OutGameModel.getResX(), OutGameModel.getResY());
