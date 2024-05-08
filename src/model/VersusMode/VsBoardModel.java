@@ -5,7 +5,7 @@ import model.SingleMode.ModelStateChangeListener;
 
 public class VsBoardModel extends BoardModel {
 
-    int playerType;
+    public int playerType;
     public VsBoardModel(int playerType) {
         super();
         this.playerType = playerType;

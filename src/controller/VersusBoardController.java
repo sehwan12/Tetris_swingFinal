@@ -44,7 +44,7 @@ public class VersusBoardController extends BoardController {
         playerKeyListener = new PlayerKeyListener();
         // addKeyListener, setFocusable, requestFocus를 BoardView의 메서드로 대체
         view.addKeyListenerToFrame(playerKeyListener);
-        view.setSize(OutGameModel.getResX() * 5 / 4, OutGameModel.getResY());
+        view.setSize(OutGameModel.getResX() * 4 / 3, OutGameModel.getResY());
     }
 
     @Override
@@ -84,18 +84,6 @@ public class VersusBoardController extends BoardController {
             // 게임 종료
             System.exit(0);
         }
-    }
-    @Override
-    public void updateBoard() {
-        // 게임 로직 처리...
-        // 예를 들어, 게임 보드 상태를 업데이트하는 로직 수행
-
-        // View에 게임 보드 그리기 요청
-        view.drawBoard(model.getBoard(), model.getBoard_color(), model.getBoard_text());
-        // SidePanel에 다음 블럭 넘기기
-        sidePanelView.drawBoard(model.getNextBlock());
-        // 사이드 패널의 점수를 view에 넘겨야 한다
-        sidePanelView.setScoreText(model.getTotalscore());
     }
 
     public void updateP2Board() {
