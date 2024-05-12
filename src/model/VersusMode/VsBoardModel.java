@@ -26,7 +26,6 @@ public class VsBoardModel extends BoardModel {
     protected void notifyGameOver() {
         for (ModelStateChangeListener listener : listeners) {
             listener.notifyGameOver(playerType);
-            System.out.println(playerType + "번 플레이어 패배");
         }
     }
 }
