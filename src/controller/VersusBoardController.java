@@ -28,6 +28,12 @@ public class VersusBoardController extends BoardController {
         this.model = P1Model;
         this.P2Model = P2Model;
         this.P2Model.addModelStateChangeListener(this);
+        model.opp_board=P2Model.getAttackLines();
+        model.opp_text= P2Model.getAttackString();
+        model.opp_Num= P2Model.getAttackLinesNum();
+        P2Model.opp_board=model.getAttackLines();
+        P2Model.opp_text=model.getAttackString();
+        P2Model.opp_Num=model.getAttackLinesNum();
     }
 
     @Override
@@ -71,6 +77,7 @@ public class VersusBoardController extends BoardController {
     public void gameOver() {
         model.setPaused(true);
         P2Model.setPaused(true);
+
         int response = view.showConfirmDialog(
                 "Game Over. 시작 메뉴로 돌아가시겠습니까?\n (No : 게임 종료)",
                 "Game Over"
@@ -102,6 +109,7 @@ public class VersusBoardController extends BoardController {
         // Model에서 상태 변경 시 호출될 메서드
         // 여기서 View의 갱신 로직 호출
         if (playerType == 0) {
+
             model.moveDown();
             updateBoard();
         } else {
@@ -113,12 +121,33 @@ public class VersusBoardController extends BoardController {
     @Override
     public void notifyUpdateBoard(int playerType) {
         if (playerType == 0) {
+
             updateBoard();
+            System.out.println("1번플레이어 보드 업데이트");
         } else {
+
             updateP2Board();
+            System.out.println("2번플레이어 보드 업데이트");
         }
+
+    }
+    @Override
+    public void notifyGameOver(int playerType) {
+        gameOver();
     }
 
+    @Override
+    public void onVersusUpdateBoard(int playerType) {
+        if (playerType == 0) {
+            model.opp_board=P2Model.getAttackLines();
+            model.opp_text= P2Model.getAttackString();
+            model.opp_Num= P2Model.getAttackLinesNum();
+        } else {
+            P2Model.opp_board=model.getAttackLines();
+            P2Model.opp_text=model.getAttackString();
+            P2Model.opp_Num=model.getAttackLinesNum();
+        }
+    }
 
     public class PlayerKeyListener implements KeyListener {
         private HashMap<String, String> keyMap;

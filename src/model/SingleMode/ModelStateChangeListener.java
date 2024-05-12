@@ -8,4 +8,6 @@ public interface ModelStateChangeListener {
     void notifyUpdateBoard(int playerType);
 
     void notifyGameOver(int playerType);
+
+    void onVersusUpdateBoard(int playerType);
 }

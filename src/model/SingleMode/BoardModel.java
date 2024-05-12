@@ -14,6 +14,12 @@ import model.OutGame.OutGameModel;
 
 
 public class BoardModel {
+
+
+    // 대전모드용 변수들
+    public int[][] opp_board;// 상대의 배경
+    public String [][] opp_text;
+    public Color [] opp_color;
     // board
     protected int[][] board;
 
@@ -31,8 +37,8 @@ public class BoardModel {
     public static final int WIDTH = 10;
 
     //Default Block Position. (3,0)
-    int x = 3;
-    int y = 0;
+    protected int x = 3;
+    protected int y = 0;
 
     // Side board
     public static ArrayList<Block> BlockQueue;
@@ -50,13 +56,13 @@ public class BoardModel {
 
 
     int blockCount;
-    int linesCleared;
+    public int linesCleared;
     boolean isDowned;
 
 
     protected static int initInterval = 1000;
-    long beforeTime;
-    long afterTime;
+    protected long beforeTime;
+    protected long afterTime;
 
     private int totalscore;
 
@@ -143,6 +149,15 @@ public class BoardModel {
 
     public int[][] getBoard() {
         return board;
+    }
+    public void setBoard(int[][] Board){
+        this.board=Board;
+    }
+    public void setBoard_text(String[][] boardText){
+        this.board_text=boardText;
+    }
+    public void setBoard_color(Color[] color){
+        this.board_color=color;
     }
 
     public Color[] getBoard_color() {
@@ -585,6 +600,8 @@ public class BoardModel {
 
         placeBlock();
     }
+    public void attackEd(int attackNum,int[][] opp_Lines, String[][] opp_String){
+    }
     public String getGamemode(){
         return gamemode;
     }
@@ -616,5 +633,31 @@ public class BoardModel {
     public Timer getTimer() {
         return timer;
     }
+    public int[][] getOpp_board() {
+        return opp_board;
+    }
 
+    public String[][] getOpp_text() {
+        return opp_text;
+    }
+
+    public Color[] getOpp_color() {
+        return opp_color;
+    }
+
+    public int[][] getAttackLines() {
+        return attackLines;
+    }
+
+    public String[][] getAttackString() {
+        return attackString;
+    }
+
+    public int getAttackLinesNum() {
+        return attackLinesNum;
+    }
+    private int[][] attackLines; 		// 공격에 사용될 줄들
+    private String[][] attackString;
+    private int attackLinesNum;
+    public int opp_Num;
 }

@@ -87,6 +87,11 @@ public class BoardController implements ModelStateChangeListener {
         gameOver();
     }
 
+    @Override
+    public void onVersusUpdateBoard(int playerType) {
+
+    }
+
     public void pauseGame() {
         if (!model.isPaused()) {
             model.setPaused(true);
