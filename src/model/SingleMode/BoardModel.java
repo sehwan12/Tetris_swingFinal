@@ -49,8 +49,8 @@ public class BoardModel {
 
 
 
-    int blockCount;
-    int linesCleared;
+    protected int blockCount;
+    protected int linesCleared;
     boolean isDowned;
 
 
@@ -58,7 +58,7 @@ public class BoardModel {
     long beforeTime;
     long afterTime;
 
-    private int totalscore;
+    protected int totalscore;
 
 
     // 게임 일시 정지 확인용 isPaused by chatGPT3.5
