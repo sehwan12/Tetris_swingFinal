@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class VsItemBoardModel extends ItemBoardModel {
     protected List<VersusModelStateChangeListener> listeners = new ArrayList<>();
@@ -62,6 +63,13 @@ public class VsItemBoardModel extends ItemBoardModel {
                     break;
                 }
             }
+            for (int col = 0; col < WIDTH; col++) {
+                if (Objects.equals(board_text[row][col], "L")) {
+                    //L이 있는지 검사하고 L이 있으면 lineclear
+                    fullLine = true;
+                    break;
+                }
+            }
             if (fullLine) {
                 linesToClear.add(row); // 지워질 줄을 linesToClear에 추가
             }
@@ -73,6 +81,7 @@ public class VsItemBoardModel extends ItemBoardModel {
             notifyAttack(playerType);
             attackBlockChunk = new BlockChunk();
         }
+
 
         if (!linesToClear.isEmpty()) {
             // 강조할 줄을 노란색으로 변경하는 로직
