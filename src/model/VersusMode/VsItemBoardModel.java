@@ -145,7 +145,40 @@ public class VsItemBoardModel extends ItemBoardModel {
 
     // 상대방이 공격한 블럭을 저장하는 메서드
     public void saveDefenseBlock(BlockChunk blockChunk) {
-        defenseBlockChunk = blockChunk;
+        if (defenseBlockChunk.grayLinesNum == 10) {
+            return;
+        }
+        else if (defenseBlockChunk.grayLinesNum > 0) { // defenseBlockChunk에 이미 줄이 존재하는 경우
+            // 10줄을 넘지 않는 경우
+            if ((defenseBlockChunk.grayLinesNum + blockChunk.grayLinesNum) <= 10) {
+                for (int i = defenseBlockChunk.grayLinesNum - 1; i >=0 ; i--) {
+                    for (int col = 0; col < WIDTH; col++) {
+                        defenseBlockChunk.block[i + blockChunk.grayLinesNum] = defenseBlockChunk.block[i];
+                    }
+                }
+            }
+            else { // 10줄을 넘는 경우
+                int overflow = (defenseBlockChunk.grayLinesNum + blockChunk.grayLinesNum) - 10;
+                for (int i = defenseBlockChunk.grayLinesNum - overflow; i >= 0 ; i++) {
+                    for (int col = 0; col < WIDTH; col++) {
+                        defenseBlockChunk.block[i + blockChunk.grayLinesNum] = defenseBlockChunk.block[i];
+                    }
+                }
+            }
+            for (int i = 0; i < blockChunk.grayLinesNum; i++) {
+                for (int col = 0; col < WIDTH; col++) {
+                    defenseBlockChunk.block[i] = blockChunk.block[i];
+                }
+            }
+            defenseBlockChunk.grayLinesNum += blockChunk.grayLinesNum;
+        }
+        else {
+            defenseBlockChunk = blockChunk;
+        }
+    }
+
+    public BlockChunk getDefenseBlock() {
+        return defenseBlockChunk;
     }
 
     // generateBlock 호출 시 공격받은 블럭(DefenseBlock)을 추가하는 메서드
@@ -165,7 +198,7 @@ public class VsItemBoardModel extends ItemBoardModel {
         // blockChunk.attackBlock을 Board[][] 배열에 추가
         for (int j = 0; j < defenseBlockChunk.grayLinesNum; j++) {
             for (int i = 0; i < WIDTH; i++) {
-                board[HEIGHT - 1 - j][i] = defenseBlockChunk.attackBlock[j][i];
+                board[HEIGHT - 1 - j][i] = defenseBlockChunk.block[j][i];
                 board_color[(HEIGHT - j) * (WIDTH + 3) + i + 1] = Color.GRAY; // 회색으로 설정
                 board_text[HEIGHT - 1 - j][i] = "O"; // 텍스트를 "O"로 설정
             }
@@ -173,37 +206,16 @@ public class VsItemBoardModel extends ItemBoardModel {
     }
 
     public void saveAttackBlock() {
-        if (attackBlockChunk.grayLinesNum == 10) {
-            return;
-        }
-        if (attackBlockChunk.grayLinesNum > 0) { // attackBlockChunk에 이미 줄이 존재하는 경우
-            // 10줄을 넘지 않는 경우
-            if ((attackBlockChunk.grayLinesNum + linesToClear.size()) <= 10) {
-                for (int i = attackBlockChunk.grayLinesNum - 1; i >=0 ; i--) {
-                    for (int col = 0; col < WIDTH; col++) {
-                        attackBlockChunk.attackBlock[i + linesToClear.size()] = attackBlockChunk.attackBlock[i];
-                    }
-                }
-            }
-            else { // 10줄을 넘는 경우
-                int overflow = (attackBlockChunk.grayLinesNum + linesToClear.size()) - 10;
-                for (int i = attackBlockChunk.grayLinesNum - overflow; i >= 0 ; i++) {
-                    for (int col = 0; col < WIDTH; col++) {
-                        attackBlockChunk.attackBlock[i + linesToClear.size()] = attackBlockChunk.attackBlock[i];
-                    }
-                }
-            }
-        }
         for (int i = 0; i < linesToClear.size(); i++) {
             for (int col = 0; col < WIDTH; col++) {
                 // 삭제된 줄들이 가장 마지막에 들어온 블럭 부분을 - 그 줄을 삭제되게 만든 블럭 - 제외하고 attackBlock에 저장
                 // 즉, 복사할 line에서 currBlock의 위치를 제외한 나머지 부분을 복사
                 // 만약 board[linesToClear.get(i)][cols]에 currBlock에 존재하지 않는다면 attackBlock[i][col]에 board[linesToClear.get(i)][col]을 복사
                 if (checkCurrBlockArea(col, linesToClear.get(i))) {
-                    attackBlockChunk.attackBlock[i][col] = 0;
+                    attackBlockChunk.block[i][col] = 0;
                 }
                 else {
-                    attackBlockChunk.attackBlock[i][col] = board[linesToClear.get(i)][col];
+                    attackBlockChunk.block[i][col] = board[linesToClear.get(i)][col];
                 }
             }
         }

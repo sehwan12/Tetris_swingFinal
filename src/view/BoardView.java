@@ -170,6 +170,13 @@ public class BoardView extends JFrame {
                 doc.setCharacterAttributes(i, 1, styles, false);
             }
         }
+
+        // 문자열의 모든 위치에 같은 폰트를 적용해서 모든 크기를 균일하게
+        for (int i = 0; i < sb.length(); i++) {
+            SimpleAttributeSet styles2 = new SimpleAttributeSet();
+            StyleConstants.setFontFamily(styles2, "Courier New");
+            doc.setCharacterAttributes(i, 1, styles2, false);
+        }
         pane.setStyledDocument(doc);
     }
 

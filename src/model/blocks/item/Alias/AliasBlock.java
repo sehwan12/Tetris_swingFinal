@@ -33,9 +33,7 @@ public class AliasBlock extends ItemBlock {
                 subBlock = new TBlock();
                 break;
             case 6:
-                subBlock = new IBlock();
-
-//                subBlock = new ZBlock();
+                subBlock = new ZBlock();
                 break;
             default:
                 subBlock = new IBlock();
@@ -78,21 +76,12 @@ public class AliasBlock extends ItemBlock {
     //x, y위치 변경 시 필요한 rotate_x, rotate_y
     @Override
     public int rotate_x(){
-        System.out.println("subBlock rotate");
-        if (subBlock instanceof OBlock) {
-            return subBlock.rotate_x();
-        }
-        else if (subBlock instanceof IBlock) {
-            return subBlock.rotate_x() - 2;
-        }
-        return subBlock.rotate_x() - 1;
+        subBlock.setRotate_status(rotate_status);
+        return subBlock.rotate_x();
     }
     @Override
     public int rotate_y(){
-        if (subBlock instanceof IBlock) {
-            return subBlock.rotate_y() + 1;
-        }
-
+        subBlock.setRotate_status(rotate_status);
         return subBlock.rotate_y();
     }
 

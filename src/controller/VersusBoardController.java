@@ -7,6 +7,7 @@ import model.VersusMode.VersusModelStateChangeListener;
 import model.VersusMode.VsBoardModel;
 import model.VersusMode.VsItemBoardModel;
 import model.VersusMode.VsTimeBoardModel;
+import view.DefenseBlockView;
 import view.SidePanelView;
 import view.VsBoardView;
 
@@ -20,6 +21,10 @@ public class VersusBoardController extends BoardController implements VersusMode
     protected BoardModel P2Model;
     private VsBoardView P2View;
     private SidePanelView P2SidePanelView;
+
+    protected DefenseBlockView defenseBlockView;
+
+    protected DefenseBlockView P2DefenseBlockView;
 
     public VersusBoardController() {
         // model = new BoardModel();
@@ -84,8 +89,22 @@ public class VersusBoardController extends BoardController implements VersusMode
         sidePanelView = new SidePanelView();
         P2View = new VsBoardView();
         P2SidePanelView = new SidePanelView();
-        view.getContentPane().add(sidePanelView, BorderLayout.EAST);
-        P2View.getContentPane().add(P2SidePanelView, BorderLayout.EAST);
+        defenseBlockView = new DefenseBlockView();
+        P2DefenseBlockView = new DefenseBlockView();
+
+        // sidePanelView를 view의 EAST에 배치
+        JPanel panel = new JPanel(new GridLayout(3, 1,0,10));
+        panel.setBackground(Color.LIGHT_GRAY);
+        panel.add(sidePanelView);
+        panel.add(defenseBlockView);
+        view.getContentPane().add(panel, BorderLayout.EAST);
+
+        // sidePanelView를 view의 EAST에 배치
+        JPanel P2panel = new JPanel(new GridLayout(3, 1,0,10));
+        P2panel.setBackground(Color.LIGHT_GRAY);
+        P2panel.add(P2SidePanelView);
+        P2panel.add(P2DefenseBlockView);
+        P2View.getContentPane().add(P2panel, BorderLayout.EAST);
         view.getContentPane().add(P2View.getContentPane(), BorderLayout.WEST);
         view.setController(this);
         view.setVisible(true);
@@ -182,16 +201,50 @@ public class VersusBoardController extends BoardController implements VersusMode
         }
     }
 
+    @Override
+    // 게임 상태 업데이트 후 View update를 위한 메서드
+    public void updateBoard() {
+        // 게임 로직 처리...
+        // 예를 들어, 게임 보드 상태를 업데이트하는 로직 수행
+
+        // View에 게임 보드 그리기 요청
+        view.drawBoard(model.getBoard(), model.getBoard_color(), model.getBoard_text());
+        // SidePanel에 다음 블럭 넘기기
+        sidePanelView.drawBoard(model.getNextBlock());
+        // 사이드 패널의 점수를 view에 넘겨야 한다
+        sidePanelView.setScoreText(model.getTotalscore());
+        if (model instanceof VsBoardModel) {
+            defenseBlockView.drawBoard(((VsBoardModel) model).getDefenseBlock());
+        }
+        else if (model instanceof VsItemBoardModel) {
+            defenseBlockView.drawBoard(((VsItemBoardModel)model).getDefenseBlock());
+        }
+        else {
+            System.out.println("update board error");
+        }
+    }
+
+
+
 
     public void updateP2Board() {
-            // 게임 로직 처리...
-            // 예를 들어, 게임 보드 상태를 업데이트하는 로직 수행
-            // View에 게임 보드 그리기 요청
-            P2View.drawBoard(P2Model.getBoard(), P2Model.getBoard_color(), P2Model.getBoard_text());
-            // SidePanel에 다음 블럭 넘기기
-            P2SidePanelView.drawBoard(P2Model.getNextBlock());
-            // 사이드 패널의 점수를 view에 넘겨야 한다
-            P2SidePanelView.setScoreText(P2Model.getTotalscore());
+        // 게임 로직 처리...
+        // 예를 들어, 게임 보드 상태를 업데이트하는 로직 수행
+        // View에 게임 보드 그리기 요청
+        P2View.drawBoard(P2Model.getBoard(), P2Model.getBoard_color(), P2Model.getBoard_text());
+        // SidePanel에 다음 블럭 넘기기
+        P2SidePanelView.drawBoard(P2Model.getNextBlock());
+        // 사이드 패널의 점수를 view에 넘겨야 한다
+        P2SidePanelView.setScoreText(P2Model.getTotalscore());
+        if (model instanceof VsBoardModel) {
+            P2DefenseBlockView.drawBoard(((VsBoardModel) P2Model).getDefenseBlock());
+        }
+        else if (model instanceof VsItemBoardModel) {
+            P2DefenseBlockView.drawBoard(((VsItemBoardModel)P2Model).getDefenseBlock());
+        }
+        else {
+            System.out.println("update board error");
+        }
     }
 
     @Override

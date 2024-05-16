@@ -53,6 +53,7 @@ public class SidePanelView extends JPanel {
 
     private String scoreString;
 
+
     public SidePanelView() {
         nextPiece = new JTextPane();
         scorePanel = new JPanel();
@@ -87,7 +88,6 @@ public class SidePanelView extends JPanel {
         nexttext.setBorder(new EmptyBorder(0, 0, 15, 0));
         nextPiece.add(nexttext, BorderLayout.NORTH);
         nextPiece.setBorder(new EmptyBorder(5, 5, 5, 5));
-
     }
 
     public void setScoreText(int score) {
