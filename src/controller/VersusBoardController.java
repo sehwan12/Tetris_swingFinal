@@ -1,10 +1,12 @@
 package controller;
 
 import controller.OutGame.MenuController;
-import controller.OutGame.ScoreBoardController;
 import model.OutGame.OutGameModel;
 import model.SingleMode.BoardModel;
+import model.VersusMode.VersusModelStateChangeListener;
 import model.VersusMode.VsBoardModel;
+import model.VersusMode.VsItemBoardModel;
+import model.VersusMode.VsTimeBoardModel;
 import view.SidePanelView;
 import view.VsBoardView;
 
@@ -14,7 +16,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
 
-public class VersusBoardController extends BoardController {
+public class VersusBoardController extends BoardController implements VersusModelStateChangeListener {
     protected BoardModel P2Model;
     private VsBoardView P2View;
     private SidePanelView P2SidePanelView;
@@ -29,6 +31,52 @@ public class VersusBoardController extends BoardController {
         this.P2Model = P2Model;
         this.P2Model.addModelStateChangeListener(this);
     }
+    @Override
+    public void notifyAttck(int playerType) {
+        /*
+        만약 playerType == 0이라면
+        P1의 model에서 AttackBlock을 가져와서
+        P2의 model에게 전달한다
+        */
+
+        if (model instanceof VsBoardModel) {
+            if (playerType == 0) {
+                ((VsBoardModel)P2Model).saveDefenseBlock(((VsBoardModel)model).getAttackBlock());
+            }
+            else {
+                ((VsBoardModel)model).saveDefenseBlock(((VsBoardModel)P2Model).getAttackBlock());
+            }
+        }
+        else if (model instanceof VsItemBoardModel) {
+            if (playerType == 0) {
+                ((VsItemBoardModel)P2Model).saveDefenseBlock(((VsItemBoardModel)model).getAttackBlock());
+            }
+            else {
+                ((VsItemBoardModel) model).saveDefenseBlock(((VsItemBoardModel) P2Model).getAttackBlock());
+            }
+        }
+        else {
+            System.out.println("Error: notifyAttack");
+        }
+    }
+
+    @Override
+    public void notifyGameOver(int playerType) {
+        model.setPaused(true);
+        P2Model.setPaused(true);
+        if (model instanceof VsTimeBoardModel) {
+            if (!((VsTimeBoardModel) model).checkTimeLimit()) {
+                gameOver(playerType);
+                return;
+            }
+            else {
+                gameOver();
+                return;
+            }
+        }
+        gameOver(playerType);
+    }
+
 
     @Override
     public void initView() {
@@ -69,8 +117,56 @@ public class VersusBoardController extends BoardController {
 
     @Override
     public void gameOver() {
-        model.setPaused(true);
-        P2Model.setPaused(true);
+        if (model instanceof VsTimeBoardModel) {
+            if (!((VsTimeBoardModel) model).checkTimeLimit()) {
+            }
+            else if ((model.getTotalscore() > P2Model.getTotalscore())) {
+                view.showConfirmDialog(
+                        "Player 1 Win!\n" +
+                                "Player 1 : " + model.getTotalscore() + "\n" +
+                                "Player 2 : " + P2Model.getTotalscore(),
+                        "Game Over"
+                );
+            } else if (model.getTotalscore() < P2Model.getTotalscore()) {
+                view.showConfirmDialog(
+                        "Player 2 Win!\n" +
+                                "Player 1 : " + model.getTotalscore() + "\n" +
+                                "Player 2 : " + P2Model.getTotalscore(),
+                        "Game Over"
+                );
+            } else {
+                view.showConfirmDialog(
+                        "Draw!\n" +
+                                "Player 1 : " + model.getTotalscore() + "\n" +
+                                "Player 2 : " + P2Model.getTotalscore(),
+                        "Game Over"
+                );
+            }
+        }
+        returnMenu();
+    }
+
+    public void gameOver(int loser) {
+        if (loser == 1) {
+            view.showConfirmDialog(
+                    "Player 1 Win!\n",
+                    "Game Over"
+            );
+        } else if (loser == 0) {
+            view.showConfirmDialog(
+                    "Player 2 Win!\n",
+                    "Game Over"
+            );
+        } else {
+            view.showConfirmDialog(
+                    "Draw!\n",
+                    "Game Over"
+            );
+        }
+        returnMenu();
+    }
+
+    public void returnMenu() {
         int response = view.showConfirmDialog(
                 "Game Over. 시작 메뉴로 돌아가시겠습니까?\n (No : 게임 종료)",
                 "Game Over"
@@ -85,6 +181,7 @@ public class VersusBoardController extends BoardController {
             System.exit(0);
         }
     }
+
 
     public void updateP2Board() {
             // 게임 로직 처리...
