@@ -16,7 +16,7 @@ public class VsBoardModel extends BoardModel {
 
     private BlockChunk defenseBlockChunk;
 
-    private int playerType;
+    protected int playerType;
     public VsBoardModel(int playerType) {
         super();
         attackBlockChunk = new BlockChunk();
