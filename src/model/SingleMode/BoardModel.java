@@ -24,20 +24,14 @@ public class BoardModel {
     //색맹모드와 무늬모드를 위한 color_blind 와 pattern 선언
     protected boolean color_blind;
     protected int pattern;
-    protected  String gamemode;
-    private boolean isClearBlock=false;
+    protected String gamemode;
 
-    public static final int HEIGHT = 20;
-    public static final int WIDTH = 10;
+    protected static final int HEIGHT = 20;
+    protected static final int WIDTH = 10;
 
     //Default Block Position. (3,0)
-    int x = 3;
-    int y = 0;
-
-    // Side board
-    public static ArrayList<Block> BlockQueue;
-    static int x1 = 2; //Default Position.
-    static int y1= 0;
+    protected int x = 3;
+    protected int y = 0;
 
     protected Color[] board_color; //보드 색깔 저장 배열
 
@@ -51,12 +45,11 @@ public class BoardModel {
 
     protected int blockCount;
     protected int linesCleared;
-    boolean isDowned;
-
+    protected boolean isDowned;
 
     protected static int initInterval = 1000;
-    long beforeTime;
-    long afterTime;
+    protected long beforeTime;
+    protected long afterTime;
 
     protected int totalscore;
 
