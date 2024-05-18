@@ -8,6 +8,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class VsTimeBoardModel extends VsBoardModel {
+    public long getStartClock() {
+        return startClock;
+    }
+
+    public void setStartClock(long startClock) {
+        this.startClock = startClock;
+    }
+
     private long startClock;
     private static final int TIME_LIMIT = 10;
     public VsTimeBoardModel(int playerType) {

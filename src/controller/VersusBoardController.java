@@ -9,6 +9,7 @@ import model.VersusMode.VsItemBoardModel;
 import model.VersusMode.VsTimeBoardModel;
 import view.DefenseBlockView;
 import view.SidePanelView;
+import view.TimeView;
 import view.VsBoardView;
 
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class VersusBoardController extends BoardController implements VersusMode
     protected DefenseBlockView defenseBlockView;
 
     protected DefenseBlockView P2DefenseBlockView;
+    protected TimeView timeView;
 
     public VersusBoardController() {
         // model = new BoardModel();
@@ -91,7 +93,7 @@ public class VersusBoardController extends BoardController implements VersusMode
         P2SidePanelView = new SidePanelView();
         defenseBlockView = new DefenseBlockView();
         P2DefenseBlockView = new DefenseBlockView();
-
+        timeView= new TimeView();
         // sidePanelView를 view의 EAST에 배치
         JPanel panel = new JPanel(new GridLayout(3, 1,0,10));
         panel.setBackground(Color.LIGHT_GRAY);
@@ -106,6 +108,9 @@ public class VersusBoardController extends BoardController implements VersusMode
         P2panel.add(P2DefenseBlockView);
         P2View.getContentPane().add(P2panel, BorderLayout.EAST);
         view.getContentPane().add(P2View.getContentPane(), BorderLayout.WEST);
+        if(model instanceof VsTimeBoardModel){
+            view.getContentPane().add(timeView, BorderLayout.NORTH);
+        }
         view.setController(this);
         view.setVisible(true);
         playerKeyListener = new PlayerKeyListener();
@@ -221,6 +226,9 @@ public class VersusBoardController extends BoardController implements VersusMode
         }
         else {
             System.out.println("update board error");
+        }
+        if(model instanceof  VsTimeBoardModel){
+            timeView.setTimeText(((VsTimeBoardModel) model).getStartClock());
         }
     }
 
