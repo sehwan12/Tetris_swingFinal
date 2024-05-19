@@ -29,6 +29,7 @@ import javax.swing.text.StyledDocument;
 
 // MVC에서 View와 Controller의 상호작용
 import controller.BoardController;
+import model.OutGame.OutGameModel;
 import model.blocks.*;
 import model.blocks.item.Alias.LineClearBlock;
 import model.blocks.item.Alias.LineFillBlock;
@@ -65,26 +66,26 @@ public class SidePanelView extends JPanel {
         this.setLayout(new BorderLayout());
         nextPiece.setLayout(new BorderLayout());
         nextPiece.setBorder(new LineBorder(Color.BLACK));
-        nextPiece.setPreferredSize(new Dimension(80, 100));
+        nextPiece.setPreferredSize(new Dimension(OutGameModel.getResX()/5, OutGameModel.getResY()/5));
         this.add(nextPiece, BorderLayout.NORTH);
         //점수패널
         scorePanel.setLayout(new BorderLayout());
         scorePanel.setBackground(Color.BLACK);
-        // scorePanel.setPreferredSize(new Dimension(20,80));
+        scorePanel.setBorder(new LineBorder(Color.CYAN));
+        scorePanel.setPreferredSize(new Dimension(OutGameModel.getResX()/8,OutGameModel.getResY()/12));
         this.add(scorePanel, BorderLayout.CENTER);
         // 점수 Text
         scoreText.setLayout(new BorderLayout());
-        scoreText.setBorder(new LineBorder(Color.CYAN));
         scoreText.setBackground(Color.BLACK);
         scoreText.setForeground(Color.YELLOW);
-        scoreText.setFont(new Font("Courier New", Font.PLAIN, 20));
+        scoreText.setFont(new Font("Courier New", Font.PLAIN, 20*(OutGameModel.getResX()/5)/80));
         scoreText.setText(scoreString);
-        scoreText.setPreferredSize(new Dimension(10, 50));
+        scoreText.setPreferredSize(new Dimension(OutGameModel.getResX()/8, OutGameModel.getResY()/12));
         scorePanel.add(scoreText, BorderLayout.NORTH);
         //next텍스트 표시
         JLabel nexttext = new JLabel("Next");
         nexttext.setForeground(Color.WHITE);
-        nexttext.setFont(new Font("Courier New", Font.PLAIN, 20));
+        nexttext.setFont(new Font("Courier New", Font.PLAIN, 20*(OutGameModel.getResX()/5)/80));
         nexttext.setBorder(new EmptyBorder(0, 0, 15, 0));
         nextPiece.add(nexttext, BorderLayout.NORTH);
         nextPiece.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -101,7 +102,7 @@ public class SidePanelView extends JPanel {
         placeblock(nextBlock);
         JLabel nexttext = new JLabel("Next");
         nexttext.setForeground(Color.WHITE);
-        nexttext.setFont(new Font("Courier New", Font.PLAIN, 20));
+        nexttext.setFont(new Font("Courier New", Font.PLAIN, 20*(OutGameModel.getResX()/5)/80));
         nexttext.setBorder(new EmptyBorder(0, 0, 10, 0));
         nextPiece.add(nexttext, BorderLayout.NORTH);
     }
