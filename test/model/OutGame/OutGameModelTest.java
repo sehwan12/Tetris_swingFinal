@@ -2,6 +2,7 @@ package model.OutGame;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import IO.ImportSettings;
 import model.OutGame.OutGameModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,8 @@ public class OutGameModelTest {
 
     @Test
     void moveOptionFocusTest() {
+        outGameModel.setOptionFocus(0);
+
         outGameModel.moveOptionFocus(1);
         assertEquals(1, outGameModel.getOptionFocus());
 
@@ -25,7 +28,7 @@ public class OutGameModelTest {
 
         // Test wrapping around
         outGameModel.moveOptionFocus(-1);
-        assertEquals(4, outGameModel.getOptionFocus());
+        assertEquals(5, outGameModel.getOptionFocus());
 
         outGameModel.moveOptionFocus(1);
         assertEquals(0, outGameModel.getOptionFocus());
@@ -33,14 +36,13 @@ public class OutGameModelTest {
 
     @Test
     void moveButtonFocusTest() {
+        outGameModel.setOptionFocus(0);
+
         for (int i = 0; i < OutGameModel.getOptionString().length; i++) {
-            if (i == 3) continue;
-            outGameModel.moveOptionFocus(i);
             int yCursorBefore = outGameModel.getyCursor();
             int limit = outGameModel.getStringType()[i].length;
             int expectedCursor = (yCursorBefore) % limit;
             //System.out.println(i+" "+limit+" "+yCursorBefore+" "+expectedCursor);
-
             for (int j = 0; j < limit * 2; j++) {
 
                 yCursorBefore = outGameModel.getyCursor();
@@ -53,10 +55,10 @@ public class OutGameModelTest {
                 } else {
                     expectedCursor += 1;
                 }
-
+                //System.out.println(outGameModel.getyCursor()+" "+expectedCursor);
                 assertEquals(expectedCursor, outGameModel.getyCursor());
-                //System.out.println(j+" "+outGameModel.getyCursor());
             }
+            outGameModel.moveOptionFocus(1);
         }
     }
 
@@ -69,7 +71,7 @@ public class OutGameModelTest {
         // 설정을 변경하고 resetDefault를 호출하기 전에 저장된 설정값을 백업합니다.
         int previousResX = outGameModel.getResX();
         int previousResY = outGameModel.getResY();
-        boolean previousBlindMode = OutGameModel.isBlindMode();
+        boolean BlindMode = ImportSettings.getSetting("blindMode").equals("true"); //OutGameModel.isBlindMode();
 
         // 설정을 변경합니다.
         outGameModel.setResX(8000);
@@ -83,7 +85,7 @@ public class OutGameModelTest {
         // 설정이 기본값으로 초기화되었는지 확인합니다.
         assertEquals(previousResX, outGameModel.getResX());
         assertEquals(previousResY, outGameModel.getResY());
-        assertEquals(previousBlindMode, OutGameModel.isBlindMode());
+        assertEquals(BlindMode, OutGameModel.isBlindMode());
 
     }
 }

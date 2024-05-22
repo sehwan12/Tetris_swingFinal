@@ -5,6 +5,8 @@ import static org.mockito.Mockito.*;
 
 import java.awt.event.KeyEvent;
 
+import IO.ExportSettings;
+import model.OutGame.OutGameModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,6 +37,8 @@ public class BoardController_PlayerKeyListenerTest {
     //NotPaused
     @Test
     public void testKeyPressed_MoveDown_NotPaused() {
+        ExportSettings.saveSettings("moveDown1P", "Down");
+
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
         when(mockKeyEvent.getKeyCode()).thenReturn(KeyEvent.VK_DOWN);
@@ -49,6 +53,8 @@ public class BoardController_PlayerKeyListenerTest {
     }
     @Test
     public void testKeyPressed_MoveRight_NotPaused() {
+        ExportSettings.saveSettings("moveRight1P", "Right");
+
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
         when(mockKeyEvent.getKeyCode()).thenReturn(KeyEvent.VK_RIGHT);
@@ -64,6 +70,8 @@ public class BoardController_PlayerKeyListenerTest {
 
     @Test
     public void testKeyPressed_MoveLeft_NotPaused() {
+        ExportSettings.saveSettings("moveLeft1P", "Left");
+
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
         when(mockKeyEvent.getKeyCode()).thenReturn(KeyEvent.VK_LEFT);
@@ -79,6 +87,7 @@ public class BoardController_PlayerKeyListenerTest {
 
     @Test
     public void testKeyPressed_Rotate_NotPaused() {
+        ExportSettings.saveSettings("rotate1P", "Up");
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
         when(mockKeyEvent.getKeyCode()).thenReturn(KeyEvent.VK_UP);
@@ -94,9 +103,10 @@ public class BoardController_PlayerKeyListenerTest {
 
     @Test
     public void testKeyPressed_Drop_NotPaused() {
+        ExportSettings.saveSettings("drop1P", "Space");
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
-        when(mockKeyEvent.getKeyCode()).thenReturn(KeyEvent.VK_S);
+        when(mockKeyEvent.getKeyCode()).thenReturn(KeyEvent.VK_SPACE);
         when(model.isPaused()).thenReturn(false);
 
         // Act
@@ -205,4 +215,6 @@ public class BoardController_PlayerKeyListenerTest {
         keyListener.keyPressed(mockKeyEvent);
         verify(controller).gameExit();
     }
+
+
 }
