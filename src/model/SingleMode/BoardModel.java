@@ -610,4 +610,7 @@ public class BoardModel {
         return timer;
     }
 
+    public int getci() {return 0;}
+
+    public int getbeforeLineCount() {return 0;}
 }

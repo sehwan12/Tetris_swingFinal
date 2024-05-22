@@ -27,13 +27,15 @@ class ItemBoardModelTest {
     @Test
     void getRandomBlock() {
         ItemBoardModel boardModel = spy(new ItemBoardModel());
-        boardModel.linesCleared = 9;
+
+        boardModel.linesCleared = boardModel.getci() - 1;
         assertFalse(boardModel.getRandomBlock() instanceof ItemBlock);
 
-        // given
-        boardModel.linesCleared = 11;
-        // when, then
+        boardModel.linesCleared = boardModel.getci() + 1;
         assertTrue(boardModel.getRandomBlock() instanceof ItemBlock);
+
+        int maxThreshold = (boardModel.getbeforeLineCount() / boardModel.getci()) * boardModel.getci();
+        boardModel.linesCleared = maxThreshold + boardModel.getci() + 1;
 
 
         /*

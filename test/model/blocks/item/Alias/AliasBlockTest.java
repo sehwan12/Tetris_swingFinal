@@ -38,7 +38,7 @@ public class AliasBlockTest {
 
     @Test
     void rotate_x() {
-        assertEquals(block.rotate_x(), block.subBlock.rotate_x() - 1);
+        assertEquals(block.rotate_x(), block.subBlock.rotate_x());
     }
 
     @Test

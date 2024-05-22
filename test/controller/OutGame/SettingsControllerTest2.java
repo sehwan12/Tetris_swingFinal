@@ -90,7 +90,7 @@ class SettingsControllerTest2 {
 
         // 기대한 대로 모델 상태가 변경되었는지 확인
         assertEquals(0, model.getyCursor(), "yCursor should be reset to 0");
-        assertEquals(4, model.getOptionFocus(), "Option focus should move left by 1");
+        assertEquals(5, model.getOptionFocus(), "Option focus should move left by 1");
     }
 
     @Test
@@ -169,11 +169,24 @@ class SettingsControllerTest2 {
         // ActionMap 에서 "enter" 액션을 가져와서 실행
         controller.view.getRootPane().getActionMap().get("enter").actionPerformed(null);
 
+        // 키 매핑 모드가 올바르게 설정되었는지 확인
+        assertTrue(controller.isP2KeyMappingMode, "Key mapping mode should be set to true");
+    }
+
+    @Test
+    public void testEnterAction_3() {
+        // 초기 버튼 포커스 설정
+        model.setOptionFocus(3);
+        model.setyCursor(0);
+
+        // ActionMap 에서 "enter" 액션을 가져와서 실행
+        controller.view.getRootPane().getActionMap().get("enter").actionPerformed(null);
+
         // 색맹모드가 켜졌는지 확인
         assertTrue(model.isBlindMode(), "Blind mode should be updated");
 
         // 초기 버튼 포커스 설정
-        model.setOptionFocus(2);
+        model.setOptionFocus(3);
         model.setyCursor(1);
 
         // ActionMap 에서 "enter" 액션을 가져와서 실행
@@ -184,24 +197,10 @@ class SettingsControllerTest2 {
 
     }
 
-    ////////////////////////////////////////////////////////////
-    //
-    // testEnterAction_3 즉 case 3은 스코어보드, 옵션 초기화인데
-    // 이로인한 오류 발생 가능성이 있어서 게임이 거의 다 완성되었을 때 완성
-    //
-    ////////////////////////////////////////////////////////////
-
     @Test
-    public void testEnterAction_3() {
+    public void testEnterAction_5() {
         // 초기 버튼 포커스 설정
-        model.setOptionFocus(3);
-        model.setyCursor(0);
-    }
-
-    @Test
-    public void testEnterAction_4() {
-        // 초기 버튼 포커스 설정
-        model.setOptionFocus(4);
+        model.setOptionFocus(5);
         String[] difficultyString = {"Easy", "Normal", "Hard"};
 
         for (int yCursor = 0; yCursor < 3; yCursor++) {

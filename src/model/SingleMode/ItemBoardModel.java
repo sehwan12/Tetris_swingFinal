@@ -18,6 +18,12 @@ public class ItemBoardModel extends BoardModel {
 
     private final static int ci = 2;
 
+    @Override
+    public int getbeforeLineCount() {return beforeLineCount;}
+
+    @Override
+    public int getci() {return ci;}
+
     boolean horizonLock =false;
     public ItemBoardModel(){
         gamemode="Item";
