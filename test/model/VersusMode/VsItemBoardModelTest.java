@@ -13,8 +13,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-public class VsBoardModelTest {
+public class VsItemBoardModelTest {
 
     int HEIGHT = 20;
     int WIDTH = 10;
@@ -22,7 +21,7 @@ public class VsBoardModelTest {
     @Test
     void testcheckCurrBlockArea(){
         // 테스트에 필요한 객체 생성
-        VsBoardModel boardModel = new VsBoardModel(0);
+        VsItemBoardModel boardModel = new VsItemBoardModel(0);
         Block block = new IBlock(true, 0); // 예시로 I 블록 생성
 
         // 현재 블록으로 설정합니다.
@@ -41,7 +40,7 @@ public class VsBoardModelTest {
 
     @Test
     void testcheckBoardHeight(){
-        VsBoardModel boardModel = new VsBoardModel(0);
+        VsItemBoardModel boardModel = new VsItemBoardModel(0);
         boardModel.eraseCurr();
         assertEquals(HEIGHT-1, boardModel.checkBoardHeight());
 
@@ -58,7 +57,7 @@ public class VsBoardModelTest {
 
     @Test
     void testSaveDefenseBlock() {
-        VsBoardModel boardModel = new VsBoardModel(1);
+        VsItemBoardModel boardModel = new VsItemBoardModel(1);
 
         // Case 1: 방어용 블록이 최대치인 10줄에 도달하지 않은 경우
         BlockChunk blockChunk1 = new BlockChunk();
@@ -83,7 +82,7 @@ public class VsBoardModelTest {
 
     @Test
     void testAddDefenseBlock() {
-        VsBoardModel boardModel = spy(new VsBoardModel(1));
+        VsItemBoardModel boardModel = spy(new VsItemBoardModel(1));
         boardModel.eraseCurr();
 
         // Case 1: 방어용 블록이 추가되지 않은 경우
@@ -108,8 +107,8 @@ public class VsBoardModelTest {
 
     @Test
     public void testSaveAttackBlock() {
-        VsBoardModel vsBoardModel;
-        vsBoardModel = new VsBoardModel(1);
+        VsItemBoardModel vsBoardModel;
+        vsBoardModel = new VsItemBoardModel(1);
 
         // Mocking a full line at row 19 to be cleared
         Arrays.fill(vsBoardModel.getBoard()[19], 1);
@@ -143,9 +142,9 @@ public class VsBoardModelTest {
 
     @Test
     public void testStartLineClearAnimation_SingleLine() {
-        VsBoardModel vsBoardModel;
+        VsItemBoardModel vsBoardModel;
 
-        vsBoardModel = spy(new VsBoardModel(1));
+        vsBoardModel = spy(new VsItemBoardModel(1));
         vsBoardModel.linesToClear = new ArrayList<>();
 
         // Set up a single full line at row 19
@@ -164,9 +163,9 @@ public class VsBoardModelTest {
 
     @Test
     public void testStartLineClearAnimation_MultipleLines() {
-        VsBoardModel vsBoardModel;
+        VsItemBoardModel vsBoardModel;
 
-        vsBoardModel = spy(new VsBoardModel(1));
+        vsBoardModel = spy(new VsItemBoardModel(1));
         vsBoardModel.linesToClear = new ArrayList<>();
 
         // Set up two full lines at rows 18 and 19
@@ -193,4 +192,5 @@ public class VsBoardModelTest {
             }
         }
     }
+
 }

@@ -13,7 +13,7 @@ public class VsItemBoardModel extends ItemBoardModel {
     protected List<VersusModelStateChangeListener> listeners = new ArrayList<>();
     private BlockChunk attackBlockChunk;
 
-    private BlockChunk defenseBlockChunk;
+    protected BlockChunk defenseBlockChunk;
 
     int playerType;
     public VsItemBoardModel(int playerType) {

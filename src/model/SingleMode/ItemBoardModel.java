@@ -56,7 +56,7 @@ public class ItemBoardModel extends BoardModel {
         }
     }
     @Override
-    protected void placeBlock() {
+    public void placeBlock() {
         for(int j=0; j<curr.height(); j++) {
             int rows = y+j+1;
             int offset = (rows) * (WIDTH+3) + x + 1;
