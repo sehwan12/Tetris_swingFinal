@@ -29,7 +29,7 @@ public class OutGameView extends JFrame {
     }
 
     public void initTitle(String[] buildStirng, int buildType) {
-        String fullTitle = "";
+        String fullTitle = buildStirng[buildType];
         titleLabel = new JLabel(fullTitle);
         titleLabel.setFont(new Font("malgun gothic", Font.BOLD, 20));
     }
