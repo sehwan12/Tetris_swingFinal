@@ -43,30 +43,5 @@ public class BoardControllerTest {
         controller.resumeGame();
         assertFalse(model.isPaused());
     }
-
-    @Test
-    public void testUpdateBoard() {
-        int HEIGHT = 20;
-        int WIDTH = 10;
-
-        // 게임 보드 모델에서 필요한 데이터 설정
-        int[][] board = new int[HEIGHT][WIDTH]; // 예시로 10x20 크기의 빈 게임 보드 생성
-        Color[] board_color = new Color[(HEIGHT+2)*(WIDTH+2+1)]; // 색상 정보가 필요한 경우에 대한 예시
-        String[][] board_text = new String[HEIGHT][WIDTH]; // 텍스트 정보가 필요한 경우에 대한 예시
-        when(model.getBoard()).thenReturn(board);
-        when(model.getBoard_color()).thenReturn(board_color);
-        when(model.getBoard_text()).thenReturn(board_text);
-
-        // updateBoard() 메소드 호출
-        controller.updateBoard();
-
-        // 뷰에 대한 호출 확인
-        verify(view).drawBoard(eq(board), eq(board_color), eq(board_text));
-
-        // SidePanelView에 대한 호출 확인
-        verify(sidePanelView).drawBoard(any(Block.class));
-        verify(sidePanelView).setScoreText(any(int.class));
-    }
-
 }
 

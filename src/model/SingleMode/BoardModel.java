@@ -19,7 +19,7 @@ public class BoardModel {
 
     protected String[][] board_text;
 
-    protected List<Integer> linesToClear = new LinkedList<>();
+    public List<Integer> linesToClear = new LinkedList<>();
 
     //색맹모드와 무늬모드를 위한 color_blind 와 pattern 선언
     protected boolean color_blind;
@@ -310,7 +310,7 @@ public class BoardModel {
         }
     }
 
-    protected void placeBlock() {
+    public void placeBlock() {
         for(int j=0; j<curr.height(); j++) {
             int rows = y+j+1;
             int offset = (rows) * (WIDTH+3) + x + 1;
@@ -610,4 +610,7 @@ public class BoardModel {
         return timer;
     }
 
+    public int getci() {return 0;}
+
+    public int getbeforeLineCount() {return 0;}
 }
