@@ -39,6 +39,15 @@ public class OutGameViewTest {
         assertEquals(new Font("malgun gothic", Font.BOLD, 20), outGameView.titleLabel.getFont());
     }
 
+    @Test
+    public void testInitTitle2() {
+        String[] buildString = {"Test"};
+        outGameView.initTitle(buildString, 0);
+        assertNotNull(outGameView.titleLabel);
+        assertEquals("Test", outGameView.titleLabel.getText());
+        assertEquals(new Font("malgun gothic", Font.BOLD, 20), outGameView.titleLabel.getFont());
+    }
+
     /*@Test
     public void testInitWindow() {
         // Correct use of Mockito's when method
@@ -59,7 +68,7 @@ public class OutGameViewTest {
         // Testing GUI elements like JOptionPane should be done with caution in unit tests
         // For demonstration purposes only, not a best practice
         String message = "Test Warning";
-        JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
+        outGameView.showWarning(message);
         // Verify interactions or use a GUI testing framework in practice
     }
 
@@ -67,7 +76,7 @@ public class OutGameViewTest {
     public void testShowQuestion() {
         // Similar handling as `testShowWarning`
         String message = "Test Question";
-        int result = JOptionPane.showConfirmDialog(null, message, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        outGameView.showQuestion(message);
         // Verification of GUI components should be done with proper GUI testing tools
     }
 }
