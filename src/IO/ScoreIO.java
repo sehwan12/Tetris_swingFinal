@@ -5,19 +5,17 @@ import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class ScoreIO {
-    private final static String JSON_FILE = "userScore.json";
+    private static String JSON_FILE = "/Applications/Tetris.app/Contents/app/resources/userScore.json";
 
     public JSONArray jsonArr = null;
 
     public ScoreIO() {
+
         JSONParser parser = new JSONParser();
         if (!isFileEmpty()) {
             try {
