@@ -17,7 +17,7 @@ public class VsTimeBoardModel extends VsBoardModel {
     }
 
     private long startClock;
-    private static final int TIME_LIMIT = 10;
+    public static final int TIME_LIMIT = 60;
     public VsTimeBoardModel(int playerType) {
         super(playerType);
         startClock = System.currentTimeMillis();

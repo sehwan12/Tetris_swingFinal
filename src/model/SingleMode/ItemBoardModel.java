@@ -16,7 +16,7 @@ import java.util.Random;
 public class ItemBoardModel extends BoardModel {
     private int beforeLineCount;
 
-    private final static int ci = 2;
+    private final static int ci = 10;
 
     @Override
     public int getbeforeLineCount() {return beforeLineCount;}
