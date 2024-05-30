@@ -29,7 +29,7 @@ public class BoardView extends JFrame {
     protected SimpleAttributeSet styleSet;
 
 
-    private JPanel glassPane; //게임 정지화면을 나타낼 glassPane
+    protected JPanel glassPane; //게임 정지화면을 나타낼 glassPane
 
     public BoardView() {
         super("SeoulTech SE Tetris");
@@ -117,6 +117,10 @@ public class BoardView extends JFrame {
         addKeyListener(listener);
         setFocusable(true);
         requestFocusInWindow();
+    }
+
+    public JPanel getGlassPane() {
+        return glassPane;
     }
 
 

@@ -7,10 +7,7 @@ import model.VersusMode.VersusModelStateChangeListener;
 import model.VersusMode.VsBoardModel;
 import model.VersusMode.VsItemBoardModel;
 import model.VersusMode.VsTimeBoardModel;
-import view.DefenseBlockView;
-import view.SidePanelView;
-import view.TimeView;
-import view.VsBoardView;
+import view.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,6 +25,9 @@ public class VersusBoardController extends BoardController implements VersusMode
     protected DefenseBlockView P2DefenseBlockView;
     protected TimeView timeView;
 
+    private JFrame mainFrame;
+
+
     public VersusBoardController() {
         // model = new BoardModel();
         this.model.addModelStateChangeListener(this);
@@ -37,6 +37,8 @@ public class VersusBoardController extends BoardController implements VersusMode
         this.model = P1Model;
         this.P2Model = P2Model;
         this.P2Model.addModelStateChangeListener(this);
+        view.setController(this);
+        P2View.setController(this);
     }
     @Override
     public void notifyAttck(int playerType) {
@@ -87,36 +89,58 @@ public class VersusBoardController extends BoardController implements VersusMode
 
     @Override
     public void initView() {
+        setupViews();
+        setupPanels();
+        addComponentsToMainFrame();
+        configureMainFrame();
+    }
+
+    private void setupViews() {
         view = new VsBoardView();
-        sidePanelView = new SidePanelView();
         P2View = new VsBoardView();
+        sidePanelView = new SidePanelView();
         P2SidePanelView = new SidePanelView();
         defenseBlockView = new DefenseBlockView();
         P2DefenseBlockView = new DefenseBlockView();
-        timeView= new TimeView();
-        // sidePanelView를 view의 EAST에 배치
-        JPanel panel = new JPanel(new GridLayout(3, 1,0,10));
-        panel.setBackground(Color.LIGHT_GRAY);
-        panel.add(sidePanelView);
-        panel.add(defenseBlockView);
-        view.getContentPane().add(panel, BorderLayout.EAST);
+        timeView = new TimeView();
+    }
 
-        // sidePanelView를 view의 EAST에 배치
-        JPanel P2panel = new JPanel(new GridLayout(3, 1,0,10));
-        P2panel.setBackground(Color.LIGHT_GRAY);
-        P2panel.add(P2SidePanelView);
-        P2panel.add(P2DefenseBlockView);
-        P2View.getContentPane().add(P2panel, BorderLayout.EAST);
-        view.getContentPane().add(P2View.getContentPane(), BorderLayout.WEST);
-        if(model instanceof VsTimeBoardModel){
-            view.getContentPane().add(timeView, BorderLayout.NORTH);
+    private void setupPanels() {
+        setupPanel(view, sidePanelView, defenseBlockView);
+        setupPanel(P2View, P2SidePanelView, P2DefenseBlockView);
+    }
+
+    private void setupPanel(BoardView boardView, SidePanelView sidePanel, DefenseBlockView defenseBlock) {
+        JPanel panel = new JPanel(new GridLayout(3, 1, 0, 10));
+        panel.setBackground(Color.LIGHT_GRAY);
+        panel.add(sidePanel);
+        panel.add(defenseBlock);
+        boardView.getContentPane().add(panel, BorderLayout.EAST);
+    }
+
+    private void addComponentsToMainFrame() {
+        JPanel combinedPanel = new JPanel(new GridLayout(1, 2));
+        combinedPanel.add(view.getContentPane());
+        combinedPanel.add(P2View.getContentPane());
+
+        mainFrame = new JFrame();
+        mainFrame.getContentPane().setLayout(new BorderLayout());
+        mainFrame.getContentPane().add(combinedPanel, BorderLayout.CENTER);
+        if (model instanceof VsTimeBoardModel) {
+            mainFrame.getContentPane().add(timeView, BorderLayout.NORTH);
         }
-        view.setController(this);
-        view.setVisible(true);
+        mainFrame.setGlassPane(view.getGlassPane()); // Set the glass pane from the view
+    }
+
+    private void configureMainFrame() {
+        mainFrame.setSize(OutGameModel.getResX() * 2, OutGameModel.getResY());
+        mainFrame.setVisible(true);
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setFocusable(true);
+        mainFrame.requestFocusInWindow();
         playerKeyListener = new PlayerKeyListener();
-        // addKeyListener, setFocusable, requestFocus를 BoardView의 메서드로 대체
-        view.addKeyListenerToFrame(playerKeyListener);
-        view.setSize(OutGameModel.getResX() * 4 / 3, OutGameModel.getResY());
+        mainFrame.addKeyListener(playerKeyListener);
+        mainFrame.setLocationRelativeTo(null);
     }
 
     @Override
@@ -127,6 +151,7 @@ public class VersusBoardController extends BoardController implements VersusMode
             model.getTimer().stop();
             P2Model.getTimer().stop();
             view.showPauseScreen(true);
+            mainFrame.getGlassPane().setVisible(true); // Ensure glass pane is visible
         }
     }
 
@@ -136,6 +161,7 @@ public class VersusBoardController extends BoardController implements VersusMode
             model.setPaused(false);
             P2Model.setPaused(false);
             view.showPauseScreen(false);
+            mainFrame.getGlassPane().setVisible(false); // Hide the glass pane
         }
     }
 
@@ -199,6 +225,7 @@ public class VersusBoardController extends BoardController implements VersusMode
         if (response == JOptionPane.YES_OPTION) {
             view.setVisible(false);
             P2View.setVisible(false);
+            mainFrame.setVisible(false);
             MenuController.getInstance().initFrame();
         } else {
             // 게임 종료
@@ -407,7 +434,7 @@ public class VersusBoardController extends BoardController implements VersusMode
                     case KeyEvent.VK_ENTER:
                         switch(selectedOption){
                             case 1: //메인메뉴
-                                view.setVisible(false);
+                                mainFrame.setVisible(false);
                                 MenuController.getInstance().initFrame();
                                 break;
                             case 2: //재시작

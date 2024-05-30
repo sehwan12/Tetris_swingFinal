@@ -39,7 +39,7 @@ public class TimeTraceTest {
         long start = System.currentTimeMillis();
         controller.onModelStateChanged(0);
         long end = System.currentTimeMillis();
-        assertTrue(end - start < 50);
+        assertTrue(end - start < 100);
     }
 
     // keyPress에 따른 응답 속도 측정

@@ -12,15 +12,15 @@ import model.VersusMode.BlockChunk;
 
 public class DefenseBlockView extends JPanel {
 
-    private int[][] defense_board;
-    private String[][] defense_board_text;
+    protected int[][] defense_board;
+    protected String[][] defense_board_text;
     protected Color[] defense_board_color;
     private static final int WIDTH = 10;
     private static final int HEIGHT = 11;
 
     public static final char BORDER_CHAR = 'X';
-    private SimpleAttributeSet styleSet;
-    private JTextPane DefenseBlockPiece;
+    protected SimpleAttributeSet styleSet;
+    protected JTextPane DefenseBlockPiece;
 
     private Color DefenseBlockColor = new Color(180, 180, 180);
 

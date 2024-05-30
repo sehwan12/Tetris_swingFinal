@@ -28,6 +28,12 @@ public class VersusBoardControllerP1_KeyTest {
     private VsBoardModel model_1;
     private VersusBoardController VScontroller;
 
+    private String leftKey;
+    private String rightKey;
+    private String downKey;
+    private String rotateKey;
+    private String dropKey;
+
     @Before
     public void setUp() {
         model_0 = Mockito.spy(new VsBoardModel(0));
@@ -39,12 +45,27 @@ public class VersusBoardControllerP1_KeyTest {
         sidePanelView = Mockito.spy(SidePanelView.class);
         controller = spy(new BoardController(model, view, sidePanelView));
 
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+            leftKey = "Left";
+            rightKey = "Right";
+            downKey = "Down";
+            rotateKey = "Up";
+            dropKey = "Space";
+        } else {
+            leftKey = "←";
+            rightKey = "→";
+            downKey = "↓";
+            rotateKey = "↑";
+            dropKey = "␣";
+        }
+
         keyListener = VScontroller.new PlayerKeyListener();
     }
 
     @Test
     public void testKeyPressed_MoveDown_NotPaused() {
-        ExportSettings.saveSettings("moveDown1P", "Down");
+        ExportSettings.saveSettings("moveDown1P", downKey);
 
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
@@ -61,7 +82,7 @@ public class VersusBoardControllerP1_KeyTest {
 
     @Test
     public void testKeyPressed_MoveRight_NotPaused() {
-        ExportSettings.saveSettings("moveRight1P", "Right");
+        ExportSettings.saveSettings("moveRight1P", rightKey);
 
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
@@ -78,7 +99,7 @@ public class VersusBoardControllerP1_KeyTest {
 
     @Test
     public void testKeyPressed_MoveLeft_NotPaused() {
-        ExportSettings.saveSettings("moveLeft1P", "Left");
+        ExportSettings.saveSettings("moveLeft1P", leftKey);
 
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
@@ -95,7 +116,7 @@ public class VersusBoardControllerP1_KeyTest {
 
     @Test
     public void testKeyPressed_Rotate_NotPaused() {
-        ExportSettings.saveSettings("rotate1P", "Up");
+        ExportSettings.saveSettings("rotate1P", rotateKey);
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
         when(mockKeyEvent.getKeyCode()).thenReturn(KeyEvent.VK_UP);
@@ -111,7 +132,7 @@ public class VersusBoardControllerP1_KeyTest {
 
     @Test
     public void testKeyPressed_Drop_NotPaused() {
-        ExportSettings.saveSettings("drop1P", "Space");
+        ExportSettings.saveSettings("drop1P", dropKey);
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
         when(mockKeyEvent.getKeyCode()).thenReturn(KeyEvent.VK_SPACE);
