@@ -10,7 +10,8 @@ public class ImportSettings {
 
     private ImportSettings() {
         try {
-            File file = new File("settings.ini");
+            String appDataPath = System.getProperty("user.home") + "/Library/Application Support/Tetris";
+            File file = new File(appDataPath, "settings.ini");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String st;
             while ((st = br.readLine()) != null) {
@@ -38,10 +39,11 @@ public class ImportSettings {
         File file;
         try {
             if (os.contains("win")) {
-                file = new File("defaultWindowsSettings.ini");
+                file = new File("/Applications/Tetris.app/Contents/app/defaultWindowsSettings.ini");
             }
             else {
-                file = new File("defaultSettings.ini");
+                String appDataPath = System.getProperty("user.home") + "/Library/Application Support/Tetris";
+                file = new File(appDataPath, "defaultSettings.ini");
             }
             BufferedReader br = new BufferedReader(new FileReader(file));
             String st;
