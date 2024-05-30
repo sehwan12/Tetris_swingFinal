@@ -173,6 +173,10 @@ public class BoardModel {
 
     }
 
+    protected Block getRandomBlockForTest() {
+        return new IBlock(color_blind, pattern);
+    }
+
     public int rws_select() { //확률에 따른 블럭 생성
         // 블럭들의 적합도(가중치)
         double I = 10, J = 10, L = 10, Z = 10, S = 10, T = 10, O = 10;

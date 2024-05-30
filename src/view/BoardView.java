@@ -119,6 +119,10 @@ public class BoardView extends JFrame {
         requestFocusInWindow();
     }
 
+    public JPanel getGlassPane() {
+        return glassPane;
+    }
+
 
 
     public void setController(BoardController controller) {
