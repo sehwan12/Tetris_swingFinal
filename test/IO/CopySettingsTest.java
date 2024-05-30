@@ -15,8 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CopySettingsTest {
     @Test
     public void testRestore() {
+        String appDataPath = System.getProperty("user.home") + "/Library/Application Support/Tetris/";
         // Arrange: defaultSettings.ini 파일의 경로 지정
-        String defaultSettingsFilePath = "defaultSettings.ini";
+        String defaultSettingsFilePath = appDataPath + "defaultSettings.ini";
         // defaultSettings.ini 파일의 내용 저장
         String defaultSettingsContent = readFileContents(defaultSettingsFilePath);
 
@@ -24,7 +25,7 @@ public class CopySettingsTest {
         CopySettings.restore();
 
         // Assert: settings.ini 파일의 내용이 defaultSettings.ini 파일의 내용과 일치하는지 확인
-        String settingsFilePath = "settings.ini";
+        String settingsFilePath = appDataPath + "settings.ini";
         String settingsFileContent = readFileContents(settingsFilePath);
         System.out.println(settingsFileContent);
         assertEquals(defaultSettingsContent, settingsFileContent);

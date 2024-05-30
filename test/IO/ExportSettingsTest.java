@@ -20,14 +20,15 @@ public class ExportSettingsTest {
     public void testsaveSettings() {
         settings = new HashMap<>();
         settings2 = new HashMap<>();
+        String appDataPath = System.getProperty("user.home") + "/Library/Application Support/Tetris/";
 
-        read_File_settings("settings.ini");
+        read_File_settings(appDataPath + "settings.ini");
         for (Map.Entry<String, String> entry : settings.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
             // 각 키-값 쌍에 대한 작업 수행, 테스트
             ExportSettings.saveSettings(key,value+"asdf");
-            read_modified_File_settings("settings.ini");
+            read_modified_File_settings(appDataPath + "settings.ini");
             assertEquals(value+"asdf",settings2.get(key));
         }
 
