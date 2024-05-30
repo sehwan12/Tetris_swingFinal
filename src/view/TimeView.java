@@ -1,6 +1,7 @@
 package view;
 
 import model.OutGame.OutGameModel;
+import model.VersusMode.VsTimeBoardModel;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -14,7 +15,7 @@ public class TimeView extends JPanel {
     private SimpleAttributeSet styleSet;
 
     private JTextPane TimeText;
-    private static final int TIME_LIMIT = 10;
+    private static final int TIME_LIMIT = VsTimeBoardModel.TIME_LIMIT;
     public TimeView(){
         this.setLayout(new BorderLayout());
         TimeText=new JTextPane();
