@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 public class ScoreIO {
     private static String JSON_FILE = System.getProperty("user.home") + "/Library/Application Support/Tetris/userScore.json";
 
-
     public JSONArray jsonArr = null;
 
     public ScoreIO() {

@@ -54,7 +54,7 @@ public class ImportSettings {
         File file;
         try {
             if (os.contains("win")) {
-                file = new File("defaultWindowsSettings.ini");
+                file = new File("/Applications/Tetris.app/Contents/app/defaultWindowsSettings.ini");
             }
             else {
                 String appDataPath = System.getProperty("user.home") + "/Library/Application Support/Tetris";
