@@ -13,8 +13,9 @@ import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.*;
 
 public class ScoreIOTest {
+    private static String appDataPath = System.getProperty("user.home") + "/Library/Application Support/Tetris/";
 
-    private static final String JSON_FILE = "userScore.json";
+    private static String JSON_FILE = appDataPath + "userScore.json";
     private static String originalContent;
 
     @BeforeAll

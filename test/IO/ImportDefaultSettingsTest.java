@@ -21,7 +21,9 @@ public class ImportDefaultSettingsTest {
     }
     @Test
     public void testImportDefaultKeyMap(){
-        read_File_settings("defaultSettings.ini");
+        String appDataPath = System.getProperty("user.home") + "/Library/Application Support/Tetris/";
+
+        read_File_settings(appDataPath + "defaultSettings.ini");
 
         ImportSettings.importDefaultKeyMap();
         for (Map.Entry<String, String> entry : settings.entrySet()) {

@@ -5,19 +5,27 @@ import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class ScoreIO {
-    private final static String JSON_FILE = "userScore.json";
+    private static String JSON_FILE = System.getProperty("user.home") + "/Library/Application Support/Tetris/userScore.json";
+
 
     public JSONArray jsonArr = null;
 
     public ScoreIO() {
+        String appDataPath = System.getProperty("user.home") + "/Library/Application Support/Tetris";
+        File jsonFile = new File(appDataPath, "userScore.json");
+        if (!jsonFile.exists()) {
+            try {
+                // 리소스 디렉토리에서 설정 파일을 복사
+                Files.copy(Paths.get("/Applications/Tetris.app/Contents/app/resources/userScore.json"), jsonFile.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         JSONParser parser = new JSONParser();
         if (!isFileEmpty()) {
             try {

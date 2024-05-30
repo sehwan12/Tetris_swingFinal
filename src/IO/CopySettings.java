@@ -5,8 +5,13 @@ import java.io.*;
 public class CopySettings {
     public static void restore() {
         // 파일 경로 지정
-        String sourceFilePath = "defaultSettings.ini";
-        String destinationFilePath = "settings.ini";
+        String appDataPath = System.getProperty("user.home") + "/Library/Application Support/Tetris";
+        File appDataDir = new File(appDataPath);
+        if (!appDataDir.exists()) {
+            appDataDir.mkdirs();  // 디렉토리가 없다면 생성
+        }
+        String sourceFilePath = appDataPath + "/defaultSettings.ini";
+        String destinationFilePath = appDataPath + "/settings.ini";
 
         // 파일 복사를 위한 스트림 선언
         try (BufferedReader reader = new BufferedReader(new FileReader(sourceFilePath));
