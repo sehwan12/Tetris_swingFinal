@@ -14,30 +14,28 @@ import javax.swing.text.StyledDocument;
 
 // MVC에서 View와 Controller의 상호작용
 import controller.BoardController;
-import IO.ImportSettings;
+import model.OutGame.OutGameModel;
 
 public class BoardView extends JFrame {
     private BoardController controller; // BoardController 참조 추가
 
     // board array size
-    private static final int WIDTH = 10;
+    protected static final int WIDTH = 10;
     private static final int HEIGHT = 20;
 
     public static final char BORDER_CHAR = 'X';
 
-    private JTextPane pane;
-    private SimpleAttributeSet styleSet;
+    protected JTextPane pane;
+    protected SimpleAttributeSet styleSet;
 
 
-    private JPanel glassPane; //게임 정지화면을 나타낼 glassPane
+    protected JPanel glassPane; //게임 정지화면을 나타낼 glassPane
 
     public BoardView() {
         super("SeoulTech SE Tetris");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setBackground(Color.BLACK);
-        setSize(Integer.parseInt(ImportSettings.getSetting("ResolutionSizeX")),
-                Integer.parseInt(ImportSettings.getSetting("ResolutionSizeY")));
 
         // GlassPane 초기화 by chatGPT
         glassPane = new JPanel() {
@@ -86,7 +84,7 @@ public class BoardView extends JFrame {
 
         //Board display setting.
         pane = new JTextPane();
-        pane.setEditable(false);
+        pane.setSize(OutGameModel.getResX(), OutGameModel.getResY());
         pane.setBackground(Color.BLACK);
         CompoundBorder border = BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.GRAY, 10),
@@ -97,13 +95,15 @@ public class BoardView extends JFrame {
 
         //Document default style.
         styleSet = new SimpleAttributeSet();
-        StyleConstants.setFontSize(styleSet, 18 * Integer.parseInt(ImportSettings.getSetting(
-                "ResolutionSizeX"
-        )) / 400); // 추후 defaultsetting 값을 import 하는 것을 구현 한 후 리터럴을 수정해야함
+        StyleConstants.setFontSize(styleSet, 18 * OutGameModel.getResX() / 400); // 추후 defaultsetting 값을 import 하는 것을 구현 한 후 리터럴을 수정해야함
         StyleConstants.setFontFamily(styleSet, "Courier New");
         StyleConstants.setBold(styleSet, true);
         StyleConstants.setForeground(styleSet, Color.WHITE);
         StyleConstants.setAlignment(styleSet, StyleConstants.ALIGN_CENTER);
+        setSize(OutGameModel.getResX(),
+                OutGameModel.getResY());
+        setLocationRelativeTo(null);
+        setFocusable(true);
 
         this.addMouseListener(new MouseAdapter() {
             @Override
@@ -117,6 +117,10 @@ public class BoardView extends JFrame {
         addKeyListener(listener);
         setFocusable(true);
         requestFocusInWindow();
+    }
+
+    public JPanel getGlassPane() {
+        return glassPane;
     }
 
 
@@ -169,6 +173,13 @@ public class BoardView extends JFrame {
                 StyleConstants.setForeground(styles, board_color[i]);
                 doc.setCharacterAttributes(i, 1, styles, false);
             }
+        }
+
+        // 문자열의 모든 위치에 같은 폰트를 적용해서 모든 크기를 균일하게
+        for (int i = 0; i < sb.length(); i++) {
+            SimpleAttributeSet styles2 = new SimpleAttributeSet();
+            StyleConstants.setFontFamily(styles2, "Courier New");
+            doc.setCharacterAttributes(i, 1, styles2, false);
         }
         pane.setStyledDocument(doc);
     }
