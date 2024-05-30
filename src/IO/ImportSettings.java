@@ -34,8 +34,15 @@ public class ImportSettings {
     }
 
     public static void importDefaultKeyMap() {
+        String os = System.getProperty("os.name").toLowerCase();
+        File file;
         try {
-            File file = new File("defaultSettings.ini");
+            if (os.contains("win")) {
+                file = new File("defaultWindowsSettings.ini");
+            }
+            else {
+                file = new File("defaultSettings.ini");
+            }
             BufferedReader br = new BufferedReader(new FileReader(file));
             String st;
             while ((st = br.readLine()) != null) {
