@@ -6,7 +6,10 @@ import static org.mockito.Mockito.*;
 import java.awt.event.KeyEvent;
 
 import IO.ExportSettings;
+import IO.ImportSettings;
+import IO.ImportSettingsTest;
 import model.OutGame.OutGameModel;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,6 +28,12 @@ public class BoardController_PlayerKeyListenerTest {
     private BoardController controller;
     private BoardController.PlayerKeyListener keyListener;
 
+    private String leftKey;
+    private String rightKey;
+    private String downKey;
+    private String rotateKey;
+    private String dropKey;
+
     @Before
     public void setUp() {
         model = Mockito.spy(BoardModel.class);
@@ -33,17 +42,31 @@ public class BoardController_PlayerKeyListenerTest {
         controller = spy(new BoardController(model, view, sidePanelView));
         keyListener = controller.new PlayerKeyListener();
 
-        ExportSettings.saveSettings("moveDown1P", "Down");
-        ExportSettings.saveSettings("moveRight1P", "Right");
-        ExportSettings.saveSettings("moveLeft1P", "Left");
-        ExportSettings.saveSettings("rotate1P", "Up");
-        ExportSettings.saveSettings("drop1P", "Space");
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+            leftKey = "Left";
+            rightKey = "Right";
+            downKey = "Down";
+            rotateKey = "Up";
+            dropKey = "Space";
+        } else {
+            leftKey = "←";
+            rightKey = "→";
+            downKey = "↓";
+            rotateKey = "↑";
+            dropKey = "␣";
+        }
+        ExportSettings.saveSettings("moveDown1P", downKey);
+        ExportSettings.saveSettings("moveRight1P", rightKey);
+        ExportSettings.saveSettings("moveLeft1P", leftKey);
+        ExportSettings.saveSettings("rotate1P", rotateKey);
+        ExportSettings.saveSettings("drop1P", dropKey);
     }
 
     //NotPaused
     @Test
     public void testKeyPressed_MoveDown_NotPaused() {
-        ExportSettings.saveSettings("moveDown1P", "Down");
+        ExportSettings.saveSettings("moveDown1P", downKey);
 
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
@@ -59,7 +82,7 @@ public class BoardController_PlayerKeyListenerTest {
     }
     @Test
     public void testKeyPressed_MoveRight_NotPaused() {
-        ExportSettings.saveSettings("moveRight1P", "Right");
+        ExportSettings.saveSettings("moveRight1P", rightKey);
 
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
@@ -76,7 +99,7 @@ public class BoardController_PlayerKeyListenerTest {
 
     @Test
     public void testKeyPressed_MoveLeft_NotPaused() {
-        ExportSettings.saveSettings("moveLeft1P", "Left");
+        ExportSettings.saveSettings("moveLeft1P", leftKey);
 
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
@@ -93,7 +116,7 @@ public class BoardController_PlayerKeyListenerTest {
 
     @Test
     public void testKeyPressed_Rotate_NotPaused() {
-        ExportSettings.saveSettings("rotate1P", "Up");
+        ExportSettings.saveSettings("rotate1P", rotateKey);
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
         when(mockKeyEvent.getKeyCode()).thenReturn(KeyEvent.VK_UP);
@@ -109,7 +132,7 @@ public class BoardController_PlayerKeyListenerTest {
 
     @Test
     public void testKeyPressed_Drop_NotPaused() {
-        ExportSettings.saveSettings("drop1P", "Space");
+        ExportSettings.saveSettings("drop1P", dropKey);
         // Arrange
         KeyEvent mockKeyEvent = mock(KeyEvent.class);
         when(mockKeyEvent.getKeyCode()).thenReturn(KeyEvent.VK_SPACE);
@@ -221,6 +244,5 @@ public class BoardController_PlayerKeyListenerTest {
         keyListener.keyPressed(mockKeyEvent);
         verify(controller).gameExit();
     }
-
 
 }

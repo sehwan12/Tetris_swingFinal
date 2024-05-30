@@ -95,6 +95,10 @@ public class SidePanelView extends JPanel {
         scoreText.setText("Score: " + score);
     }
 
+    public JTextPane getScoreText() {
+        return scoreText;
+    }
+
     public void paintNextPiece(Block nextBlock) {
         nextPiece.removeAll();
         nextPiece.setBackground(Color.BLACK);
@@ -185,4 +189,7 @@ public class SidePanelView extends JPanel {
 
     }
 
+    public JTextPane getNextPiece() {
+        return nextPiece;
+    }
 }
