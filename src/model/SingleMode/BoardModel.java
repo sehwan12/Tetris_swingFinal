@@ -147,6 +147,9 @@ public class BoardModel {
     }
 
     protected Block getRandomBlock() {
+        if (false) {
+            return getRandomBlockForTest();
+        }
         // Random rnd = new Random(System.currentTimeMillis());
         // int block = rnd.nextInt(7);
         int block = rws_select();
@@ -169,8 +172,6 @@ public class BoardModel {
                 return new OBlock(color_blind, pattern);
         }
         return new LBlock(color_blind, pattern);
-
-
     }
 
     protected Block getRandomBlockForTest() {
