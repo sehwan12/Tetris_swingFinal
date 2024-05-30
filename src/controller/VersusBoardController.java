@@ -199,12 +199,12 @@ public class VersusBoardController extends BoardController implements VersusMode
     public void gameOver(int loser) {
         if (loser == 1) {
             view.showConfirmDialog(
-                    "Player 1 Win!\n",
+                    "Player 2 Win!\n",
                     "Game Over"
             );
         } else if (loser == 0) {
             view.showConfirmDialog(
-                    "Player 2 Win!\n",
+                    "Player 1 Win!\n",
                     "Game Over"
             );
         } else {
