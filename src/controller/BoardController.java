@@ -8,49 +8,56 @@ import java.util.HashMap;
 import javax.swing.*;
 
 import IO.ScoreIO;
-import model.BoardModel;
-import model.OutGameModel;
+import controller.OutGame.MenuController;
+import controller.OutGame.ScoreBoardController;
+import model.SingleMode.BoardModel;
+import model.OutGame.OutGameModel;
 import view.BoardView;
-import model.ModelStateChangeListener;
+import model.SingleMode.ModelStateChangeListener;
 import view.SidePanelView;
 
 public class BoardController implements ModelStateChangeListener {
 
-    private BoardModel model;
-    private BoardView view;
-    private SidePanelView viewSidePanel;
-    private KeyListener playerKeyListener;
+    protected BoardModel model;
+    protected BoardView view;
+    protected SidePanelView sidePanelView;
+    protected KeyListener playerKeyListener;
 
 
-    private int selectedOption = 1;
+    protected int selectedOption = 1;
 
-    private String currentKey;
+    protected String currentKey;
 
     public BoardController() {
         model = new BoardModel();
         initView();
         this.model.addModelStateChangeListener(this);
     }
-    public BoardController(BoardModel model, BoardView view, SidePanelView viewSide) {
+    public BoardController(BoardModel model) {
+        this.model = model;
+        initView();
+        this.model.addModelStateChangeListener(this);
+    }
+    public BoardController(BoardModel model, BoardView view, SidePanelView viewSidePanel) {
         this.model = model;
         this.view = view;
-        this.viewSidePanel = viewSide;
-        // view와 controller의 상호작용
-        this.view.setController(this);
-        // view에 sidepanel 추가
+        this.sidePanelView = viewSidePanel;
+        view.setController(this);
         view.getContentPane().add(viewSidePanel, BorderLayout.EAST);
-
+        view.setVisible(true);
         playerKeyListener = new PlayerKeyListener();
         // addKeyListener, setFocusable, requestFocus를 BoardView의 메서드로 대체
         view.addKeyListenerToFrame(playerKeyListener);
         this.model.addModelStateChangeListener(this);
     }
 
+
+
     public void initView() {
         view = new BoardView();
-        viewSidePanel = new SidePanelView();
+        sidePanelView = new SidePanelView();
         view.setController(this);
-        view.getContentPane().add(viewSidePanel, BorderLayout.EAST);
+        view.getContentPane().add(sidePanelView, BorderLayout.EAST);
         view.setVisible(true);
         playerKeyListener = new PlayerKeyListener();
         // addKeyListener, setFocusable, requestFocus를 BoardView의 메서드로 대체
@@ -66,12 +73,20 @@ public class BoardController implements ModelStateChangeListener {
         this.selectedOption = selectedOption;
     }
 
-    public void onModelStateChanged() {
+    public void onModelStateChanged(int playerType) {
         // Model에서 상태 변경 시 호출될 메서드
         // 여기서 View의 갱신 로직 호출
-        moveDownControl();
+        model.moveDown();
         updateBoard();
     }
+    public void notifyUpdateBoard(int playerType) {
+        updateBoard();
+    }
+
+    public void notifyGameOver(int playerType) {
+        gameOver();
+    }
+
     public void pauseGame() {
         if (!model.isPaused()) {
             model.setPaused(true);
@@ -98,7 +113,7 @@ public class BoardController implements ModelStateChangeListener {
 
         if (checkUpdatebool == JOptionPane.YES_OPTION) {
             String name = JOptionPane.showInputDialog("이름을 입력하세요");
-            ScoreIO.writeScore(name, model.getTotalscore());
+            ScoreIO.writeScore(name, model.getTotalscore(),OutGameModel.getDifficulty(), model.getGamemode());
             temp.destroyView();
             temp.initFrame(name, model.getTotalscore());
         }
@@ -129,17 +144,6 @@ public class BoardController implements ModelStateChangeListener {
         } else { }
     }
 
-    public void moveDownControl() {
-        if (!model.moveDown()) {
-            gameOver();
-        }
-    }
-
-    public void moveBottomControl() {
-        if (!model.moveBottom()) {
-            gameOver();
-        }
-    }
     // 게임 상태 업데이트 후 View update를 위한 메서드
     public void updateBoard() {
         // 게임 로직 처리...
@@ -148,9 +152,13 @@ public class BoardController implements ModelStateChangeListener {
         // View에 게임 보드 그리기 요청
         view.drawBoard(model.getBoard(), model.getBoard_color(), model.getBoard_text());
         // SidePanel에 다음 블럭 넘기기
-        viewSidePanel.drawBoard(model.getNextBlock());
+        sidePanelView.drawBoard(model.getNextBlock());
         // 사이드 패널의 점수를 view에 넘겨야 한다
-        viewSidePanel.setScoreText(model.getTotalscore());
+        sidePanelView.setScoreText(model.getTotalscore());
+    }
+
+    public BoardView getView() {
+        return view;
     }
 
 
@@ -167,12 +175,12 @@ public class BoardController implements ModelStateChangeListener {
         public PlayerKeyListener() {
           keyMap = OutGameModel.getInstance().getKeyMap();
             // 아래는 getKeyText를 통해 저장된 값임
-          moveLeft = keyMap.get("moveLeft");
-          moveRight = keyMap.get("moveRight");
-          drop = keyMap.get("drop");
-          moveDown = keyMap.get("moveDown");
-          rotate = keyMap.get("rotate");
-          pause = keyMap.get("pause");
+          moveLeft = keyMap.get("moveLeft1P");
+          moveRight = keyMap.get("moveRight1P");
+          drop = keyMap.get("drop1P");
+          moveDown = keyMap.get("moveDown1P");
+          rotate = keyMap.get("rotate1P");
+          pause = keyMap.get("pause1P");
         }
 
 
@@ -189,7 +197,7 @@ public class BoardController implements ModelStateChangeListener {
                     if(!model.isDowned()){
                         model.setDowned(true);
                     }
-                    moveDownControl();
+                    model.moveDown();
                     updateBoard();
                 }
                 else if (currentKey.equals(moveRight)) {
@@ -209,7 +217,7 @@ public class BoardController implements ModelStateChangeListener {
                         model.setDowned(true);
                     }
                     // 위치 이동 메서드
-                    moveBottomControl();
+                    model.moveBottom();
                     updateBoard();
                 }
                 else if (currentKey.equals(pause)) {
@@ -291,15 +299,6 @@ public class BoardController implements ModelStateChangeListener {
         public void keyReleased(KeyEvent e) {
 
         }
-    }
-    public static void main(String[] args) {
-        BoardModel model = new BoardModel(); // 모델 생성
-        BoardView view = new BoardView(); // 뷰 생성
-        SidePanelView viewSide = new SidePanelView();
-        BoardController controller = new BoardController(model, view, viewSide); // 컨트롤러 생성 및 모델과 뷰 연결
-
-        view.setController(controller); // 뷰에 컨트롤러 설정
-        view.setVisible(true); // 뷰를 보이게 설정
     }
 
 }

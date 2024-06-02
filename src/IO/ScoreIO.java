@@ -5,19 +5,26 @@ import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class ScoreIO {
-    private final static String JSON_FILE = "userScore.json";
+    private static String JSON_FILE = System.getProperty("user.home") + "/Library/Application Support/Tetris/userScore.json";
 
     public JSONArray jsonArr = null;
 
     public ScoreIO() {
+        String appDataPath = System.getProperty("user.home") + "/Library/Application Support/Tetris";
+        File jsonFile = new File(appDataPath, "userScore.json");
+        if (!jsonFile.exists()) {
+            try {
+                // 리소스 디렉토리에서 설정 파일을 복사
+                Files.copy(Paths.get("/Applications/Tetris.app/Contents/app/resources/userScore.json"), jsonFile.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         JSONParser parser = new JSONParser();
         if (!isFileEmpty()) {
             try {
@@ -36,19 +43,21 @@ public class ScoreIO {
     }
 
 
-    public static void writeScore(String name, int score) {
+    public static void writeScore(String name, int score, String difficulty, String mode) {
         if (isFileEmpty()) {
-            writeFirstScore(name, score);
+            writeFirstScore(name, score, difficulty, mode);
         }
         else {
-            writeAfterScore(name, score);
+            writeAfterScore(name, score, difficulty, mode);
         }
     }
     // 기록이 없는 경우
-    public static void writeFirstScore(String name, int score) {
+    public static void writeFirstScore(String name, int score, String difficulty,String mode) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("score", score);
+        jsonObject.put("difficulty", difficulty);
+        jsonObject.put("mode", mode);
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(jsonObject);
         try (FileWriter file = new FileWriter(JSON_FILE)) {
@@ -60,10 +69,12 @@ public class ScoreIO {
     }
 
     // 기록이 존재하는 경우
-    public static void writeAfterScore(String name, int score) {
+    public static void writeAfterScore(String name, int score, String difficulty, String mode) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("score", score);
+        jsonObject.put("difficulty", difficulty);
+        jsonObject.put("mode", mode);
         try (FileReader reader = new FileReader(JSON_FILE)) {
             JSONParser parser = new JSONParser();
             JSONArray jsonArray = (JSONArray) parser.parse(reader);

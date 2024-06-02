@@ -29,19 +29,23 @@ import javax.swing.text.StyledDocument;
 
 // MVC에서 View와 Controller의 상호작용
 import controller.BoardController;
+import model.OutGame.OutGameModel;
 import model.blocks.*;
+import model.blocks.item.Alias.LineClearBlock;
+import model.blocks.item.Alias.LineFillBlock;
+import model.blocks.item.Alias.TimerBlock;
 
 public class SidePanelView extends JPanel {
 
-    private int [][] board;
-
+    private int[][] board;
+    private String[][] board_text;
     private static final int WIDTH = 6;
     private static final int HEIGHT = 6;
 
     public static final char BORDER_CHAR = ' ';
 
     private int x1 = 2; //Default Position.
-    private int y1= 0;
+    private int y1 = 0;
 
     private SimpleAttributeSet styleSet;
     private JTextPane nextPiece;
@@ -50,72 +54,76 @@ public class SidePanelView extends JPanel {
 
     private String scoreString;
 
+
     public SidePanelView() {
         nextPiece = new JTextPane();
         scorePanel = new JPanel();
         scoreText = new JTextPane();
         scoreString = "Score: 0";
         board = new int[HEIGHT][WIDTH];
-
+        board_text = new String[HEIGHT][WIDTH];
         //sidepanel에 다음블록패널 추가
         this.setLayout(new BorderLayout());
         nextPiece.setLayout(new BorderLayout());
         nextPiece.setBorder(new LineBorder(Color.BLACK));
-        nextPiece.setPreferredSize(new Dimension(80,100));
+        nextPiece.setPreferredSize(new Dimension(OutGameModel.getResX()/5, OutGameModel.getResY()/5));
         this.add(nextPiece, BorderLayout.NORTH);
         //점수패널
         scorePanel.setLayout(new BorderLayout());
         scorePanel.setBackground(Color.BLACK);
-        // scorePanel.setPreferredSize(new Dimension(20,80));
-        this.add(scorePanel,BorderLayout.CENTER);
+        scorePanel.setBorder(new LineBorder(Color.CYAN));
+        scorePanel.setPreferredSize(new Dimension(OutGameModel.getResX()/8,OutGameModel.getResY()/12));
+        this.add(scorePanel, BorderLayout.CENTER);
         // 점수 Text
         scoreText.setLayout(new BorderLayout());
-        scoreText.setBorder(new LineBorder(Color.CYAN));
         scoreText.setBackground(Color.BLACK);
         scoreText.setForeground(Color.YELLOW);
-        scoreText.setFont(new Font("Courier New", Font.PLAIN,20));
+        scoreText.setFont(new Font("Courier New", Font.PLAIN, 20*(OutGameModel.getResX()/5)/80));
         scoreText.setText(scoreString);
-        scoreText.setPreferredSize(new Dimension(10,50));
-        scorePanel.add(scoreText,BorderLayout.NORTH);
+        scoreText.setPreferredSize(new Dimension(OutGameModel.getResX()/8, OutGameModel.getResY()/12));
+        scorePanel.add(scoreText, BorderLayout.NORTH);
         //next텍스트 표시
-        JLabel nexttext=new JLabel("Next");
+        JLabel nexttext = new JLabel("Next");
         nexttext.setForeground(Color.WHITE);
-        nexttext.setFont(new Font("Courier New", Font.PLAIN,20));
-        nexttext.setBorder(new EmptyBorder(0,0,15,0));
+        nexttext.setFont(new Font("Courier New", Font.PLAIN, 20*(OutGameModel.getResX()/5)/80));
+        nexttext.setBorder(new EmptyBorder(0, 0, 15, 0));
         nextPiece.add(nexttext, BorderLayout.NORTH);
         nextPiece.setBorder(new EmptyBorder(5, 5, 5, 5));
-
     }
 
     public void setScoreText(int score) {
-        scoreText.setText("Score: "+score);
+        scoreText.setText("Score: " + score);
     }
 
-    public void paintNextPiece(Block nextBlock){
+    public JTextPane getScoreText() {
+        return scoreText;
+    }
+
+    public void paintNextPiece(Block nextBlock) {
         nextPiece.removeAll();
         nextPiece.setBackground(Color.BLACK);
-        // 왜 2 * 6?
-        // board=new int[2][6];
-        board=new int[HEIGHT][WIDTH];
+        board = new int[HEIGHT][WIDTH];
         placeblock(nextBlock);
-        JLabel nexttext=new JLabel("Next");
+        JLabel nexttext = new JLabel("Next");
         nexttext.setForeground(Color.WHITE);
-        nexttext.setFont(new Font("Courier New", Font.PLAIN,20));
-        nexttext.setBorder(new EmptyBorder(0,0,10,0));
+        nexttext.setFont(new Font("Courier New", Font.PLAIN, 20*(OutGameModel.getResX()/5)/80));
+        nexttext.setBorder(new EmptyBorder(0, 0, 10, 0));
         nextPiece.add(nexttext, BorderLayout.NORTH);
     }
+
     // ArrayIndexOutOfBoundsException 오류 발생
-    public void placeblock(Block nextBlock){
+    public void placeblock(Block nextBlock) {
         StyledDocument doc = nextPiece.getStyledDocument();
         SimpleAttributeSet styles = new SimpleAttributeSet();
         StyleConstants.setForeground(styles, nextBlock.getColor());
-        for(int j=0; j<nextBlock.height(); j++) {
-            int rows = y1+j == 0 ? 0 : y1+j-1;
-            int offset = rows * (WIDTH+3) + x1 + 1;
+        for (int j = 0; j < nextBlock.height(); j++) {
+            int rows = y1 + j == 0 ? 0 : y1 + j - 1;
+            int offset = rows * (WIDTH + 3) + x1 + 1;
             doc.setCharacterAttributes(offset, nextBlock.width(), styles, true);
-            for(int i=0; i<nextBlock.width(); i++) {
-                if (y1+j < board.length && x1+i < board[y1+j].length) {
-                    board[y1+j][x1+i] = nextBlock.getShape(i, j);
+            for (int i = 0; i < nextBlock.width(); i++) {
+                if (y1 + j < board.length && x1 + i < board[y1 + j].length) {
+                    board[y1 + j][x1 + i] = nextBlock.getShape(i, j);
+                    board_text[y1 + j][x1 + i] = nextBlock.getText();
                 }
             }
         }
@@ -126,15 +134,36 @@ public class SidePanelView extends JPanel {
         paintNextPiece(nextBlock);
         placeblock(nextBlock);
         StringBuffer sb = new StringBuffer();
-        for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
+        int offset = 0;
+
+        StyledDocument doc = nextPiece.getStyledDocument();
+        SimpleAttributeSet styles = new SimpleAttributeSet();
+
+        // Draw top border
+        for (int t = 0; t < WIDTH + 2; t++) sb.append(BORDER_CHAR);
         sb.append("\n");
-        for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
+        for (int t = 0; t < WIDTH + 2; t++) sb.append(BORDER_CHAR);
         sb.append("\n");
-        for(int i=0; i < board.length; i++) {
+
+        // Iterate over the board
+        for (int i = 0; i < board.length; i++) {
             sb.append(BORDER_CHAR);
-            for(int j=0; j < board[i].length; j++) {
-                if(board[i][j] == 1) {
-                    sb.append("O");
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j] == 1) {
+                    sb.append(board_text[i][j]);
+                } else if (board[i][j] == 2) {
+                    offset = sb.length();
+                    char displayChar = ' ';
+                    if (nextBlock instanceof LineClearBlock) {
+                        displayChar = 'L';
+                    }
+                    else if (nextBlock instanceof LineFillBlock) {
+                        displayChar = 'F';
+                    }
+                    else if (nextBlock instanceof TimerBlock) {
+                        displayChar = 'S';
+                    }
+                    sb.append(displayChar);
                 } else {
                     sb.append(" ");
                 }
@@ -143,17 +172,24 @@ public class SidePanelView extends JPanel {
             sb.append("\n");
         }
 
-        for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
+        // Draw bottom border
+        for (int t = 0; t < WIDTH + 2; t++) sb.append(BORDER_CHAR);
+
+        // Update the text of the JTextPane with the buffer content
         nextPiece.setText(sb.toString());
-        StyledDocument doc = nextPiece.getStyledDocument();
 
-
-        SimpleAttributeSet styles = new SimpleAttributeSet();
-        StyleConstants.setForeground(styles, nextBlock.getColor()); // 다음 블록 색상 설정
+        // Set styles for the entire document (general styling)
+        StyleConstants.setForeground(styles, nextBlock.getColor());
         StyleConstants.setFontFamily(styles, "Courier New");
-        doc.setCharacterAttributes(0, doc.getLength(), styles, false); // 모든 문자의 속성을 새로 설정
-        nextPiece.setStyledDocument(doc);
+        doc.setCharacterAttributes(0, doc.getLength(), styles, false);
+        // Set the color to white for this specific character
+        SimpleAttributeSet whiteStyle = new SimpleAttributeSet();
+        StyleConstants.setForeground(whiteStyle, Color.WHITE);
+        doc.setCharacterAttributes(offset, 1, whiteStyle, true);
 
     }
 
+    public JTextPane getNextPiece() {
+        return nextPiece;
+    }
 }

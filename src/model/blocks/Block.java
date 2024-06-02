@@ -19,9 +19,15 @@ public abstract class Block {
 		color = Color.YELLOW;
 		text="O"; //블럭의 무늬를 나타내기 위한 Text 추가
 	}
-	
-	public int getShape(int x, int y) {
+	public int getShape(int x, int y){
 		return shape[y][x];
+	}
+	public void setShape(int x, int y,int i) {
+		shape[y][x]=i;
+	}
+
+	public int[][] getShapeArray() {
+		return shape;
 	}
 	
 	public Color getColor() {
@@ -70,5 +76,13 @@ public abstract class Block {
 		if(shape.length > 0)
 			return shape[0].length;
 		return 0;
+	}
+
+	public int getRotate_status() {
+		return rotate_status;
+	}
+
+	public void setRotate_status(int rotate_status) {
+		this.rotate_status = rotate_status;
 	}
 }
